@@ -13,15 +13,13 @@
 <!-- Sidebar Menu -->
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+        @foreach($menu as $index => $val)
         <li class="nav-item">
-            <a href="{{ route('users.index') }}" class="nav-link"><i class="nav-icon fas fa-users"></i> <p>Пользователи</p></a>
+            <a href="{{ route($index) }}" class="nav-link {{ $val['selected'] }}"><i class="nav-icon fas fa-users"></i> <p>{{ $val['text'] }}</p></a>
         </li>
-        <li class="nav-item">
-            <a href="{{ route('products.index') }}" class="nav-link"><i class="nav-icon fas fa-shopping-basket"></i> <p>Товары</p></a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ route('setting.index') }}" class="nav-link"><i class="nav-icon fas fa-tools"></i> <p>Настройки</p></a>
-        </li>
+        @endforeach
+
         <li class="nav-item">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
