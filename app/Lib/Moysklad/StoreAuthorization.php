@@ -5,7 +5,7 @@ namespace App\Lib\Moysklad;
 
 use Ixudra\Curl\Facades\Curl;
 
-class AuthorizationStore
+class StoreAuthorization
 {
     protected $login;
     protected $password;

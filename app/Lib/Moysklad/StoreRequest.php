@@ -3,27 +3,27 @@
 
 namespace App\Lib\Moysklad;
 
-use App\Models\Setting;
 use Ixudra\Curl\Facades\Curl;
 
-class RequestStore
+class StoreRequest
 {
     private $token;
     protected $response;
 
     public function __construct()
     {
-        $this->token = (new Setting())->token();
+        $this->token = (new StoreToken())->getToken();
     }
 
     public function send(string $href)
     {
-        $this->response = Curl::to($href)
+        $response = Curl::to($href)
             ->withAuthorization($this->token)
             ->withHeader('Accept-Encoding: gzip')
             ->withOption('ENCODING', 'gzip')
-            ->asJson()
             ->get();
+
+        $this->response = json_decode($response, true);
 
         return $this;
     }

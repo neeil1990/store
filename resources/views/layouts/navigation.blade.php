@@ -17,7 +17,7 @@
             <a href="{{ route('users.index') }}" class="nav-link"><i class="nav-icon fas fa-users"></i> <p>Пользователи</p></a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link"><i class="nav-icon fas fa-shopping-basket"></i> <p>Товары</p></a>
+            <a href="{{ route('products.index') }}" class="nav-link"><i class="nav-icon fas fa-shopping-basket"></i> <p>Товары</p></a>
         </li>
         <li class="nav-item">
             <a href="{{ route('setting.index') }}" class="nav-link"><i class="nav-icon fas fa-tools"></i> <p>Настройки</p></a>

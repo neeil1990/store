@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginPasswordRequest;
-use App\Lib\Moysklad\AuthorizationStore;
+use App\Lib\Moysklad\StoreAuthorization;
 
 class TokenController extends Controller
 {
@@ -11,7 +11,7 @@ class TokenController extends Controller
     {
         $validated = $request->validated();
 
-        $token = (new AuthorizationStore())
+        $token = (new StoreAuthorization())
             ->setLogin($validated['login'])
             ->setPassword($validated['password'])
             ->token();

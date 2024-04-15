@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SettingStoreRequest;
+use App\Lib\Moysklad\StoreToken;
 use App\Models\Setting;
+use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
     public function index()
     {
-        $settings = new Setting();
-
-        $token = $settings->token();
+        $token = (new StoreToken())->getToken();
 
         return view('setting.index', compact('token'));
     }
