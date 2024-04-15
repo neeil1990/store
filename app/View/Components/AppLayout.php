@@ -15,9 +15,9 @@ class AppLayout extends Component
         $route = Route::currentRouteName();
 
         $this->menu = [
-            'users.index' => ['text' => __('Пользователи'), 'selected' => ''],
-            'products.index' => ['text' => __('Товары'), 'selected' => ''],
-            'setting.index' => ['text' => __('Настройки'), 'selected' => ''],
+            'users.index' => ['text' => __('Пользователи'), 'icon' => 'fas fa-users', 'selected' => ''],
+            'products.index' => ['text' => __('Товары'), 'icon' => 'fas fa-store', 'selected' => ''],
+            'setting.index' => ['text' => __('Настройки'), 'icon' => 'fas fa-tools', 'selected' => ''],
         ];
 
         if(isset($this->menu[$route]))

@@ -16,7 +16,7 @@
 
         @foreach($menu as $index => $val)
         <li class="nav-item">
-            <a href="{{ route($index) }}" class="nav-link {{ $val['selected'] }}"><i class="nav-icon fas fa-users"></i> <p>{{ $val['text'] }}</p></a>
+            <a href="{{ route($index) }}" class="nav-link {{ $val['selected'] }}"><i class="nav-icon {{ $val['icon'] }}"></i> <p>{{ $val['text'] }}</p></a>
         </li>
         @endforeach
 

@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="row">
-        <div class="col-12 mb-2">
+        <div class="col-12 mb-2 btn-list">
             @include('products.partials.buttons')
         </div>
     </div>
