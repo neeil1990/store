@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
     @vite(['resources/css/app.css'])
+    @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -57,6 +58,17 @@
     </div>
     <!-- /.content-wrapper -->
 
+    <!-- Control Sidebar -->
+    @if (isset($sidebar))
+    <aside class="control-sidebar control-sidebar-light">
+        <!-- Control sidebar content goes here -->
+        <div class="p-3 control-sidebar-content">
+            {{ $sidebar }}
+        </div>
+    </aside>
+    @endif
+    <!-- /.control-sidebar -->
+
     <!-- Main Footer -->
     <footer class="main-footer">
         <!-- To the right -->
@@ -77,5 +89,6 @@
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 @vite(['resources/js/app.js'])
+@stack('scripts')
 </body>
 </html>
