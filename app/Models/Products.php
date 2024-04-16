@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Products extends Model
 {
@@ -20,4 +21,14 @@ class Products extends Model
     ];
 
     use HasFactory;
+
+    public function scopeSearchCol(Builder $query, array $search): void
+    {
+
+    }
+
+    public function scopeOrderCol(Builder $query, string $col = 'name', string $dir = 'asc'): void
+    {
+        $query->orderBy($col, $dir);
+    }
 }

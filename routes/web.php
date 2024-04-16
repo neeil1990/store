@@ -23,8 +23,7 @@ Route::get('session', function () {
 });
 
 Route::get('dev', function () {
-
-    // nk@almamed:@_7_tLJGJJ6GXAL
+    //
     // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
 });
 

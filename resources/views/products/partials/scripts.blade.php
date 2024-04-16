@@ -12,21 +12,51 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
 <script>
-
     let table = $("#products-table").DataTable({
-        "searching": false,
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "buttons": [
-            { extend: 'copy', className: 'btn-default' },
-            { extend: 'csv', className: 'btn-default' },
-            { extend: 'excel', className: 'btn-default' },
-            { extend: 'pdf', className: 'btn-default' },
-            { extend: 'print', className: 'btn-default' },
-            { extend: 'colvis', className: 'btn-default' },
-        ]
+        language: {
+            lengthMenu: '_MENU_',
+            search: 'Поиск _INPUT_',
+            info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
+            paginate: {
+                previous: '<',
+                next: '>',
+            },
+        },
+        lengthMenu: [10, 50, 100, 300, 400, 500],
+        responsive: true,
+        autoWidth: false,
+        buttons: [
+            { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
+            { extend: 'csv', text: '{{ __('CSV') }}', className: 'btn-default' },
+            { extend: 'excel', text: '{{ __('EXCEL') }}', className: 'btn-default' },
+            { extend: 'pdf', text: '{{ __('PDF') }}', className: 'btn-default' },
+            { extend: 'print', text: '{{ __('Печать') }}', className: 'btn-default' },
+            {
+                extend: 'colvis',
+                columns: ':not(.noVis)',
+                popoverTitle: '{{ __('Видимость столбца') }}',
+                text: '{{ __('Столбцы') }}',
+                className: 'btn-default'
+            }
+        ],
+        stateSave: true,
+        ajax: {
+            url: '{{ route('products.json') }}',
+            type: 'GET'
+        },
+        columns: [
+            { data: 'name', title: 'Наименование' },
+            { data: 'article', title: 'Артикул' },
+            { data: 'code', title: 'Код' },
+            { data: 'externalCode', title: 'Внешний код' },
+            { data: 'salePrices', title: 'Цена продажи' },
+            { data: 'minPrice', title: 'Минимальная цена' },
+            { data: 'buyPrice', title: 'Закупочная цена' },
+        ],
+        serverSide: true,
+        initComplete: function (settings, json) {
+            let api = new $.fn.dataTable.Api( settings );
+            api.buttons().container().appendTo('.btn-list');
+        }
     });
-
-    table.buttons().container().appendTo('.btn-list');
 </script>

@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
+use App\Lib\Sale\ProductFrontend;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
     public function index()
     {
-        $model = new Products();
-        $products = $model->take(50)->get();
+        return view('products.index');
+    }
 
-        return view('products.index', compact('products'));
+    public function json(Request $request)
+    {
+        $products = new ProductFrontend($request->all());
+
+        return collect([
+            'draw' => $request->input('draw'),
+            'recordsTotal' => $products->total(),
+            'recordsFiltered' => $products->records(),
+            'data' => $products->items(),
+            'error' => $products->error(),
+        ]);
     }
 }
