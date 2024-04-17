@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Lib\Main\RegExWrapper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,5 +31,15 @@ class Products extends Model
     public function scopeOrderCol(Builder $query, string $col = 'name', string $dir = 'asc'): void
     {
         $query->orderBy($col, $dir);
+    }
+
+    public function scopeSearchEachWordInLine(Builder $query, string $column, string $value): void
+    {
+        if(strlen($value) > 1)
+        {
+            $regex = RegExWrapper::beginningOfEachWordInLine($value);
+
+            $query->where($column, 'REGEXP', $regex);
+        }
     }
 }

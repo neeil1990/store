@@ -3,6 +3,7 @@
 
 namespace App\Lib\Sale;
 
+use App\Lib\Main\RegExWrapper;
 use \App\Models\Products;
 
 class ProductFrontend
@@ -32,12 +33,8 @@ class ProductFrontend
         $search = $this->prepareSearch();
 
         $this->pagination = $this->model
-            ->whereAny([
-                'name',
-                'article',
-                'salePrices',
-            ], 'LIKE', '%'.$this->search['value'].'%')
             ->searchCol($search)
+            ->searchEachWordInLine('name', $this->search['value'] ?: '')
             ->orderCol($order['column'], $order['dir'])
             ->paginate($this->length, ['*'], 'page', ($this->start / $this->length) + 1);
     }
