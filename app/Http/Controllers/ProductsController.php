@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Lib\Sale\ProductFrontend;
+use App\Lib\Sale\ProductsTable;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -14,13 +14,13 @@ class ProductsController extends Controller
 
     public function json(Request $request)
     {
-        $products = new ProductFrontend($request->all());
+        $products = new ProductsTable($request->all());
 
         return collect([
             'draw' => $request->input('draw'),
-            'recordsTotal' => $products->total(),
-            'recordsFiltered' => $products->records(),
-            'data' => $products->items(),
+            'recordsTotal' => $products->recordsTotal(),
+            'recordsFiltered' => $products->recordsFiltered(),
+            'data' => $products->data(),
             'error' => $products->error(),
         ]);
     }
