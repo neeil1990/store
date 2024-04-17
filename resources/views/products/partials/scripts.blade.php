@@ -10,6 +10,7 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('build/vendor/jquery.highlight.js') }}"></script>
 
 <script>
     let table = $("#products-table").DataTable({
@@ -58,5 +59,10 @@
             let api = new $.fn.dataTable.Api( settings );
             api.buttons().container().appendTo('.btn-list');
         }
+    });
+
+    table.on( 'draw', function () {
+        let body = $( table.table().body() ).find('tr');
+        body.find('td:first').highlight(table.search().split(" "));
     });
 </script>
