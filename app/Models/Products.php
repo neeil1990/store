@@ -23,9 +23,21 @@ class Products extends Model
 
     use HasFactory;
 
-    public function scopeSearchCol(Builder $query, array $search): void
+    public function scopeSearchCols(Builder $query, array $value): void
     {
+        if(count($value) > 0)
+        {
+            $search = [];
 
+            foreach ($value as $item)
+            {
+                if(array_key_exists('col', $item) && array_key_exists('val', $item) && strlen($item['val']) > 0)
+                    $search[] = [$item['col'], 'like', $item['val'] . '%'];
+            }
+
+            if(count($search) > 0)
+                $query->where($search);
+        }
     }
 
     public function scopeOrderCol(Builder $query, string $col = 'name', string $dir = 'asc'): void

@@ -19,9 +19,10 @@ class ProductsTable extends DataTableRequest
         $model = new Products();
 
         $order = $this->prepareOrder();
+        $search = $this->prepareSearch();
 
         $pagination = $model
-            ->searchCol([])
+            ->searchCols($search)
             ->searchEachWordInLine('name', $this->search['value'] ?: '')
             ->orderCol($order['column'], $order['dir'])
             ->paginate($this->length, ['*'], 'page', ($this->start / $this->length) + 1);
@@ -29,6 +30,19 @@ class ProductsTable extends DataTableRequest
         $this->setData($pagination->items());
         $this->setRecordsTotal($model->count());
         $this->setRecordsFiltered($pagination->total());
+    }
+
+    private function prepareSearch(): array
+    {
+        $search = [];
+
+        foreach ($this->columns as $col)
+        {
+            if($col['search']['value'])
+                $search[] = ['col' => $col['data'], 'val' => $col['search']['value']];
+        }
+
+        return $search;
     }
 
     private function prepareOrder()

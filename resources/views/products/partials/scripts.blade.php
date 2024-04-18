@@ -16,7 +16,7 @@
     let table = $("#products-table").DataTable({
         language: {
             lengthMenu: '_MENU_',
-            search: 'Поиск _INPUT_',
+            search: 'Продвинутый поиск _INPUT_',
             info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
             paginate: {
                 previous: '<',
@@ -24,7 +24,7 @@
             },
         },
         lengthMenu: [10, 50, 100, 300, 400, 500],
-        responsive: true,
+        responsive: false,
         autoWidth: false,
         buttons: [
             { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
@@ -58,6 +58,46 @@
         initComplete: function (settings, json) {
             let api = new $.fn.dataTable.Api( settings );
             api.buttons().container().appendTo('.btn-list');
+
+            let sidebar = document.getElementById("control-sidebar-content");
+
+            api.columns().every(function(){
+                let column = this;
+                let title = column.header().textContent;
+
+                let group = document.createElement('div');
+                group.className = "form-group";
+
+                let label = document.createElement('label');
+                label.textContent = title;
+
+                let input = document.createElement('input');
+                input.value = column.search();
+                input.placeholder = title;
+                input.className = "form-control";
+
+                group.append(label, input);
+
+                sidebar.append(group);
+
+                input.addEventListener('keyup', () => {
+                    if (column.search() !== this.value) {
+                        column.search(input.value).draw();
+                    }
+                });
+            });
+
+            let clear = document.createElement('button');
+            clear.className = "btn btn-block btn-outline-danger btn-xs";
+            clear.textContent = "Очистить";
+            sidebar.append(clear);
+
+            clear.addEventListener('click', () => {
+                table.search('').columns().search('').draw();
+                for (const input of sidebar.querySelectorAll(".form-control")) {
+                    input.value = "";
+                }
+            });
         }
     });
 

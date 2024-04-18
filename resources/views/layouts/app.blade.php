@@ -64,7 +64,7 @@
     @if (isset($sidebar))
     <aside class="control-sidebar control-sidebar-light">
         <!-- Control sidebar content goes here -->
-        <div class="p-3 control-sidebar-content">
+        <div class="p-3 control-sidebar-content" id="control-sidebar-content">
             {{ $sidebar }}
         </div>
     </aside>
