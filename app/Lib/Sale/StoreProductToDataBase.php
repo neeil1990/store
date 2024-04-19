@@ -3,18 +3,9 @@
 
 namespace App\Lib\Sale;
 
-
-use App\Models\Products;
-
-class StoreProductToDataBase
+class StoreProductToDataBase extends StoreToDataBase
 {
-    public function updateOrCreate(array $products)
-    {
-        foreach ($products as $product)
-            Products::updateOrCreate(['externalCode' => $product['externalCode']], $this->prepareProduct($product));
-    }
-
-    protected function prepareProduct($product)
+    protected function prepareProduct(array $product): array
     {
         $product['uuid'] = $product['id'];
 

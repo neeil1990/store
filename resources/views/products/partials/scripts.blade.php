@@ -47,6 +47,7 @@
         },
         columns: [
             { data: 'name', title: 'Наименование' },
+            { data: 'owner', title: 'Сотрудник' },
             { data: 'article', title: 'Артикул' },
             { data: 'code', title: 'Код' },
             { data: 'externalCode', title: 'Внешний код' },
@@ -71,20 +72,41 @@
                 let label = document.createElement('label');
                 label.textContent = title;
 
-                let input = document.createElement('input');
-                input.value = column.search();
-                input.placeholder = title;
-                input.className = "form-control";
+                if(column.dataSrc() === 'owner')
+                {
+                    let select = document.createElement('select');
+                    select.className = "form-control";
+                    select.add(new Option('Найти', ''));
 
-                group.append(label, input);
+                    group.append(label, select);
+
+                    axios.get('{{ route('employee.json') }}')
+                        .then(function (response) {
+                            $.each(response.data, function (i, el) {
+                                select.add(new Option(el.name, el.uuid));
+                            });
+                        });
+
+                    select.addEventListener('change', function () {
+                        column.search(select.value, {exact: true}).draw();
+                    });
+                }
+                else{
+                    let input = document.createElement('input');
+                    input.value = column.search();
+                    input.placeholder = title;
+                    input.className = "form-control";
+
+                    group.append(label, input);
+
+                    input.addEventListener('keyup', () => {
+                        if (column.search() !== this.value) {
+                            column.search(input.value).draw();
+                        }
+                    });
+                }
 
                 sidebar.append(group);
-
-                input.addEventListener('keyup', () => {
-                    if (column.search() !== this.value) {
-                        column.search(input.value).draw();
-                    }
-                });
             });
 
             let clear = document.createElement('button');

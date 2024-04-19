@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__.'/uri/settings.php';
     require __DIR__.'/uri/token.php';
     require __DIR__.'/uri/products.php';
+    require __DIR__.'/uri/employee.php';
 });
 
 require __DIR__.'/uri/auth.php';

@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Lib\Sale\StoreProductToDataBase;
+use App\Models\Products;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateOrCreateProductToDataBase implements ShouldQueue
 {
@@ -22,6 +22,6 @@ class UpdateOrCreateProductToDataBase implements ShouldQueue
     public function handle(object $event): void
     {
         $products = $event->products;
-        (new StoreProductToDataBase())->updateOrCreate($products);
+        (new StoreProductToDataBase(new Products()))->updateOrCreate($products);
     }
 }

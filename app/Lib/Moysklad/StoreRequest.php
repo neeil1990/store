@@ -5,20 +5,24 @@ namespace App\Lib\Moysklad;
 
 use Ixudra\Curl\Facades\Curl;
 
-class StoreRequest
+abstract class StoreRequest
 {
-    private $token;
+    protected $href;
     protected $response;
 
-    public function __construct()
+    abstract public function getApi(): array;
+
+    public function setHref(string $href): void
     {
-        $this->token = (new StoreToken())->getToken();
+        $this->href = $href;
     }
 
-    public function send(string $href)
+    protected function send()
     {
-        $response = Curl::to($href)
-            ->withAuthorization($this->token)
+        $token = (new StoreToken())->getToken();
+
+        $response = Curl::to($this->href)
+            ->withAuthorization($token)
             ->withHeader('Accept-Encoding: gzip')
             ->withOption('ENCODING', 'gzip')
             ->get();
@@ -28,7 +32,7 @@ class StoreRequest
         return $this;
     }
 
-    public function getResponse()
+    protected function getResponse()
     {
         return $this->response;
     }

@@ -22,6 +22,7 @@ class ProductsTable extends DataTableRequest
         $search = $this->prepareSearch();
 
         $pagination = $model
+            ->selectEmployee()
             ->searchCols($search)
             ->searchEachWordInLine('name', $this->search['value'] ?: '')
             ->orderCol($order['column'], $order['dir'])

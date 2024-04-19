@@ -54,4 +54,9 @@ class Products extends Model
             $query->where($column, 'REGEXP', $regex);
         }
     }
+
+    public function scopeSelectEmployee(Builder $query)
+    {
+        $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
+    }
 }
