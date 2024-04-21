@@ -9,11 +9,10 @@ class StoreAuthorization
 {
     protected $login;
     protected $password;
-    protected $href = 'https://api.moysklad.ru/api/remap/1.2/security/token';
 
     public function token()
     {
-        $response = Curl::to($this->href)
+        $response = Curl::to('https://api.moysklad.ru/api/remap/1.2/security/token')
             ->withAuthorization('Basic ' . base64_encode(implode(':', [$this->getLogin(), $this->getPassword()])))
             ->withHeader('Accept-Encoding: gzip')
             ->withOption('ENCODING', 'gzip')

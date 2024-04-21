@@ -10,18 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ProductArrayReceived
+class MyStoreRowsProductReceived
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $products;
+    public $rows;
 
     /**
      * Create a new event instance.
+     * @param array $rows
      */
-    public function __construct(array $products)
+    public function __construct(array $rows)
     {
-        $this->products = $products;
+        $this->rows = $rows;
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Sale\SyncDataBase;
+use App\Lib\Sale\SyncMyStoreWithDataBase;
 
 class SyncProducts extends Command
 {
@@ -26,6 +26,6 @@ class SyncProducts extends Command
      */
     public function handle()
     {
-        (new SyncDataBase())->syncAll();
+        (new SyncMyStoreWithDataBase())->syncAll();
     }
 }
