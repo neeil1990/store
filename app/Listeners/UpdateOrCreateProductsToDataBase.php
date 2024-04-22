@@ -6,14 +6,14 @@ use App\Lib\Sale\StoreProductToDataBase;
 use App\Models\Products;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpdateOrCreateMyStoreProductToDataBase implements ShouldQueue
+class UpdateOrCreateProductsToDataBase implements ShouldQueue
 {
     /**
      * Create the event listener.
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -22,6 +22,9 @@ class UpdateOrCreateMyStoreProductToDataBase implements ShouldQueue
      */
     public function handle(object $event): void
     {
-        (new StoreProductToDataBase(new Products()))->updateOrCreate($event->rows);
+        $product = new Products();
+        if($event->class == get_class($product))
+            (new StoreProductToDataBase($product))
+                ->updateOrCreate($event->rows);
     }
 }

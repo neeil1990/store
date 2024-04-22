@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Lib\Sale\SyncMyStoreWithDataBase;
 use Illuminate\Support\Facades\Route;
 use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,15 @@ Route::get('session', function () {
 Route::get('dev', function () {
     //
     // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
+
+    // supplier
+    // https://api.moysklad.ru/api/remap/1.2/entity/counterparty/641402db-e987-11e8-9107-504800052222
+
+    //$api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    //$api->send('https://api.moysklad.ru/api/remap/1.2/entity/counterparty');
+    //dd($api->getRows()[0]);
+
+    // (new SyncMyStoreWithDataBase())->productSync();
 });
 
 Route::get('/', function () {

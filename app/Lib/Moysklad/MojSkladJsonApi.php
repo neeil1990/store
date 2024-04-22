@@ -24,12 +24,22 @@ class MojSkladJsonApi
 
         $response = json_decode($response, true);
 
+        if(!is_array($response))
+            return;
+
         if(array_key_exists('errors', $response))
             $this->error = $response['errors'];
         else{
-            $this->rows = $response['rows'];
-            $this->meta = $response['meta'];
-            $this->context = $response['context'];
+            if(array_key_exists('rows', $response))
+                $this->rows = $response['rows'];
+            else
+                $this->rows[] = $response;
+
+            if(array_key_exists('meta', $response))
+                $this->meta = $response['meta'];
+
+            if(array_key_exists('context', $response))
+                $this->context = $response['context'];
         }
     }
 

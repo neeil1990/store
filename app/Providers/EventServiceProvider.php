@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\MyStoreRowsProductReceived;
-use App\Listeners\UpdateOrCreateMyStoreProductToDataBase;
+use App\Events\MyStoreRowsReceived;
+use App\Listeners\UpdateOrCreateProductsToDataBase;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,8 +20,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        MyStoreRowsProductReceived::class => [
-            UpdateOrCreateMyStoreProductToDataBase::class,
+        MyStoreRowsReceived::class => [
+            UpdateOrCreateProductsToDataBase::class,
         ],
     ];
 

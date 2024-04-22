@@ -18,6 +18,9 @@ class StoreProductToDataBase extends StoreToDataBase
         if(isset($product['productFolder']))
             $product['productFolder'] = $this->getIdFromMetaHref($product['productFolder']['meta']['href']);
 
+        if(isset($product['supplier']))
+            $product['supplier'] = $this->getIdFromMetaHref($product['supplier']['meta']['href']);
+
         $product['minPrice'] = $this->pennyToRuble($product['minPrice']['value']);
         $product['salePrices'] = (isset($product['salePrices'][0])) ? $this->pennyToRuble($product['salePrices'][0]['value']) : 0.0;
         $product['buyPrice'] = $this->pennyToRuble($product['buyPrice']['value']);
