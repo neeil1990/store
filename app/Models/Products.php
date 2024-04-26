@@ -23,6 +23,11 @@ class Products extends Model
 
     use HasFactory;
 
+    protected function serializeDate(\DateTimeInterface $date): string
+    {
+        return $date->format('d.m.Y H:i');
+    }
+
     public function scopeSearchCols(Builder $query, array $value): void
     {
         if(count($value) > 0)

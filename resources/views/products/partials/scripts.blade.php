@@ -54,6 +54,8 @@
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },
+            { data: 'created_at', title: 'Дата создания' },
+            { data: 'updated_at', title: 'Дата синхронизации' },
         ],
         serverSide: true,
         initComplete: function (settings, json) {
