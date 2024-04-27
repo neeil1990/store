@@ -1,6 +1,9 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Общие данные</h3>
+        <div class="card-tools">
+            <span class="badge badge-success">{{ __('Синхронизировано') }}: {{ $product->updated_at->format('d.m.Y H:i') }}</span>
+        </div>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
