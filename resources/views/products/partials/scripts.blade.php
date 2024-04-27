@@ -45,7 +45,17 @@
             url: '{{ route('products.json') }}',
             type: 'GET'
         },
+        order: [[1, 'asc']],
         columns: [
+            {
+                className: "unsearchable",
+                searchable: false,
+                orderable: false,
+                data: 'id',
+                render: function(id) {
+                    return '<a href="/products/'+ id +'" class="btn btn-app m-0"><i class="fas fa-folder"></i>'+ id +'</a>';
+                },
+            },
             { data: 'name', title: 'Наименование' },
             { data: 'owner', title: 'Сотрудник' },
             { data: 'article', title: 'Артикул' },
@@ -54,8 +64,6 @@
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },
-            { data: 'created_at', title: 'Дата создания' },
-            { data: 'updated_at', title: 'Дата синхронизации' },
         ],
         serverSide: true,
         initComplete: function (settings, json) {
@@ -66,7 +74,12 @@
 
             api.columns().every(function(){
                 let column = this;
-                let title = column.header().textContent;
+                let header = column.header();
+                let title = header.textContent;
+                let classList = header.classList;
+
+                if(classList.contains("unsearchable"))
+                    return;
 
                 let group = document.createElement('div');
                 group.className = "form-group";
