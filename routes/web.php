@@ -30,12 +30,11 @@ Route::get('dev', function () {
 
     // supplier
     // https://api.moysklad.ru/api/remap/1.2/entity/counterparty/641402db-e987-11e8-9107-504800052222
+    // https://api.moysklad.ru/api/remap/1.2/entity/counterparty
 
-    //$api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    //$api->send('https://api.moysklad.ru/api/remap/1.2/entity/counterparty');
-    //dd($api->getRows()[0]);
-
-    // (new SyncMyStoreWithDataBase())->productSync();
+    // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    // $api->send('https://api.moysklad.ru/api/remap/1.2/entity/counterparty');
+    // dd($api->getMeta());
 });
 
 Route::get('/', function () {

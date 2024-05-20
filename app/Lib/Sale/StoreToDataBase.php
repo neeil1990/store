@@ -22,4 +22,9 @@ abstract class StoreToDataBase
     }
 
     abstract protected function prepareProduct(array $item): array;
+
+    protected function pennyToRuble(float $price)
+    {
+        return round($price / 100, 2);
+    }
 }

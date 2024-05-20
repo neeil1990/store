@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Products;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,22 +10,19 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MyStoreRowsReceived
+class MyStoreSupplierRowsReceived
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $rows;
-    public $class;
 
     /**
      * Create a new event instance.
      * @param array $rows
-     * @param string $class
      */
-    public function __construct(array $rows, string $class)
+    public function __construct(array $rows)
     {
         $this->rows = $rows;
-        $this->class = $class;
     }
 
     /**

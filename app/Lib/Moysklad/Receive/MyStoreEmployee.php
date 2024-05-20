@@ -6,7 +6,7 @@ namespace App\Lib\Moysklad\Receive;
 
 use App\Lib\Moysklad\MojSkladJsonApi;
 
-class MyStoreEmployee implements MyStoreReceiveInterface
+class MyStoreEmployee extends MyStoreReceive
 {
     protected $api;
 
@@ -14,11 +14,6 @@ class MyStoreEmployee implements MyStoreReceiveInterface
     {
         $this->api = new MojSkladJsonApi;
         $this->api->send('https://api.moysklad.ru/api/remap/1.2/entity/employee');
-    }
-
-    public function getRows(): array
-    {
-        return $this->api->getRows();
     }
 
     public function currentPage(): int
@@ -29,5 +24,10 @@ class MyStoreEmployee implements MyStoreReceiveInterface
     public function nextPage(): bool
     {
         return false;
+    }
+
+    protected function eventClass($rows)
+    {
+        // TODO: Implement event() method.
     }
 }

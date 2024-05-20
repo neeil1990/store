@@ -32,9 +32,4 @@ class StoreProductToDataBase extends StoreToDataBase
     {
         return substr($href, strrpos($href, '/') + 1);
     }
-
-    private function pennyToRuble(float $price)
-    {
-        return round($price / 100, 2);
-    }
 }
