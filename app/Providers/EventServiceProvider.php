@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\MyStoreProductFolderRowsReceived;
 use App\Events\MyStoreProductRowsReceived;
 use App\Events\MyStoreSupplierRowsReceived;
+use App\Listeners\UpdateOrCreateProductFolderToDataBase;
 use App\Listeners\UpdateOrCreateProductsToDataBase;
 use App\Listeners\UpdateOrCreateSupplierToDataBase;
 use Illuminate\Auth\Events\Registered;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MyStoreSupplierRowsReceived::class => [
             UpdateOrCreateSupplierToDataBase::class,
+        ],
+        MyStoreProductFolderRowsReceived::class => [
+            UpdateOrCreateProductFolderToDataBase::class,
         ],
     ];
 

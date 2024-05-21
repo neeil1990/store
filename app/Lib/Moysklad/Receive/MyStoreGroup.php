@@ -6,12 +6,12 @@ namespace App\Lib\Moysklad\Receive;
 
 use App\Lib\Moysklad\MojSkladJsonApi;
 
-class MyStoreEmployee extends MyStoreReceive
+class MyStoreGroup extends MyStoreReceive
 {
     public function __construct()
     {
         $this->api = new MojSkladJsonApi;
-        $this->api->send('https://api.moysklad.ru/api/remap/1.2/entity/employee');
+        $this->api->send('https://api.moysklad.ru/api/remap/1.2/entity/group');
     }
 
     public function currentPage(): int
@@ -26,6 +26,6 @@ class MyStoreEmployee extends MyStoreReceive
 
     protected function eventClass($rows)
     {
-        // TODO: Implement event() method.
+        // TODO: Implement eventClass() method.
     }
 }

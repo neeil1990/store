@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Lib\Sale;
+namespace App\Lib\Sale\Store;
 
 class StoreSupplierToDataBase extends StoreToDataBase
 {
@@ -11,5 +11,10 @@ class StoreSupplierToDataBase extends StoreToDataBase
         $item['salesAmount'] = $this->pennyToRuble($item['salesAmount']);
 
         return $item;
+    }
+
+    protected function externalCode(array $item): array
+    {
+        return ['externalCode' => $item['externalCode']];
     }
 }

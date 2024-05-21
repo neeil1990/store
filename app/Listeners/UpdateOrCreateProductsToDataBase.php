@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Lib\Sale\StoreProductToDataBase;
+use App\Lib\Sale\Store\StoreProductToDataBase;
 use App\Models\Products;
 use Illuminate\Contracts\Queue\ShouldQueue;
 

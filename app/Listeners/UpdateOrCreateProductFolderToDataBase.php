@@ -2,12 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Lib\Sale\Store\StoreSupplierToDataBase;
-use App\Models\Supplier;
+use App\Lib\Sale\Store\StoreProductFolderToDataBase;
+use App\Models\ProductFolder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateOrCreateSupplierToDataBase implements ShouldQueue
+class UpdateOrCreateProductFolderToDataBase implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -22,6 +22,6 @@ class UpdateOrCreateSupplierToDataBase implements ShouldQueue
      */
     public function handle(object $event): void
     {
-        (new StoreSupplierToDataBase(new Supplier()))->updateOrCreate($event->rows);
+        (new StoreProductFolderToDataBase(new ProductFolder()))->updateOrCreate($event->rows);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Lib\Sale;
+namespace App\Lib\Sale\Store;
 
 class StoreEmployeeToDataBase extends StoreToDataBase
 {
@@ -10,5 +10,10 @@ class StoreEmployeeToDataBase extends StoreToDataBase
         $item['uuid'] = $item['id'];
 
         return $item;
+    }
+
+    protected function externalCode(array $item): array
+    {
+        return ['externalCode' => $item['externalCode']];
     }
 }

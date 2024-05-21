@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Lib\Sale;
+namespace App\Lib\Sale\Store;
 
 class StoreProductToDataBase extends StoreToDataBase
 {
@@ -31,5 +31,10 @@ class StoreProductToDataBase extends StoreToDataBase
     private function getIdFromMetaHref(string $href)
     {
         return substr($href, strrpos($href, '/') + 1);
+    }
+
+    protected function externalCode(array $item): array
+    {
+        return ['externalCode' => $item['externalCode']];
     }
 }
