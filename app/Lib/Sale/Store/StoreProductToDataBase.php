@@ -3,6 +3,9 @@
 
 namespace App\Lib\Sale\Store;
 
+use App\Models\Price;
+use Illuminate\Database\Eloquent\Model;
+
 class StoreProductToDataBase extends StoreToDataBase
 {
     protected function prepareProduct(array $product): array
@@ -36,5 +39,22 @@ class StoreProductToDataBase extends StoreToDataBase
     protected function externalCode(array $item): array
     {
         return ['externalCode' => $item['externalCode']];
+    }
+
+    protected function saveResult(Model $model, array $item): void
+    {
+        $price = new Price();
+
+        $price->where('product_id', $model['id'])->delete();
+
+        foreach ($item['salePrices'] as $p)
+        {
+            $price->create([
+                'uuid' => $p['priceType']['id'],
+                'product_id' => $model['id'],
+                'name' => $p['priceType']['name'],
+                'value' => $this->pennyToRuble($p['value']),
+            ]);
+        }
     }
 }

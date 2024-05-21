@@ -19,13 +19,16 @@ abstract class StoreToDataBase
     {
         foreach ($items as $item)
         {
-            $this->model->updateOrCreate($this->externalCode($item), $this->prepareProduct($item));
+            $obj = $this->model->updateOrCreate($this->externalCode($item), $this->prepareProduct($item));
+            $this->saveResult($obj, $item);
         }
     }
 
     abstract protected function prepareProduct(array $item): array;
 
     abstract protected function externalCode(array $item): array;
+
+    abstract protected function saveResult(Model $model, array $item): void;
 
     protected function pennyToRuble(float $price)
     {
