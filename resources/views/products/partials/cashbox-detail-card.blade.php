@@ -4,7 +4,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <x-title-with-text title="{{ __('Система налогообложения') }} (В работе)" text="taxSystem" />
+        <x-title-with-text title="{{ __('Система налогообложения') }}" text="Совпадает с точкой" />
         <x-title-with-text title="{{ __('Признак предмета расчета') }}" text="{{ $product->paymentItemType }}" />
     </div>
     <!-- /.card-body -->

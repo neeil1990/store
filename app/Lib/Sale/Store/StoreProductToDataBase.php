@@ -12,17 +12,9 @@ class StoreProductToDataBase extends StoreToDataBase
     {
         $product['uuid'] = $product['id'];
 
-        if(isset($product['owner']))
-            $product['owner'] = $this->getIdFromMetaHref($product['owner']['meta']['href']);
-
-        if(isset($product['group']))
-            $product['group'] = $this->getIdFromMetaHref($product['group']['meta']['href']);
-
-        if(isset($product['productFolder']))
-            $product['productFolder'] = $this->getIdFromMetaHref($product['productFolder']['meta']['href']);
-
-        if(isset($product['supplier']))
-            $product['supplier'] = $this->getIdFromMetaHref($product['supplier']['meta']['href']);
+        foreach (['owner', 'uom', 'group', 'productFolder', 'supplier', 'country'] as $key)
+            if(isset($product[$key]))
+                $product[$key] = $this->getIdFromMeta($product[$key]);
 
         $product['minPrice'] = $this->pennyToRuble($product['minPrice']['value']);
         $product['salePrices'] = (isset($product['salePrices'][0])) ? $this->pennyToRuble($product['salePrices'][0]['value']) : 0.0;
@@ -31,8 +23,13 @@ class StoreProductToDataBase extends StoreToDataBase
         return $product;
     }
 
-    private function getIdFromMetaHref(string $href)
+    protected function getIdFromMeta(array $field)
     {
+        if(!isset($field['meta']))
+            return null;
+
+        $href = $field['meta']['href'];
+
         return substr($href, strrpos($href, '/') + 1);
     }
 

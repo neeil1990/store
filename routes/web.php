@@ -32,7 +32,7 @@ Route::get('dev', function () {
 
     // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
     // $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product');
-    // $api->getRows();
+    // $rows = $api->getRows();
 });
 
 Route::get('/', function () {
