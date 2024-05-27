@@ -140,6 +140,6 @@
 
     table.on( 'draw', function () {
         let body = $( table.table().body() ).find('tr');
-        body.find('td:first').highlight(table.search().split(" "));
+        body.find('td:nth-child(2)').highlight(table.search().split(" "));
     });
 </script>
