@@ -1,12 +1,12 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Цены</h3>
+        <h3 class="card-title">{{ __('Цены') }}</h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <x-title-with-text title="{{ __('Минимальная цена') }}" text="{{ $product->minPrice }}" />
-        <x-title-with-text title="{{ __('Закупочная цена') }}" text="{{ $product->buyPrice }}" />
-        <x-title-with-text title="{{ __('Цена продажи') }}" text="{{ $product->salePrices }}" />
+        @foreach($product->prices as $price)
+            <x-title-with-text title="{{ $price['name'] }}" text="{{ $price['value'] }}" />
+        @endforeach
     </div>
     <!-- /.card-body -->
 </div>

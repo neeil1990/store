@@ -67,11 +67,6 @@ class Products extends Model
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
     }
 
-    public function employee(): BelongsTo
-    {
-        return $this->belongsTo(Employee::class, 'owner', 'uuid')->withDefault(['name' => 'Не выбран']);
-    }
-
     protected function paymentItemType(): Attribute
     {
         return Attribute::make(function($value){
@@ -120,5 +115,40 @@ class Products extends Model
             else
                 return "";
         });
+    }
+
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'owner', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function folder(): BelongsTo
+    {
+        return $this->belongsTo(ProductFolder::class, 'productFolder', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function suppliers(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class, 'supplier', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function countries(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function uoms(): BelongsTo
+    {
+        return $this->belongsTo(Uom::class, 'uom', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function groups(): BelongsTo
+    {
+        return $this->belongsTo(Group::class, 'group', 'uuid')->withDefault(['name' => 'Не выбран']);
+    }
+
+    public function prices()
+    {
+        return $this->hasMany(Price::class, 'product_id');
     }
 }

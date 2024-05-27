@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Lib\Sale\ProductsTable;
+use App\Models\Attribute;
 use App\Models\Products;
 use Illuminate\Http\Request;
 

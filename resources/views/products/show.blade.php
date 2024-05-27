@@ -15,6 +15,7 @@
         <div class="col-4">
             @include('products.partials.barcodes-detail-card')
             @include('products.partials.access-detail-card')
+            @include('products.partials.attributes-detail-card')
         </div>
     </div>
 
