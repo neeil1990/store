@@ -10,6 +10,7 @@
             @include('products.partials.price-detail-card')
             @include('products.partials.cashbox-detail-card')
             @include('products.partials.mark-detail-card')
+            @include('products.partials.minimum-balance-detail-card')
         </div>
 
         <div class="col-4">

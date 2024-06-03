@@ -5,6 +5,7 @@ namespace App\Lib\Sale;
 
 use App\Lib\DataTable\DataTableRequest;
 use \App\Models\Products;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductsTable extends DataTableRequest
 {
@@ -21,10 +22,14 @@ class ProductsTable extends DataTableRequest
         $order = $this->prepareOrder();
         $search = $this->prepareSearch();
 
+        $fullTextSearch = $this->fullTextLogic($this->search['value'] ?: "");
+
         $pagination = $model
             ->selectEmployee()
             ->searchCols($search)
-            ->searchEachWordInLine('name', $this->search['value'] ?: '')
+            ->when($fullTextSearch, function(Builder $query, $search){
+                $query->whereFullText(['name', 'code', 'article'], $search, ['mode' => 'boolean']);
+            })
             ->orderCol($order['column'], $order['dir'])
             ->paginate($this->length, ['*'], 'page', ($this->start / $this->length) + 1);
 
@@ -56,6 +61,22 @@ class ProductsTable extends DataTableRequest
         }
 
         return $order;
+    }
+
+    protected function fullTextLogic(string $search): string
+    {
+        if(strlen($search) < 2)
+            return "";
+
+        if(preg_match('/[\.\-\+\*]/', $search))
+            return '"' . $search . '"';
+
+        $words = explode(' ', $search);
+
+        foreach ($words as &$word)
+            $word = '+' . $word . '*';
+
+        return implode(' ', $words);
     }
 
 }

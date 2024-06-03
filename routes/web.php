@@ -31,8 +31,10 @@ Route::get('dev', function () {
     // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
 
     // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    // $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product');
+    // $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product/9e609613-d467-11e8-9ff4-31500038dbfc');
     // $rows = $api->getRows();
+
+    // dd($rows[0]);
 });
 
 Route::get('/', function () {

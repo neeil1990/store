@@ -52,16 +52,6 @@ class Products extends Model
         $query->orderBy($col, $dir);
     }
 
-    public function scopeSearchEachWordInLine(Builder $query, string $column, string $value): void
-    {
-        if(strlen($value) > 1)
-        {
-            $regex = RegExWrapper::beginningOfEachWordInLine($value);
-
-            $query->where($column, 'REGEXP', $regex);
-        }
-    }
-
     public function scopeSelectEmployee(Builder $query)
     {
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);

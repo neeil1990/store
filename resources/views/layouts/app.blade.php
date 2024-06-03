@@ -16,7 +16,7 @@
     <!-- Theme style -->
     @vite(['resources/css/app.css'])
 </head>
-<body class="hold-transition sidebar-mini control-sidebar-push">
+<body class="hold-transition sidebar-mini control-sidebar-push sidebar-collapse">
 
 <div class="wrapper">
 
