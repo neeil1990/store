@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use App\Events\MyStoreProductFolderRowsReceived;
 use App\Events\MyStoreProductRowsReceived;
+use App\Events\MyStoreStockRowsReceived;
 use App\Events\MyStoreSupplierRowsReceived;
+use App\Listeners\createStockToDataBase;
 use App\Listeners\UpdateOrCreateProductFolderToDataBase;
 use App\Listeners\UpdateOrCreateProductsToDataBase;
+use App\Listeners\UpdateOrCreateStockToDataBase;
 use App\Listeners\UpdateOrCreateSupplierToDataBase;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -32,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MyStoreProductFolderRowsReceived::class => [
             UpdateOrCreateProductFolderToDataBase::class,
+        ],
+        MyStoreStockRowsReceived::class => [
+            CreateStockToDataBase::class,
         ],
     ];
 

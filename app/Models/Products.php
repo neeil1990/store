@@ -57,6 +57,13 @@ class Products extends Model
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
     }
 
+    protected function stockTotal(): Attribute
+    {
+        return Attribute::make(function(){
+            return $this->stocks->pluck('stock')->sum();
+        });
+    }
+
     protected function paymentItemType(): Attribute
     {
         return Attribute::make(function($value){
@@ -140,5 +147,10 @@ class Products extends Model
     public function prices()
     {
         return $this->hasMany(Price::class, 'product_id');
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class, 'product', 'uuid');
     }
 }

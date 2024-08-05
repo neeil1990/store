@@ -9,17 +9,20 @@ use App\Lib\Moysklad\Receive\MyStoreEmployee;
 use App\Lib\Moysklad\Receive\MyStoreGroup;
 use App\Lib\Moysklad\Receive\MyStoreProductFolder;
 use \App\Lib\Moysklad\Receive\MyStoreProducts;
+use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Moysklad\Receive\MyStoreSupplier;
 use App\Lib\Moysklad\Receive\MyStoreUom;
 use App\Lib\Sale\Store\StoreAttributesToDataBase;
 use App\Lib\Sale\Store\StoreCountryToDataBase;
 use App\Lib\Sale\Store\StoreGroupToDataBase;
 use App\Lib\Sale\Store\StoreEmployeeToDataBase;
+use App\Lib\Sale\Store\StoreStockToDataBase;
 use App\Lib\Sale\Store\StoreUomToDataBase;
 use App\Models\Attribute;
 use App\Models\Country;
 use App\Models\Employee;
 use App\Models\Group;
+use App\Models\Stock;
 use App\Models\Uom;
 
 class SyncMyStoreWithDataBase
@@ -34,6 +37,7 @@ class SyncMyStoreWithDataBase
         $this->uomSync();
         $this->countrySync();
         $this->attributeSync();
+        $this->stockSync();
     }
 
     public function employeeSync()
@@ -65,6 +69,12 @@ class SyncMyStoreWithDataBase
 
         (new StoreGroupToDataBase(new Group()))
             ->updateOrCreate($group);
+    }
+
+    public function stockSync()
+    {
+        (new Stock())->truncate();
+        (new MyStoreStock())->event();
     }
 
     public function uomSync()

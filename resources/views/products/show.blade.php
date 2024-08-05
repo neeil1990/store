@@ -11,6 +11,7 @@
             @include('products.partials.cashbox-detail-card')
             @include('products.partials.mark-detail-card')
             @include('products.partials.minimum-balance-detail-card')
+            @include('products.partials.stocks-detail-card')
         </div>
 
         <div class="col-4">

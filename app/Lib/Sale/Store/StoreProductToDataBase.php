@@ -23,16 +23,6 @@ class StoreProductToDataBase extends StoreToDataBase
         return $product;
     }
 
-    protected function getIdFromMeta(array $field)
-    {
-        if(!isset($field['meta']))
-            return null;
-
-        $href = $field['meta']['href'];
-
-        return substr($href, strrpos($href, '/') + 1);
-    }
-
     protected function externalCode(array $item): array
     {
         return ['externalCode' => $item['externalCode']];
