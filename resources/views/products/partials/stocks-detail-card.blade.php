@@ -17,7 +17,8 @@
 
             <tbody>
             @foreach($product->stocks as $stock)
-                @continue(empty($stock->stock))
+                @continue(empty($stock->stock) && empty($stock->reserve) && empty($stock->inTransit))
+
                 <tr>
                     <td>{{ $stock->name }}</td>
                     <td>{{ $stock->stock }}</td>

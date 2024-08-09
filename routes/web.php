@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Sale\Store\StoreProductToDataBase;
 use App\Lib\Sale\SyncMyStoreWithDataBase;
 use App\Models\Products;
@@ -31,27 +32,15 @@ Route::get('dev', function () {
     // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
 
     //$api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    //$api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore');
+    //$api->send('https://api.moysklad.ru/api/remap/1.2/entity/product/7d2031b8-d467-11e8-9ff4-31500038ce02?expand=supplier');
     //$rows = $api->getRows();
 
-    //dd($rows[0]);
+    //dd($rows);
 
-    //$stock = new SyncMyStoreWithDataBase();
-    //$stock->stockSync();
+    // $stock = new MyStoreStock();
+    // $rows = $stock->getRows();
 
-    $start = time();
-
-    $product = new Products();
-
-    $product = $product
-        ->join('stocks', 'products.uuid', 'stocks.product')
-        ->select('products.*', DB::raw('SUM(stocks.stock) as stocks'))
-        ->groupBy('products.id')
-        ->havingRaw('minimumBalance - stocks > 0');
-
-    dd($product->get(), time() - $start);
-
-
+    // dd($rows[0]);
 });
 
 Route::get('/', function () {
