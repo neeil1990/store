@@ -28,12 +28,6 @@ class CreateStockToDataBase implements ShouldQueue
         {
             foreach ($row["stockByStore"] as &$stockByStore)
             {
-                if(empty($stockByStore['stock']) && empty($stockByStore['reserve']) && empty($stockByStore['inTransit'])) {
-                    unset($stockByStore);
-
-                    continue;
-                }
-
                 $stockByStore['product'] = $row["meta"];
             }
 
