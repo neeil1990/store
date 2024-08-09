@@ -38,6 +38,20 @@ Route::get('dev', function () {
 
     //$stock = new SyncMyStoreWithDataBase();
     //$stock->stockSync();
+
+    $start = time();
+
+    $product = new Products();
+
+    $product = $product
+        ->join('stocks', 'products.uuid', 'stocks.product')
+        ->select('products.*', DB::raw('SUM(stocks.stock) as stocks'))
+        ->groupBy('products.id')
+        ->havingRaw('minimumBalance - stocks > 0');
+
+    dd($product->get(), time() - $start);
+
+
 });
 
 Route::get('/', function () {
@@ -55,6 +69,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__.'/uri/token.php';
     require __DIR__.'/uri/products.php';
     require __DIR__.'/uri/employee.php';
+    require __DIR__.'/uri/suppliers.php';
 });
 
 require __DIR__.'/uri/auth.php';

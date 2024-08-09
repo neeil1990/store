@@ -4,14 +4,33 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        @foreach($product->stocks as $stock)
 
-            @continue(empty($stock->stock))
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{ __('Склад') }}</th>
+                    <th>{{ __('Остаток') }}</th>
+                    <th>{{ __('Резерв') }}</th>
+                    <th>{{ __('Ожидание') }}</th>
+                </tr>
+            </thead>
 
-            <x-title-with-text title="{{ $stock->name }}" text="{{ $stock->stock }}" />
-        @endforeach
-
-        <x-title-with-text title="{{ __('Всего') }}" text="{{ $product->stock_total }}" />
+            <tbody>
+            @foreach($product->stocks as $stock)
+                @continue(empty($stock->stock))
+                <tr>
+                    <td>{{ $stock->name }}</td>
+                    <td>{{ $stock->stock }}</td>
+                    <td>{{ $stock->reserve }}</td>
+                    <td>{{ $stock->inTransit }}</td>
+                </tr>
+            @endforeach
+            <tr>
+                <td colspan="3">{{ __('Всего') }}</td>
+                <td colspan="1">{{ $product->stock_total }}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <!-- /.card-body -->
 </div>

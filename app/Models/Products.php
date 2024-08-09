@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Lib\Main\RegExWrapper;
+use App\Models\LocalScopes\ProductsScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Products extends Model
+class Products extends ProductsScopes
 {
     protected $guarded = [
         'id',
@@ -28,33 +26,6 @@ class Products extends Model
     protected function serializeDate(\DateTimeInterface $date): string
     {
         return $date->format('d.m.Y H:i');
-    }
-
-    public function scopeSearchCols(Builder $query, array $value): void
-    {
-        if(count($value) > 0)
-        {
-            $search = [];
-
-            foreach ($value as $item)
-            {
-                if(array_key_exists('col', $item) && array_key_exists('val', $item) && strlen($item['val']) > 0)
-                    $search[] = [$item['col'], 'like', $item['val'] . '%'];
-            }
-
-            if(count($search) > 0)
-                $query->where($search);
-        }
-    }
-
-    public function scopeOrderCol(Builder $query, string $col = 'name', string $dir = 'asc'): void
-    {
-        $query->orderBy($col, $dir);
-    }
-
-    public function scopeSelectEmployee(Builder $query)
-    {
-        $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
     }
 
     protected function stockTotal(): Attribute
