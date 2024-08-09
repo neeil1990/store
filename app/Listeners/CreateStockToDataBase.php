@@ -30,6 +30,7 @@ class CreateStockToDataBase implements ShouldQueue
             {
                 if(empty($stockByStore['stock']) && empty($stockByStore['reserve']) && empty($stockByStore['inTransit'])) {
                     unset($stockByStore);
+
                     continue;
                 }
 
