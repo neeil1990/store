@@ -12,7 +12,7 @@ class MojSkladJsonApi
     protected $meta = [];
     protected $error = [];
 
-    public function send(string $href): void
+    public function send(string $href, $key = null): void
     {
         $token = (new StoreToken())->getToken();
 
@@ -24,22 +24,30 @@ class MojSkladJsonApi
 
         $response = json_decode($response, true);
 
-        if(!is_array($response))
+        if (!is_array($response)) {
             return;
+        }
 
-        if(array_key_exists('errors', $response))
+        if (array_key_exists('errors', $response)) {
             $this->error = $response['errors'];
-        else{
-            if(array_key_exists('rows', $response))
+        } else {
+            if (array_key_exists('rows', $response)) {
                 $this->rows = $response['rows'];
-            else
-                $this->rows[] = $response;
+            } else {
+                if ($key) {
+                    $this->rows[$key] = $response;
+                } else {
+                    $this->rows[] = $response;
+                }
+            }
 
-            if(array_key_exists('meta', $response))
+            if (array_key_exists('meta', $response)) {
                 $this->meta = $response['meta'];
+            }
 
-            if(array_key_exists('context', $response))
+            if (array_key_exists('context', $response)) {
                 $this->context = $response['context'];
+            }
         }
     }
 

@@ -22,25 +22,30 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('session', function () {
-    // session()->put('cnt', 222);
-    // session()->save();
+Route::get('curl', function () {
+    //
 });
 
 Route::get('dev', function () {
 
     // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
 
+    // 7d2031b8-d467-11e8-9ff4-31500038ce02
+    // https://online.moysklad.ru/app/#good/edit?id=7d202835-d467-11e8-9ff4-31500038ce00
     $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=freeStock');
+
+     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=stock');
+     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=reserve');
+     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=inTransit');
+
     $rows = $api;
 
-    dd($rows->getRows(), $rows->getErrors());
+    dd($rows->getRows());
 
-    // $stock = new MyStoreStock();
-    // $rows = $stock;
+     //$stock = new MyStoreStock();
+     //$rows = $stock;
 
-    // dd($rows->getRows()[0]);
+     //dd($rows->getRows());
 });
 
 Route::get('/', function () {
