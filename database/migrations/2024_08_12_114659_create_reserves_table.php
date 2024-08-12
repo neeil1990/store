@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reserves', function (Blueprint $table) {
             $table->id();
             $table->uuid('assortmentId');
-            $table->uuid('storeId');
+            $table->uuid('storeId')->nullable();
             $table->integer('quantity')->nullable();
             $table->timestamps();
         });

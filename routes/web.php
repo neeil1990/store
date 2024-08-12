@@ -30,9 +30,9 @@ Route::get('dev', function () {
     // 7d2031b8-d467-11e8-9ff4-31500038ce02
     // https://online.moysklad.ru/app/#good/edit?id=7d202835-d467-11e8-9ff4-31500038ce00
 
-    // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    // $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=stock');
-    // $rows = $api;
+    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=reserve');
+    $rows = $api->getRows();
 
     // SELECT
     // products.*,
