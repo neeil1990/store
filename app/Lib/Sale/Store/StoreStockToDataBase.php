@@ -9,7 +9,7 @@ class StoreStockToDataBase extends StoreToDataBase
 {
     protected function prepareProduct(array $item): array
     {
-        $item['product'] = $this->getIdFromMetaHref($item['product']['href']);
+        $item['quantity'] = $item['stock'];
 
         return $item;
     }
@@ -21,6 +21,6 @@ class StoreStockToDataBase extends StoreToDataBase
 
     protected function externalCode(array $item): array
     {
-        // TODO: Implement externalCode() method.
+        return ['assortmentId' => $item['assortmentId'], 'storeId' => $item['storeId']];
     }
 }

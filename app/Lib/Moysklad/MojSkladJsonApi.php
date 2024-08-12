@@ -12,7 +12,7 @@ class MojSkladJsonApi
     protected $meta = [];
     protected $error = [];
 
-    public function send(string $href, $key = null): void
+    public function send(string $href): void
     {
         $token = (new StoreToken())->getToken();
 
@@ -34,8 +34,8 @@ class MojSkladJsonApi
             if (array_key_exists('rows', $response)) {
                 $this->rows = $response['rows'];
             } else {
-                if ($key) {
-                    $this->rows[$key] = $response;
+                if (count($response) > 1) {
+                    $this->rows = $response;
                 } else {
                     $this->rows[] = $response;
                 }

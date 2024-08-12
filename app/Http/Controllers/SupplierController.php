@@ -15,9 +15,8 @@ class SupplierController extends Controller
     public function json()
     {
         $model = new Products();
-        $query = $model->innerJoinStocks();
 
-        return DataTables::eloquent($query)
+        return DataTables::eloquent($model->suppliersDataTable())
             ->toJson();
     }
 }

@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('stocks', function (Blueprint $table) {
-            $table->index('stock');
+        Schema::create('transits', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('assortmentId');
+            $table->uuid('storeId');
+            $table->integer('quantity')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('stocks', function (Blueprint $table) {
-            $table->dropIndex(['stock']);
-        });
+        Schema::dropIfExists('transits');
     }
 };

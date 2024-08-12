@@ -9,20 +9,29 @@ use App\Lib\Moysklad\Receive\MyStoreEmployee;
 use App\Lib\Moysklad\Receive\MyStoreGroup;
 use App\Lib\Moysklad\Receive\MyStoreProductFolder;
 use \App\Lib\Moysklad\Receive\MyStoreProducts;
+use App\Lib\Moysklad\Receive\MyStoreReserve;
 use App\Lib\Moysklad\Receive\MyStoreStock;
+use App\Lib\Moysklad\Receive\MyStoreStore;
 use App\Lib\Moysklad\Receive\MyStoreSupplier;
+use App\Lib\Moysklad\Receive\MyStoreTransit;
 use App\Lib\Moysklad\Receive\MyStoreUom;
 use App\Lib\Sale\Store\StoreAttributesToDataBase;
 use App\Lib\Sale\Store\StoreCountryToDataBase;
 use App\Lib\Sale\Store\StoreGroupToDataBase;
 use App\Lib\Sale\Store\StoreEmployeeToDataBase;
+use App\Lib\Sale\Store\StoreReserveToDataBase;
 use App\Lib\Sale\Store\StoreStockToDataBase;
+use App\Lib\Sale\Store\StoreStoreToDataBase;
+use App\Lib\Sale\Store\StoreTransitToDataBase;
 use App\Lib\Sale\Store\StoreUomToDataBase;
 use App\Models\Attribute;
 use App\Models\Country;
 use App\Models\Employee;
 use App\Models\Group;
+use App\Models\Reserve;
 use App\Models\Stock;
+use App\Models\Store;
+use App\Models\Transit;
 use App\Models\Uom;
 
 class SyncMyStoreWithDataBase
@@ -38,6 +47,9 @@ class SyncMyStoreWithDataBase
         $this->countrySync();
         $this->attributeSync();
         $this->stockSync();
+        $this->reserveSync();
+        $this->transitSync();
+        $this->storeSync();
     }
 
     public function employeeSync()
@@ -73,8 +85,26 @@ class SyncMyStoreWithDataBase
 
     public function stockSync()
     {
-        (new Stock())->truncate();
-        (new MyStoreStock())->event();
+        $stocks = (new MyStoreStock())->getRows();
+        (new StoreStockToDataBase(new Stock()))->updateOrCreate($stocks);
+    }
+
+    public function reserveSync()
+    {
+        $reserve = (new MyStoreReserve())->getRows();
+        (new StoreReserveToDataBase(new Reserve()))->updateOrCreate($reserve);
+    }
+
+    public function transitSync()
+    {
+        $transit = (new MyStoreTransit())->getRows();
+        (new StoreTransitToDataBase(new Transit()))->updateOrCreate($transit);
+    }
+
+    public function storeSync()
+    {
+        $store = (new MyStoreStore())->getRows();
+        (new StoreStoreToDataBase(new Store()))->updateOrCreate($store);
     }
 
     public function uomSync()

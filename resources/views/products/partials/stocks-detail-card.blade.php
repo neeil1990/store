@@ -16,19 +16,19 @@
             </thead>
 
             <tbody>
-            @foreach($product->stocks as $stock)
-                @continue(empty($stock->stock) && empty($stock->reserve) && empty($stock->inTransit))
-
+            @foreach($stores as $store)
                 <tr>
-                    <td>{{ $stock->name }}</td>
-                    <td>{{ $stock->stock }}</td>
-                    <td>{{ $stock->reserve }}</td>
-                    <td>{{ $stock->inTransit }}</td>
+                    <td>{{ $store['name'] }}</td>
+                    <td>{{ $store->stocks->value('quantity', '0') }}</td>
+                    <td>{{ $store->reserves->value('quantity', '0') }}</td>
+                    <td>{{ $store->transits->value('quantity', '0') }}</td>
                 </tr>
             @endforeach
             <tr>
-                <td colspan="3">{{ __('Всего') }}</td>
-                <td colspan="1">{{ $product->stock_total }}</td>
+                <th>{{ __('Итог') }}</th>
+                <th>{{ $total['stocks'] }}</th>
+                <th>{{ $total['reserves'] }}</th>
+                <th>{{ $total['transits'] }}</th>
             </tr>
             </tbody>
         </table>

@@ -27,25 +27,47 @@ Route::get('curl', function () {
 });
 
 Route::get('dev', function () {
-
-    // https://api.moysklad.ru/api/remap/1.2/entity/product/7944ef04-f831-11e5-7a69-971500188b19
-
     // 7d2031b8-d467-11e8-9ff4-31500038ce02
     // https://online.moysklad.ru/app/#good/edit?id=7d202835-d467-11e8-9ff4-31500038ce00
-    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
 
-     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=stock');
-     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=reserve');
-     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=inTransit');
+    // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    // $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=stock');
+    // $rows = $api;
 
-    $rows = $api;
+    // SELECT
+    // products.*,
+    // stocks.stock,
+    // transits.transit,
+    // reserves.reserve
+    // FROM `products`
+    // INNER JOIN (SELECT assortmentId, SUM(quantity) stock FROM stocks GROUP BY assortmentId) stocks ON stocks.assortmentId = products.uuid
+    // LEFT JOIN (SELECT assortmentId, SUM(quantity) transit FROM transits GROUP BY assortmentId) transits ON transits.assortmentId = products.uuid
+    // LEFT JOIN (SELECT assortmentId, SUM(quantity) reserve FROM reserves GROUP BY assortmentId) reserves ON reserves.assortmentId = products.uuid
+    // WHERE minimumBalance - stocks.stock > 0
+    // ORDER BY `transits`.`transit` DESC;
 
-    dd($rows->getRows());
+    $stocks = new \App\Models\Stock();
+    $stock = $stocks->select('assortmentId', DB::raw('SUM(quantity) stock'))->groupBy('assortmentId');
 
-     //$stock = new MyStoreStock();
-     //$rows = $stock;
+    $reserves = new \App\Models\Reserve();
+    $reserve = $reserves->select('assortmentId', DB::raw('SUM(quantity) reserve'))->groupBy('assortmentId');
 
-     //dd($rows->getRows());
+    $transits = new \App\Models\Transit();
+    $transit = $transits->select('assortmentId', DB::raw('SUM(quantity) transit'))->groupBy('assortmentId');
+
+    $model = (new Products())
+        ->joinSub($stock, 'stocks', function($join){
+            $join->on('products.uuid', '=', 'stocks.assortmentId');
+        })
+        ->leftJoinSub($reserve, 'reserves', function($join){
+            $join->on('products.uuid', '=', 'reserves.assortmentId');
+        })
+        ->leftJoinSub($transit, 'transits', function($join){
+            $join->on('products.uuid', '=', 'transits.assortmentId');
+        })
+        ->whereRaw('minimumBalance - stock > ?', [0]);
+
+    dd($model->first());
 });
 
 Route::get('/', function () {

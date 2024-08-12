@@ -5,20 +5,14 @@ namespace App\Models\LocalScopes;
 
 
 use App\Models\Employee;
+use App\Models\Reserve;
+use App\Models\Stock;
+use App\Models\Transit;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductsScopes extends Model
 {
-    public function scopeInnerJoinStocks(Builder $query): void
-    {
-        $query->join('stocks', 'products.uuid', 'stocks.product')
-            ->select('products.*', DB::raw('SUM(stocks.stock) as stocks'), DB::raw('SUM(stocks.reserve) as reserve'), DB::raw('SUM(stocks.inTransit) as inTransit'))
-            ->groupBy('products.id')
-            ->havingRaw('minimumBalance - stocks > 0');
-    }
-
     public function scopeSearchCols(Builder $query, array $value): void
     {
         if(count($value) > 0)
@@ -44,5 +38,20 @@ class ProductsScopes extends Model
     public function scopeSelectEmployee(Builder $query)
     {
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
+    }
+
+    public function scopeSuppliersDataTable(Builder $query)
+    {
+        $query->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
+            ->joinSub((new Stock())->sum(), 'stocks', function($join){
+                $join->on('products.uuid', '=', 'stocks.assortmentId');
+            })
+            ->leftJoinSub((new Reserve())->sum(), 'reserves', function($join){
+                $join->on('products.uuid', '=', 'reserves.assortmentId');
+            })
+            ->leftJoinSub((new Transit())->sum(), 'transits', function($join){
+                $join->on('products.uuid', '=', 'transits.assortmentId');
+            })
+            ->whereRaw('minimumBalance - stock > ?', [0]);
     }
 }

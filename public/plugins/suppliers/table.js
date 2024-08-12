@@ -52,15 +52,15 @@ var ST = (function($){
             { title: 'Код', data: 'code' },
             { title: 'Закупочная цена', data: 'buyPrice' },
             { title: 'Неснижаемый остаток', data: 'minimumBalance' },
-            { title: 'Остаток', data: 'stocks' },
+            { title: 'Остаток', data: 'stock' },
             { title: 'Резерв', data: 'reserve' },
-            { title: 'Ожидание', data: 'inTransit' },
+            { title: 'Ожидание', data: 'transit' },
             { title: 'К закупке', data: that.toBuyCol, orderable: false },
         ];
     };
 
     ST.prototype.toBuyCol = function (row) {
-        let toBuy = row.stocks - row.minimumBalance - row.reserve - row.inTransit;
+        let toBuy = row.minimumBalance - row.stock - row.reserve - row.transit;
         return toBuy;
     };
 

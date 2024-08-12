@@ -28,13 +28,6 @@ class Products extends ProductsScopes
         return $date->format('d.m.Y H:i');
     }
 
-    protected function stockTotal(): Attribute
-    {
-        return Attribute::make(function(){
-            return $this->stocks->pluck('stock')->sum();
-        });
-    }
-
     protected function paymentItemType(): Attribute
     {
         return Attribute::make(function($value){
@@ -122,6 +115,16 @@ class Products extends ProductsScopes
 
     public function stocks()
     {
-        return $this->hasMany(Stock::class, 'product', 'uuid');
+        return $this->hasMany(Stock::class, 'assortmentId', 'uuid');
+    }
+
+    public function reserves()
+    {
+        return $this->hasMany(Reserve::class, 'assortmentId', 'uuid');
+    }
+
+    public function transits()
+    {
+        return $this->hasMany(Transit::class, 'assortmentId', 'uuid');
     }
 }

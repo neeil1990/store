@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class Stock extends Model
+class Transit extends Model
 {
     protected $guarded = [
-        'stock'
+        'inTransit'
     ];
 
     use HasFactory;
@@ -27,6 +27,6 @@ class Stock extends Model
 
     public function scopeSum(Builder $query): void
     {
-        $query->select('assortmentId', DB::raw('SUM(quantity) stock'))->groupBy('assortmentId');
+        $query->select('assortmentId', DB::raw('SUM(quantity) transit'))->groupBy('assortmentId');
     }
 }
