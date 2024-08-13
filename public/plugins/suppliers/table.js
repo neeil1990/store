@@ -5,6 +5,8 @@ var ST = (function($){
 
         that.options = options;
 
+        that.sidebar = document.getElementById("control-sidebar-content");
+
         that.$table = $wrapper.DataTable(that.config());
     };
 
@@ -22,11 +24,17 @@ var ST = (function($){
                 },
             },
             order: [[1, 'asc']],
-            lengthMenu: [20, 30, 50, 100],
-            searching: false,
+            lengthMenu: [30, 50, 100],
+            responsive: false,
+            autoWidth: false,
             processing: true,
             serverSide: true,
             columns: that.columns(),
+            initComplete: function () {
+                that.api = this.api();
+
+                that.api.columns().every($.proxy(that.filter, that));
+            }
         };
 
         $.extend(config, that.options);
@@ -48,20 +56,52 @@ var ST = (function($){
                 },
             },
             { title: 'Наименование', data: 'name' },
+            { title: 'Поставщик', data: 'suppliers.name' },
             { title: 'Артикул', data: 'article' },
-            { title: 'Код', data: 'code' },
-            { title: 'Закупочная цена', data: 'buyPrice' },
-            { title: 'Неснижаемый остаток', data: 'minimumBalance' },
-            { title: 'Остаток', data: 'stock' },
-            { title: 'Резерв', data: 'reserve' },
-            { title: 'Ожидание', data: 'transit' },
-            { title: 'К закупке', data: that.toBuyCol, orderable: false },
+            { title: 'Код', data: 'code', className: "unsearchable", searchable: false },
+            { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
+            { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
+            { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
+            { title: 'Резерв', data: 'reserve', className: "unsearchable", searchable: false },
+            { title: 'Ожидание', data: 'transit', className: "unsearchable", searchable: false },
+            { title: 'К закупке', data: that.toBuyCol, orderable: false, className: "unsearchable", searchable: false },
         ];
     };
 
+    ST.prototype.filter = function (event) {
+        let that = this;
+        let column = that.api.column(event);
+
+        let header = column.header();
+        let title = header.textContent;
+        let classList = header.classList;
+
+        if(classList.contains("unsearchable"))
+            return;
+
+        let group = document.createElement('div');
+        group.className = "form-group";
+
+        let label = document.createElement('label');
+        label.textContent = title;
+
+        let input = document.createElement('input');
+        input.value = column.search();
+        input.className = "form-control";
+
+        group.append(label, input);
+
+        input.addEventListener('keyup', () => {
+            if (column.search() !== this.value) {
+                column.search(input.value).draw();
+            }
+        });
+
+        that.sidebar.append(group);
+    };
+
     ST.prototype.toBuyCol = function (row) {
-        let toBuy = row.minimumBalance - row.stock - row.reserve - row.transit;
-        return toBuy;
+        return row.minimumBalance - row.stock - row.reserve - row.transit;
     };
 
     return ST;

@@ -3,7 +3,6 @@
 
 namespace App\Models\LocalScopes;
 
-
 use App\Models\Employee;
 use App\Models\Reserve;
 use App\Models\Stock;
@@ -40,16 +39,17 @@ class ProductsScopes extends Model
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
     }
 
-    public function scopeSuppliersDataTable(Builder $query)
+    public function scopeSuppliersDataTable(Builder $query, array $stores = [])
     {
-        $query->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
-            ->joinSub((new Stock())->sum(), 'stocks', function($join){
+        $query->with('suppliers')
+            ->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
+            ->leftJoinSub((new Stock())->sum($stores), 'stocks', function($join){
                 $join->on('products.uuid', '=', 'stocks.assortmentId');
             })
-            ->leftJoinSub((new Reserve())->sum(), 'reserves', function($join){
+            ->leftJoinSub((new Reserve())->sum($stores), 'reserves', function($join){
                 $join->on('products.uuid', '=', 'reserves.assortmentId');
             })
-            ->leftJoinSub((new Transit())->sum(), 'transits', function($join){
+            ->leftJoinSub((new Transit())->sum($stores), 'transits', function($join){
                 $join->on('products.uuid', '=', 'transits.assortmentId');
             })
             ->whereRaw('minimumBalance - stock > ?', [0]);

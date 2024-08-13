@@ -6,7 +6,14 @@
     (function($) {
 
         $.suppliers = new ST($("#products-table"), {
-            ajax: '{{ route('suppliers.json') }}',
+            ajax: {
+                url: '{{ route('suppliers.json') }}',
+                data: function (data) {
+                    data.stores = $('.store-filter:checked').map(function(){
+                        return $(this).val();
+                    }).get();
+                }
+            },
         });
 
     })(jQuery);

@@ -25,8 +25,12 @@ class Transit extends Model
         $query->where('assortmentId', $product['uuid']);
     }
 
-    public function scopeSum(Builder $query): void
+    public function scopeSum(Builder $query, array $stores = []): void
     {
-        $query->select('assortmentId', DB::raw('SUM(quantity) transit'))->groupBy('assortmentId');
+        $query->select('assortmentId', DB::raw('SUM(quantity) transit'))
+            ->when($stores, function (Builder $query, array $stores) {
+                $query->whereIn('storeId', $stores);
+            })
+            ->groupBy('assortmentId');
     }
 }

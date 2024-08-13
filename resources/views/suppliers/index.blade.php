@@ -1,6 +1,10 @@
 <x-app-layout>
     <x-slot name="header"></x-slot>
 
+    <x-slot name="sidebar">
+        @include('suppliers.partials.suppliers-filter')
+    </x-slot>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -10,6 +14,12 @@
                 <!-- /.card-header -->
 
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-12 btn-list">
+                            @include('suppliers.partials.buttons')
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
                             @include('suppliers.partials.products-table')

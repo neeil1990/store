@@ -25,8 +25,12 @@ class Reserve extends Model
         $query->where('assortmentId', $product['uuid']);
     }
 
-    public function scopeSum(Builder $query): void
+    public function scopeSum(Builder $query, array $stores = []): void
     {
-        $query->select('assortmentId', DB::raw('SUM(quantity) reserve'))->groupBy('assortmentId');
+        $query->select('assortmentId', DB::raw('SUM(quantity) reserve'))
+            ->when($stores, function (Builder $query, array $stores) {
+                $query->whereIn('storeId', $stores);
+            })
+            ->groupBy('assortmentId');
     }
 }
