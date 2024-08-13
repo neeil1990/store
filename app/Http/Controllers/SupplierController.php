@@ -22,6 +22,13 @@ class SupplierController extends Controller
         $stores = request('stores', []);
 
         return DataTables::eloquent($model->suppliersDataTable($stores))
+            ->filter(function ($query) {
+                $search = request('search');
+
+                if ($search['value']) {
+                    $query->where('products.name', 'like', "%" . $search['value'] . "%");
+                }
+            })
             ->toJson();
     }
 }
