@@ -41,8 +41,9 @@ class ProductsScopes extends Model
 
     public function scopeSuppliersDataTable(Builder $query, array $stores = [])
     {
-        $query->with('suppliers')
+        $query->with(['suppliers', 'uoms'])
             ->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
+            ->addSelectToBuy()
             ->leftJoinSub((new Stock())->sum($stores), 'stocks', function($join){
                 $join->on('products.uuid', '=', 'stocks.assortmentId');
             })
@@ -53,5 +54,10 @@ class ProductsScopes extends Model
                 $join->on('products.uuid', '=', 'transits.assortmentId');
             })
             ->whereRaw('minimumBalance - stock > ?', [0]);
+    }
+
+    public function scopeAddSelectToBuy(Builder $query)
+    {
+        $query->selectRaw('IFNULL(products.minimumBalance, 0) - IFNULL(stocks.stock, 0) - IFNULL(reserves.reserve, 0) - IFNULL(transits.transit, 0) as toBuy');
     }
 }

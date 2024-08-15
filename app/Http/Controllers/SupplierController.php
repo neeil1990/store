@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\SuppliersDataTable;
+use App\Exports\SuppliersExport;
 use App\Models\Products;
 use App\Models\Store;
-use DataTables;
+
 
 class SupplierController extends Controller
 {
@@ -19,16 +21,15 @@ class SupplierController extends Controller
     {
         $model = new Products();
 
+        $export = request('exports', []);
         $stores = request('stores', []);
 
-        return DataTables::eloquent($model->suppliersDataTable($stores))
-            ->filter(function ($query) {
-                $search = request('search');
+        $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores));
 
-                if ($search['value']) {
-                    $query->where('products.name', 'like', "%" . $search['value'] . "%");
-                }
-            })
-            ->toJson();
+        if ($export) {
+            return new SuppliersExport($dataTable->getCollection());
+        }
+
+        return $dataTable->getJson();
     }
 }

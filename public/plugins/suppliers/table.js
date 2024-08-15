@@ -23,6 +23,21 @@ var ST = (function($){
                     next: '>',
                 },
             },
+            buttons: [
+                {
+                    text: 'Экспортировать',
+                    className: 'btn-default',
+                    action: function (e, dt, node, config) {
+                        let params = dt.ajax.params();
+
+                        delete params.length;
+
+                        $.extend(params, { exports: ['excel'] });
+
+                        window.location = dt.ajax.url() + '?' + $.param(params);
+                    }
+                },
+            ],
             order: [[1, 'asc']],
             lengthMenu: [30, 50, 100],
             responsive: false,
@@ -34,6 +49,7 @@ var ST = (function($){
                 that.api = this.api();
 
                 that.api.columns().every($.proxy(that.filter, that));
+                that.api.buttons().container().appendTo('.btn-list');
             }
         };
 
@@ -64,7 +80,7 @@ var ST = (function($){
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
             { title: 'Резерв', data: 'reserve', className: "unsearchable", searchable: false },
             { title: 'Ожидание', data: 'transit', className: "unsearchable", searchable: false },
-            { title: 'К закупке', data: that.toBuyCol, orderable: false, className: "unsearchable", searchable: false },
+            { title: 'К закупке', data: 'toBuy', className: "unsearchable", searchable: false },
         ];
     };
 
@@ -98,10 +114,6 @@ var ST = (function($){
         });
 
         that.sidebar.append(group);
-    };
-
-    ST.prototype.toBuyCol = function (row) {
-        return row.minimumBalance - row.stock - row.reserve - row.transit;
     };
 
     return ST;

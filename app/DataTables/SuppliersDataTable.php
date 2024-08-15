@@ -2,35 +2,49 @@
 
 namespace App\DataTables;
 
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Column;
+use DataTables;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class SuppliersDataTable
 {
-    public function html(): HtmlBuilder
+    protected $query;
+    protected $dataTable;
+
+    public function __construct(Builder $query)
     {
-        return $this->builder()
-                    ->setTableId('products-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->orderBy(1)
-                    ->selectStyleSingle();
+        $this->query = $query;
+
+        $this->dataTable = DataTables::eloquent($this->query)->filter([$this, 'filter']);
     }
 
-    public function getColumns(): array
+    public function filter($query): void
     {
-        return [
-            Column::make('id'),
-            Column::make('article'),
-            Column::make([
-                'title' => __('Наименование'),
-                'data' => 'name',
-            ]),
-            Column::make('stocks'),
-            Column::make('reserve'),
-            Column::make('inTransit'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
-        ];
+        $search = request('search');
+
+        if ($search['value']) {
+            $query->where('products.name', 'like', "%" . $search['value'] . "%");
+        }
     }
+
+    public function getCollection(): Collection
+    {
+        return $this->dataTable->getFilteredQuery()->get();
+    }
+
+    public function get()
+    {
+        return $this->dataTable;
+    }
+
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    public function getJson()
+    {
+        return $this->get()->toJson();
+    }
+
 }
