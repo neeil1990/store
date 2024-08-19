@@ -28,6 +28,8 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
 
     private $row = 0;
 
+    private $sum = 0;
+
     public function __construct(Collection $supplier)
     {
         $supplier = $supplier->filter(function($val) {
@@ -48,7 +50,9 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
     {
         $this->row += 1;
 
-        return [
+        $this->sum += $supplier->buyPrice * $supplier->toBuy;
+
+        $rows = [
             $this->row,
             $supplier->code,
             $supplier->article,
@@ -59,6 +63,25 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
             $supplier->buyPrice,
             $supplier->buyPrice * $supplier->toBuy,
         ];
+
+        if ($this->row >= $this->supplier->count()) {
+            return [
+                $rows,
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    $this->sum
+                ]
+            ];
+        }
+
+        return $rows;
     }
 
     public function headings(): array
