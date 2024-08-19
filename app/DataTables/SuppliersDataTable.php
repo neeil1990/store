@@ -21,9 +21,14 @@ class SuppliersDataTable
     public function filter($query): void
     {
         $search = request('search');
+        $toBuy = request('toBuy');
 
         if ($search['value']) {
             $query->where('products.name', 'like', "%" . $search['value'] . "%");
+        }
+
+        if ($toBuy) {
+            $query->having('toBuy', '>', '0');
         }
     }
 

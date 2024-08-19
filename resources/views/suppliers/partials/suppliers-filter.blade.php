@@ -10,3 +10,12 @@
     @endforeach
 </div>
 
+<div class="form-group">
+    <label>{{ __('К закупке') }}</label>
+
+    <div class="custom-control custom-checkbox">
+        <input class="custom-control-input toBuy-filter" name="toBuy" type="checkbox" id="customCheckbox-toBuy" value="1" onclick="$.suppliers.$table.draw()">
+        <label for="customCheckbox-toBuy" class="custom-control-label">{{ __('Показать') }}</label>
+    </div>
+</div>
+

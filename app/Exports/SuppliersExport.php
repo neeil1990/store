@@ -56,6 +56,8 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
             $supplier->suppliers->name,
             $supplier->toBuy,
             $supplier->uoms->name,
+            $supplier->buyPrice,
+            $supplier->buyPrice * $supplier->toBuy,
         ];
     }
 
@@ -69,6 +71,8 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
             __('Поставщик'),
             __('Кол-во'),
             __('Ед. изм.'),
+            __('Закупочная цена'),
+            __('Итого'),
         ];
     }
 

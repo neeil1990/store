@@ -74,7 +74,7 @@ var ST = (function($){
             { title: 'Наименование', data: 'name' },
             { title: 'Поставщик', data: 'suppliers.name' },
             { title: 'Артикул', data: 'article' },
-            { title: 'Код', data: 'code', className: "unsearchable", searchable: false },
+            { title: 'Код', data: 'code' },
             { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
             { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },

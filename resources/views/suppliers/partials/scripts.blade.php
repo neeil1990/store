@@ -14,6 +14,8 @@
                     data.stores = $('.store-filter:checked').map(function(){
                         return $(this).val();
                     }).get();
+
+                    data.toBuy = $('.toBuy-filter:checked').val();
                 }
             },
         });
