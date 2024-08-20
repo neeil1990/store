@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Illuminate\Contracts\Support\Responsable;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -14,13 +13,13 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SuppliersExport implements FromCollection, Responsable, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
+class SuppliersExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
-    protected $supplier;
+    const EXE = '.xlsx';
 
-    private $fileExt = '.xlsx';
+    protected $supplier;
 
     private $fileName = 'export.xlsx';
 
@@ -36,9 +35,14 @@ class SuppliersExport implements FromCollection, Responsable, WithMapping, WithH
             return $val->toBuy > 0;
         });
 
-        $this->fileName = implode('-', [$supplier->value('suppliers.name'), Carbon::now()]) . $this->fileExt;
+        $this->fileName = __('Товары к заказу'). '-' .Carbon::now(). self::EXE;
 
         $this->supplier = $supplier;
+    }
+
+    public function setFileName(string $fileName): void
+    {
+        $this->fileName = $fileName;
     }
 
     public function collection()
