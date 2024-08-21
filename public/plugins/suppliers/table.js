@@ -25,6 +25,19 @@ var ST = (function($){
             },
             buttons: [
                 {
+                    text: 'Сохранить фильтр',
+                    className: 'btn-default',
+                    action: function (e, dt, node, config) {
+                        let params = dt.ajax.params();
+                        let modal = $('#filter-save-modal');
+
+                        delete params.draw;
+
+                        modal.find('input[name="params"]').val(JSON.stringify(params));
+                        modal.modal('show');
+                    }
+                },
+                {
                     text: 'Экспортировать',
                     className: 'btn-default',
                     action: function (e, dt, node, config) {
@@ -36,7 +49,7 @@ var ST = (function($){
 
                         window.location = dt.ajax.url() + '?' + $.param(params);
                     }
-                },
+                }
             ],
             order: [[1, 'asc']],
             lengthMenu: [30, 50, 100],

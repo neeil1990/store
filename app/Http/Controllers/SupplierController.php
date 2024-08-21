@@ -6,9 +6,11 @@ use App\DataTables\SuppliersDataTable;
 use App\Exports\SuppliersExport;
 use App\Models\Products;
 use App\Models\Store;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class SupplierController extends Controller
@@ -20,8 +22,9 @@ class SupplierController extends Controller
     public function index()
     {
         $store = Store::all();
+        $filters = Auth::user()->filters;
 
-        return view('suppliers.index', compact('store'));
+        return view('suppliers.index', compact('store', 'filters'));
     }
 
     public function json()
