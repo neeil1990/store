@@ -58,6 +58,6 @@ class ProductsScopes extends Model
 
     public function scopeAddSelectToBuy(Builder $query)
     {
-        $query->selectRaw('IFNULL(products.minimumBalance, 0) - IFNULL(stocks.stock, 0) - IFNULL(reserves.reserve, 0) + IFNULL(transits.transit, 0) as toBuy');
+        $query->selectRaw('IFNULL(products.minimumBalance, 0) - IFNULL(stocks.stock, 0) - IFNULL(reserves.reserve, 0) - IFNULL(transits.transit, 0) as toBuy');
     }
 }
