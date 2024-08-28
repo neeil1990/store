@@ -85,20 +85,32 @@ class SyncMyStoreWithDataBase
 
     public function stockSync()
     {
+        $model = new Stock();
+
+        $model->truncate();
+
         $stocks = (new MyStoreStock())->getRows();
-        (new StoreStockToDataBase(new Stock()))->updateOrCreate($stocks);
+        (new StoreStockToDataBase($model))->create($stocks);
     }
 
     public function reserveSync()
     {
+        $model = new Reserve();
+
+        $model->truncate();
+
         $reserve = (new MyStoreReserve())->getRows();
-        (new StoreReserveToDataBase(new Reserve()))->updateOrCreate($reserve);
+        (new StoreReserveToDataBase($model))->create($reserve);
     }
 
     public function transitSync()
     {
+        $model = new Transit();
+
+        $model->truncate();
+
         $transit = (new MyStoreTransit())->getRows();
-        (new StoreTransitToDataBase(new Transit()))->updateOrCreate($transit);
+        (new StoreTransitToDataBase($model))->create($transit);
     }
 
     public function storeSync()
