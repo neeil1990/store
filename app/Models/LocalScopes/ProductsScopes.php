@@ -53,7 +53,7 @@ class ProductsScopes extends Model
             ->leftJoinSub((new Transit())->sum($stores), 'transits', function($join){
                 $join->on('products.uuid', '=', 'transits.assortmentId');
             })
-            ->whereRaw('minimumBalance - stock > ?', [0]);
+            ->whereRaw('IFNULL(minimumBalance, 0) - IFNULL(stock, 0) > ?', [0]);
     }
 
     public function scopeAddSelectToBuy(Builder $query)
