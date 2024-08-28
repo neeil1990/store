@@ -33,7 +33,6 @@ Route::get('dev', function () {
     $api = new \App\Lib\Moysklad\MojSkladJsonApi;
     $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=reserve&filter=assortmentId=b2b393e2-d466-11e8-9ff4-315000386e13');
     $rows = $api->getRows();
-
 });
 
 Route::get('/', function () {

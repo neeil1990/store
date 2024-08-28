@@ -31,10 +31,6 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, Shou
 
     public function __construct(Collection $supplier)
     {
-        $supplier = $supplier->filter(function($val) {
-            return $val->toBuy > 0;
-        });
-
         $this->fileName = __('Товары к заказу'). '-' .Carbon::now(). self::EXE;
 
         $this->supplier = $supplier;
