@@ -87,7 +87,7 @@ var ST = (function($){
             { title: 'Наименование', data: 'name' },
             { title: 'Поставщик', data: 'suppliers.name' },
             { title: 'Артикул', data: 'article' },
-            { title: 'Код', data: 'code' },
+            { title: 'Код', data: that.code },
             { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
             { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
@@ -127,6 +127,10 @@ var ST = (function($){
         });
 
         that.sidebar.append(group);
+    };
+
+    ST.prototype.code = function (row) {
+        return `${row.code} <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank"><i class="fas fa-warehouse"></i></a>`;
     };
 
     return ST;
