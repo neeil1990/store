@@ -14,23 +14,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(function () {
-
-            try {
-                $body = json_encode(["count" => 900, "availableTaps" => 1500, "timestamp" => time()]);
-
-                $client = new \GuzzleHttp\Client();
-                $client->request('POST', 'https://api.hamsterkombatgame.io/clicker/tap', [
-                    'body' => $body,
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'authorization' => 'Bearer 1723278951750H45BhuOUH0fPhEhxeqyBHhtc95bNbO0xklQDy5O8RKIM2FzU2IzWrhSOmJ3P1we4238244752',
-                    ],
-                ]);
-            } catch (Exception $exception) { }
-
-        })->everyFiveMinutes();
-
         // $schedule->command('inspire')->hourly();
     }
 
