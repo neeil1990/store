@@ -45,7 +45,7 @@ var SavedFilters = (function ($) {
     };
 
     SavedFilters.prototype.tableReload = function () {
-        $.suppliers.$table.draw(false);
+        window.location.reload();
     };
 
     return SavedFilters;

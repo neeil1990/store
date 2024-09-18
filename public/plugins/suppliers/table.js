@@ -3,6 +3,8 @@ var ST = (function($){
     ST = function ($wrapper, options) {
         let that = this;
 
+        that.inputs = {};
+
         that.options = options;
 
         that.sidebar = document.getElementById("control-sidebar-content");
@@ -60,10 +62,15 @@ var ST = (function($){
             columns: that.columns(),
             initComplete: function () {
                 that.api = this.api();
+                that.params = that.api.ajax.params();
 
                 that.api.columns().every($.proxy(that.filter, that));
                 that.api.buttons().container().appendTo('.btn-list');
-            }
+
+                if (that.params.useFilter) {
+                    that.storedFilterSelected();
+                }
+            },
         };
 
         $.extend(config, that.options);
@@ -87,7 +94,7 @@ var ST = (function($){
             { title: 'Наименование', data: 'name' },
             { title: 'Поставщик', data: 'suppliers.name' },
             { title: 'Артикул', data: 'article' },
-            { title: 'Код', data: that.code },
+            { title: 'Код', data: 'code', render: that.code },
             { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
             { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
@@ -118,6 +125,8 @@ var ST = (function($){
         input.value = column.search();
         input.className = "form-control";
 
+        that.inputs[column.dataSrc()] = input;
+
         group.append(label, input);
 
         input.addEventListener('keyup', () => {
@@ -129,8 +138,46 @@ var ST = (function($){
         that.sidebar.append(group);
     };
 
-    ST.prototype.code = function (row) {
+    ST.prototype.code = function (data, type, row) {
         return `${row.code} <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank"><i class="fas fa-warehouse"></i></a>`;
+    };
+
+    ST.prototype.inputDisabled = function (code) {
+        let that = this;
+
+        if (that.inputs[code]) {
+            that.inputs[code].disabled = true;
+        }
+    };
+
+    ST.prototype.setInputValue = function (code, val) {
+        let that = this;
+
+        if (that.inputs[code]) {
+            that.inputs[code].value = val;
+        }
+    };
+
+    ST.prototype.storedFilterSelected = function () {
+        let that = this;
+        let sidebar = $(that.sidebar);
+
+        $.each(that.params.columns, function (i, el) {
+            that.setInputValue(el.data, el.search.value);
+            if (el.search.value) {
+                that.inputDisabled(el.data);
+            }
+        });
+
+        if (that.params.stores.length) {
+            sidebar.find(".store-filter").filter(function () {
+                return that.params.stores.indexOf($(this).val()) >= 0;
+            }).prop({'checked' : true, 'disabled' : true});
+        }
+
+        if (that.params.toBuy) {
+            sidebar.find(".toBuy-filter").prop({'checked' : true, 'disabled' : true});
+        }
     };
 
     return ST;

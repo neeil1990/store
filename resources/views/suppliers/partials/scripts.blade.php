@@ -12,7 +12,7 @@
             ajax: {
                 url: '{{ route('suppliers.json') }}',
                 data: function (data) {
-                    data.stores = $('.store-filter:checked').map(function(){
+                    data.stores = $('.store-filter:checked').not(":disabled").map(function(){
                         return $(this).val();
                     }).get();
 
@@ -24,7 +24,23 @@
                         async: false,
                         dataType: 'json',
                         data: { active: 1 },
-                        success: (payload) => $.extend(true, data, payload)
+                        success: (payload) => {
+                            data.useFilter = true;
+
+                            $.each(payload.columns, function (i, el) {
+                                if (el.search.value) {
+                                    data.columns[i] = el;
+                                }
+                            });
+
+                            if (payload.stores.length) {
+                                data.stores = [...data.stores, ...payload.stores];
+                            }
+
+                            if (payload.toBuy) {
+                                data.toBuy = payload.toBuy;
+                            }
+                        }
                     });
                 }
             },
