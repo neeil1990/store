@@ -139,7 +139,14 @@ var ST = (function($){
     };
 
     ST.prototype.code = function (data, type, row) {
-        return `${row.code} <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank"><i class="fas fa-warehouse"></i></a>`;
+        return `
+        ${row.code} <br/>
+        <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank">
+            <i class="fas fa-warehouse"></i>
+        </a>
+        <a href="https://online.moysklad.ru/app/#right?stockReport?reportType=GOODS&typeQuantity=ALL_STOCK+%7Cdetail?${row.uuid}" target="_blank">
+            <i class="fas fa-chart-pie"></i>
+        </a>`;
     };
 
     ST.prototype.inputDisabled = function (code) {
