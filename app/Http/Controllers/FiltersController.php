@@ -16,11 +16,29 @@ class FiltersController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
+        $name = $request->input('name');
+        $params = $request->input('params');
+        $id = $request->input('id');
 
-        $user->filters()->create([
-            'name' => $request->input('name'),
-            'payload' => $request->input('params'),
-        ]);
+        if ($id > 0) {
+
+            $update = ['payload' => $params];
+
+            if ($name) {
+                $update['name'] = $name;
+            }
+
+            $user->filters()->where('id', $id)
+                ->update($update);
+
+        } else if ($name) {
+
+            $user->filters()->create([
+                'name' => $name,
+                'payload' => $params,
+            ]);
+
+        }
 
         return redirect()->back();
     }

@@ -17,31 +17,6 @@
                     }).get();
 
                     data.toBuy = $('.toBuy-filter:checked').val();
-
-                    $.ajax({
-                        url: '{{ route('filters.index') }}',
-                        method: 'GET',
-                        async: false,
-                        dataType: 'json',
-                        data: { active: 1 },
-                        success: (payload) => {
-                            data.useFilter = true;
-
-                            $.each(payload.columns, function (i, el) {
-                                if (el.search.value) {
-                                    data.columns[i] = el;
-                                }
-                            });
-
-                            if (payload.stores.length) {
-                                data.stores = [...data.stores, ...payload.stores];
-                            }
-
-                            if (payload.toBuy) {
-                                data.toBuy = payload.toBuy;
-                            }
-                        }
-                    });
                 }
             },
         });

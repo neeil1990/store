@@ -3,8 +3,6 @@ var ST = (function($){
     ST = function ($wrapper, options) {
         let that = this;
 
-        that.inputs = {};
-
         that.options = options;
 
         that.sidebar = document.getElementById("control-sidebar-content");
@@ -60,16 +58,46 @@ var ST = (function($){
             processing: true,
             serverSide: true,
             columns: that.columns(),
+            stateSave: true,
+            stateLoadParams: function (settings, data) {
+                let sidebar = $(that.sidebar);
+
+                $.each(data.columns, function (i, el) {
+                    el.search.search = '';
+                });
+
+                $.ajax({
+                    url: '/filters',
+                    method: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    data: { active: 1 },
+                    success: (payload) => {
+
+                        $.each(payload.columns, function (i, el) {
+                            if (el.search.value) {
+                                data.columns[i].search.search = el.search.value;
+                            }
+                        });
+
+                        if (payload.stores.length) {
+                            sidebar.find(".store-filter").filter(function () {
+                                return payload.stores.indexOf($(this).val()) >= 0;
+                            }).prop({'checked' : true});
+                        }
+
+                        if (payload.toBuy) {
+                            sidebar.find(".toBuy-filter").prop({'checked' : true});
+                        }
+                    }
+                });
+            },
             initComplete: function () {
                 that.api = this.api();
                 that.params = that.api.ajax.params();
 
                 that.api.columns().every($.proxy(that.filter, that));
                 that.api.buttons().container().appendTo('.btn-list');
-
-                if (that.params.useFilter) {
-                    that.storedFilterSelected();
-                }
             },
         };
 
@@ -125,8 +153,6 @@ var ST = (function($){
         input.value = column.search();
         input.className = "form-control";
 
-        that.inputs[column.dataSrc()] = input;
-
         group.append(label, input);
 
         input.addEventListener('keyup', () => {
@@ -151,44 +177,6 @@ var ST = (function($){
             </a>
         </div>
         `;
-    };
-
-    ST.prototype.inputDisabled = function (code) {
-        let that = this;
-
-        if (that.inputs[code]) {
-            that.inputs[code].disabled = true;
-        }
-    };
-
-    ST.prototype.setInputValue = function (code, val) {
-        let that = this;
-
-        if (that.inputs[code]) {
-            that.inputs[code].value = val;
-        }
-    };
-
-    ST.prototype.storedFilterSelected = function () {
-        let that = this;
-        let sidebar = $(that.sidebar);
-
-        $.each(that.params.columns, function (i, el) {
-            that.setInputValue(el.data, el.search.value);
-            if (el.search.value) {
-                that.inputDisabled(el.data);
-            }
-        });
-
-        if (that.params.stores.length) {
-            sidebar.find(".store-filter").filter(function () {
-                return that.params.stores.indexOf($(this).val()) >= 0;
-            }).prop({'checked' : true, 'disabled' : true});
-        }
-
-        if (that.params.toBuy) {
-            sidebar.find(".toBuy-filter").prop({'checked' : true, 'disabled' : true});
-        }
     };
 
     return ST;
