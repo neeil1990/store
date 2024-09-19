@@ -146,7 +146,7 @@ var ST = (function($){
             <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">
                 <i class="fas fa-warehouse"></i>
             </a>
-            <a href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=${row.name},equals" target="_blank" class="btn btn-light btn-sm">
+            <a href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=[null, null, ${row.name.replaceAll(',', ' ')}, null, null],equals" target="_blank" class="btn btn-light btn-sm">
                 <i class="fas fa-chart-pie"></i>
             </a>
         </div>
