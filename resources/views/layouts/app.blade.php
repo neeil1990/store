@@ -87,17 +87,19 @@
 
 <!-- jQuery -->
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-<script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-</script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 @vite(['resources/js/app.js'])
 @stack('scripts')
+
+<script>
+    $('[data-widget="control-sidebar"]').on('click', function (e) {
+        if ($('body').hasClass('control-sidebar-slide-open') === false) {
+             setTimeout(() => $('.control-sidebar').css('display', 'block'), 450);
+        }
+    });
+</script>
+
 </body>
 </html>
