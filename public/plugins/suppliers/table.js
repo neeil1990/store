@@ -169,10 +169,10 @@ var ST = (function($){
         
         <div class="text-center">${row.code}</div>
         <div class="btn-group">
-            <a href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">
+            <a title="Раздел Товары" href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">
                 <i class="fas fa-warehouse"></i>
             </a>
-            <a href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=[null, null, ${row.name.replaceAll(',', ' ')}, null, null],equals" target="_blank" class="btn btn-light btn-sm">
+            <a title="Раздел Остатки" href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=[null, null, ${row.name.replaceAll(',', ' ')}, null, null],equals" target="_blank" class="btn btn-light btn-sm">
                 <i class="fas fa-chart-pie"></i>
             </a>
         </div>
