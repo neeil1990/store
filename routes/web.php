@@ -22,8 +22,13 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-Route::get('curl', function () {
-    //
+Route::get('get-product', function () {
+
+    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product?filter=code~2807');
+    $rows = $api->getRows();
+
+    dd($rows);
 });
 
 Route::get('dev', function () {
