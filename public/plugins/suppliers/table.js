@@ -125,6 +125,7 @@ var ST = (function($){
             { title: 'Код', data: 'code', render: that.code },
             { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
             { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
+            { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: "unsearchable", searchable: false },
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
             { title: 'Резерв', data: 'reserve', className: "unsearchable", searchable: false },
             { title: 'Ожидание', data: 'transit', className: "unsearchable", searchable: false },

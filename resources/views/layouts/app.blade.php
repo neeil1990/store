@@ -12,6 +12,8 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.css') }}">
+
     @stack('styles')
     <!-- Theme style -->
     @vite(['resources/css/app.css'])
@@ -89,6 +91,8 @@
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 <!-- AdminLTE App -->
 @vite(['resources/js/app.js'])
 @stack('scripts')

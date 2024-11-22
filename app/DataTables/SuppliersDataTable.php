@@ -24,7 +24,7 @@ class SuppliersDataTable
         $toBuy = request('toBuy');
 
         if ($search['value']) {
-            $query->where('products.name', 'like', "%" . $search['value'] . "%");
+            $query->whereAny(['products.name', 'products.code'], 'LIKE', "%" . $search['value'] . "%");
         }
 
         if ($toBuy) {

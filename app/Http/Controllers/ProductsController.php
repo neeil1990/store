@@ -52,4 +52,11 @@ class ProductsController extends Controller
 
         return $stores;
     }
+
+    public function minimumBalanceLagerStore(Request $request)
+    {
+        $product = Products::find($request['id']);
+        $product->minimumBalanceLager = $request['val'];
+        return $product->save();
+    }
 }
