@@ -125,7 +125,7 @@ var ST = (function($){
             { title: 'Код', data: 'code', render: that.code },
             { title: 'Закупочная цена', data: 'buyPrice', className: "unsearchable", searchable: false },
             { title: 'Неснижаемый остаток', data: 'minimumBalance', className: "unsearchable", searchable: false },
-            { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: "unsearchable", searchable: false },
+            { title: 'Неснижаемый остаток lager', render: that.balance },
             { title: 'Остаток', data: 'stock', className: "unsearchable", searchable: false },
             { title: 'Резерв', data: 'reserve', className: "unsearchable", searchable: false },
             { title: 'Ожидание', data: 'transit', className: "unsearchable", searchable: false },
@@ -178,6 +178,15 @@ var ST = (function($){
             </a>
         </div>
         `;
+    };
+
+    ST.prototype.balance = function (data, type, row) {
+        return $('<input />', {
+            type: 'number',
+            value: row.minimumBalanceLager,
+            class: "form-control form-control-border form-control-sm minimum-balance-lager",
+            "data-id": row.id,
+        })[0].outerHTML;
     };
 
     return ST;

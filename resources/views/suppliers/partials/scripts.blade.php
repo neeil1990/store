@@ -17,6 +17,7 @@
                     }).get();
 
                     data.toBuy = $('.toBuy-filter:checked').val();
+                    data.fbo = $('.fbo-filter:checked').val();
                 }
             },
         });
@@ -26,6 +27,15 @@
                 update: 'filters',
                 delete: 'filters',
             },
+        });
+
+        $("#products-table").on("focusout", ".minimum-balance-lager", function () {
+            axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+                id: $(this).data('id'),
+                val: $(this).val(),
+            }).then(function (response) {
+                toastr.success('Успешно сохранено!');
+            });
         });
 
     })(jQuery);

@@ -22,6 +22,7 @@ class SuppliersDataTable
     {
         $search = request('search');
         $toBuy = request('toBuy');
+        $fbo = request('fbo');
 
         if ($search['value']) {
             $query->whereAny(['products.name', 'products.code'], 'LIKE', "%" . $search['value'] . "%");
@@ -29,6 +30,10 @@ class SuppliersDataTable
 
         if ($toBuy) {
             $query->having('toBuy', '>', '0');
+        }
+
+        if ($fbo) {
+            $query->whereJsonContains('attributes', ['name' => 'FBO OZON', 'value' => true]);
         }
     }
 
