@@ -43,7 +43,10 @@
         stateSave: true,
         ajax: {
             url: '{{ route('products.json') }}',
-            type: 'GET'
+            type: 'GET',
+            data: function (data) {
+                data.fbo = $('.fbo-filter:checked').val();
+            }
         },
         order: [[1, 'asc']],
         columns: [
@@ -61,6 +64,15 @@
             { data: 'article', title: 'Артикул' },
             { data: 'code', title: 'Код' },
             { data: 'externalCode', title: 'Внешний код' },
+            { title: 'Неснижаемый остаток', data: 'minimumBalance'},
+            { title: 'Неснижаемый остаток lager', render: function (data, type, row) {
+                    return $('<input />', {
+                        type: 'number',
+                        value: row.minimumBalanceLager,
+                        class: "form-control form-control-border form-control-sm minimum-balance-lager",
+                        "data-id": row.id,
+                    })[0].outerHTML;
+                } },
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },
@@ -141,5 +153,14 @@
     table.on( 'draw', function () {
         let body = $( table.table().body() ).find('tr');
         body.find('td:nth-child(2)').highlight(table.search().split(" "));
+    });
+
+    $("#products-table").on("focusout", ".minimum-balance-lager", function () {
+        axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+            id: $(this).data('id'),
+            val: $(this).val(),
+        }).then(function (response) {
+            toastr.success('Успешно сохранено!');
+        });
     });
 </script>

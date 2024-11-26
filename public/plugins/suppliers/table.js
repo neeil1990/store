@@ -49,6 +49,13 @@ var ST = (function($){
 
                         window.location = dt.ajax.url() + '?' + $.param(params);
                     }
+                },
+                {
+                    extend: 'colvis',
+                    columns: ':not(.noVis)',
+                    popoverTitle: 'Видимость столбца',
+                    text: 'Столбцы',
+                    className: 'btn-default'
                 }
             ],
             order: [[1, 'asc']],

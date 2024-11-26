@@ -23,12 +23,16 @@ class ProductsTable extends DataTableRequest
         $search = $this->prepareSearch();
 
         $fullTextSearch = $this->fullTextLogic($this->search['value'] ?: "");
+        $fbo = request('fbo');
 
         $pagination = $model
             ->selectEmployee()
             ->searchCols($search)
             ->when($fullTextSearch, function(Builder $query, $search){
                 $query->whereFullText(['name', 'code', 'article'], $search, ['mode' => 'boolean']);
+            })
+            ->when($fbo, function(Builder $query){
+                $query->whereJsonContains('attributes', ['name' => 'FBO OZON', 'value' => true]);
             })
             ->orderCol($order['column'], $order['dir'])
             ->paginate($this->length, ['*'], 'page', ($this->start / $this->length) + 1);

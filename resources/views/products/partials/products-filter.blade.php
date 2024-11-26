@@ -12,3 +12,11 @@
     </div>
 </div>
 
+<div class="form-group">
+    <div class="custom-control custom-checkbox">
+        <input class="custom-control-input fbo-filter" name="fbo" type="checkbox" id="customCheckbox-fbo" value="1" onclick="table.draw()">
+        <label for="customCheckbox-fbo" class="custom-control-label">{{ __('FBO OZON') }}</label>
+    </div>
+</div>
+
+
