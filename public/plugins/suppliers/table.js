@@ -45,7 +45,7 @@ var ST = (function($){
 
                         delete params.length;
 
-                        $.extend(params, { exports: ['excel'] });
+                        $.extend(params, { exports: ['def'] });
 
                         window.location = dt.ajax.url() + '?' + $.param(params);
                     }
@@ -137,6 +137,7 @@ var ST = (function($){
             { title: 'Резерв', data: 'reserve', className: "unsearchable", searchable: false },
             { title: 'Ожидание', data: 'transit', className: "unsearchable", searchable: false },
             { title: 'К закупке', data: 'toBuy', className: "unsearchable", searchable: false },
+            { title: 'Процент остатка', data: 'stockPercent', className: "unsearchable", searchable: false },
         ];
     };
 

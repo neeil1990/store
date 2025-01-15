@@ -44,6 +44,7 @@ class ProductsScopes extends Model
         $query->with(['suppliers', 'uoms'])
             ->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
             ->addSelectToBuy()
+            ->addStockPercent()
             ->leftJoinSub((new Stock())->sum($stores), 'stocks', function($join){
                 $join->on('products.uuid', '=', 'stocks.assortmentId');
             })
@@ -52,12 +53,25 @@ class ProductsScopes extends Model
             })
             ->leftJoinSub((new Transit())->sum($stores), 'transits', function($join){
                 $join->on('products.uuid', '=', 'transits.assortmentId');
-            })
-            ->whereRaw('IFNULL(minimumBalance, 0) - IFNULL(stock, 0) > ?', [0]);
+            });
+    }
+
+    public function scopeWhereMinBalanceNotNull(Builder $query)
+    {
+        $query->whereRaw('IFNULL(minimumBalance, 0) - IFNULL(stock, 0) > ?', [0]);
     }
 
     public function scopeAddSelectToBuy(Builder $query)
     {
         $query->selectRaw('IFNULL(products.minimumBalanceLager, IFNULL(products.minimumBalance, 0)) - IFNULL(stocks.stock, 0) - IFNULL(reserves.reserve, 0) - IFNULL(transits.transit, 0) as toBuy');
+    }
+
+    public function scopeAddStockPercent(Builder $query)
+    {
+        $minimumBalance = 'IFNULL(products.minimumBalanceLager, IFNULL(products.minimumBalance, 0))';
+        $a = '(IFNULL(stocks.stock, 0) + IFNULL(transits.transit, 0) - IFNULL(reserves.reserve, 0))';
+        $b = "($minimumBalance / 100)";
+
+        $query->selectRaw("$a DIV $b as stockPercent");
     }
 }

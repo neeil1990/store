@@ -76,6 +76,7 @@
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },
+            { data: 'stockPercent', title: 'Процент остатка' },
         ],
         serverSide: true,
         initComplete: function (settings, json) {

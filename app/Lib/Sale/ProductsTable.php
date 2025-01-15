@@ -26,6 +26,7 @@ class ProductsTable extends DataTableRequest
         $fbo = request('fbo');
 
         $pagination = $model
+            ->suppliersDataTable()
             ->selectEmployee()
             ->searchCols($search)
             ->when($fullTextSearch, function(Builder $query, $search){
