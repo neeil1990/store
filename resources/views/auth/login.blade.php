@@ -48,9 +48,6 @@
                 <p class="mb-1">
                     <a href="{{ route('password.request') }}">Забыл пароль</a>
                 </p>
-                <p class="mb-0">
-                    <a href="{{ route('register') }}" class="text-center">Регистрация</a>
-                </p>
             </div>
             <!-- /.card-body -->
         </div>
