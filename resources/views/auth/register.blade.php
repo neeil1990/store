@@ -42,13 +42,11 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <x-primary-button class="btn-block mb-2">Регистрация</x-primary-button>
+                            <x-primary-button class="btn-block mb-2">Добавить</x-primary-button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
-
-                <a href="{{ route('login') }}" class="text-center">Я уже зарегистрирован</a>
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->

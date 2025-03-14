@@ -2,6 +2,12 @@
 
     <x-slot name="header"></x-slot>
 
+    <div class="row mb-2">
+        <div class="col-12">
+            <a href="{{ route('register') }}" class="btn bg-gradient-info">Добавить пользователя</a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -17,6 +23,7 @@
                                 <th>Имя</th>
                                 <th>Email</th>
                                 <th>Зарегистрирован</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,6 +33,13 @@
                                 <td>{{ $user['name'] }}</td>
                                 <td>{{ $user['email'] }}</td>
                                 <td>{{ $user['created_at']->diffForHumans() }}</td>
+                                <td>
+                                    <form method="POST" action="{{ route('users.destroy', $user['id']) }}">
+                                        @csrf
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn bg-gradient-danger"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
