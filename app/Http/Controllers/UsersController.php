@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -15,33 +16,33 @@ class UsersController extends Controller
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(int $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return view('users.edit', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $data = array_filter($request->all());
+
+        $validator = Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+        ]);
+
+        $user->update($validator->validated());
+
+        return redirect()->route('users.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return RedirectResponse
-     */
     public function destroy(int $id): RedirectResponse
     {
         if (Auth::id() !== $id) {
             User::destroy($id);
         }
 
-        return redirect('users');
+        return redirect()->route('users.index');
     }
 }

@@ -24,6 +24,7 @@
                                 <th>Email</th>
                                 <th>Зарегистрирован</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +34,7 @@
                                 <td>{{ $user['name'] }}</td>
                                 <td>{{ $user['email'] }}</td>
                                 <td>{{ $user['created_at']->diffForHumans() }}</td>
+                                <td><a href="{{ route('users.edit', $user['id']) }}" class="btn bg-gradient-success"><i class="fas fa-edit"></i> Редактировать</a></td>
                                 <td>
                                     <form method="POST" action="{{ route('users.destroy', $user['id']) }}">
                                         @csrf
