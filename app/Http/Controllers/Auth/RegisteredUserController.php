@@ -15,6 +15,11 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:create user')->only('create');
+    }
+
     /**
      * Display the registration view.
      */

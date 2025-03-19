@@ -23,6 +23,20 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
+                    <div class="form-group mb-3">
+                        <x-text-input-icon :placeholder="$user->department" id="department" type="text" name="department" :value="old('department')" autofocus autocomplete="name" />
+                        <x-input-error :messages="$errors->get('department')" class="mt-2" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <select name="role" id="" class="custom-select">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role }}" {{ $user->roles->value('name') == $role ? 'selected' : '' }}>{{ __($role) }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
                             <x-primary-button class="btn-block mb-2">Изменить</x-primary-button>

@@ -10,6 +10,8 @@ use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\MyStoreProductFolderRowsReceived;
 use App\Events\MyStoreProductRowsReceived;
 use App\Events\MyStoreSupplierRowsReceived;
+use App\Listeners\AssignRoleToUser;
 use App\Listeners\UpdateOrCreateProductFolderToDataBase;
 use App\Listeners\UpdateOrCreateProductsToDataBase;
 use App\Listeners\UpdateOrCreateSupplierToDataBase;
@@ -23,6 +24,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+            AssignRoleToUser::class,
         ],
         MyStoreProductRowsReceived::class => [
             UpdateOrCreateProductsToDataBase::class,
