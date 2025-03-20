@@ -53,4 +53,8 @@
     </div>
     <!-- /.register-box -->
 
+    @push('scripts')
+        @include('users.partials.scripts')
+    @endpush
+
 </x-guest-layout>

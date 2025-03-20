@@ -13,4 +13,18 @@ $.ajaxSetup({
     }
 });
 
+import generator from 'generate-password-browser';
+
+$('#generate-password').click(function () {
+
+    const password = generator.generate({
+        length: 12,
+        numbers: true,
+        symbols: true
+    });
+
+    $($(this).data('class')).val(password);
+});
+
+
 

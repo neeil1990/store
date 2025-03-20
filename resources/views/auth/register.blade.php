@@ -23,8 +23,8 @@
 
                     <!-- Password -->
                     <div class="form-group mb-3">
-                        <x-text-input-icon placeholder="Пароль" id="password"
-                                      type="password"
+                        <x-text-input-icon placeholder="Пароль" id="password" class="password-input"
+                                      type="text"
                                       name="password"
                                       required autocomplete="new-password" />
 
@@ -33,12 +33,16 @@
 
                     <!-- Confirm Password -->
                     <div class="form-group mb-3">
-                        <x-text-input-icon placeholder="Подтвердить пароль" id="password_confirmation"
-                                      type="password"
+                        <x-text-input-icon placeholder="Подтвердить пароль" id="password_confirmation" class="password-input"
+                                      type="text"
                                       name="password_confirmation" required autocomplete="new-password" />
 
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
+
+                    <p class="mb-2">
+                        <a href="#" id="generate-password" data-class=".password-input">Предложить пароль</a>
+                    </p>
 
                     <div class="row">
                         <div class="col-12">
@@ -47,6 +51,9 @@
                         <!-- /.col -->
                     </div>
                 </form>
+                <p class="mb-1">
+                    <a href="{{ route('users.index') }}">Вернуться</a>
+                </p>
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->
