@@ -38,14 +38,30 @@ var ST = (function($){
                     }
                 },
                 {
-                    text: 'Экспортировать',
+                    text: 'Экспорт для поставщика',
                     className: 'btn-default',
                     action: function (e, dt, node, config) {
                         let params = dt.ajax.params();
 
                         delete params.length;
 
-                        $.extend(params, { exports: ['def'] });
+                        $.extend(params, {
+                            exports: 'suppliers',
+                            toBuy: true,
+                        });
+
+                        window.location = dt.ajax.url() + '?' + $.param(params);
+                    }
+                },
+                {
+                    text: 'Экспорт для закупщиков',
+                    className: 'btn-default',
+                    action: function (e, dt, node, config) {
+                        let params = dt.ajax.params();
+
+                        delete params.length;
+
+                        $.extend(params, { exports: 'buyers' });
 
                         window.location = dt.ajax.url() + '?' + $.param(params);
                     }

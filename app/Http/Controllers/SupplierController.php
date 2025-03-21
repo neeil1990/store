@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\SuppliersDataTable;
+use App\Exports\BuyersExport;
 use App\Exports\SuppliersExport;
 use App\Models\Products;
 use App\Models\Store;
@@ -31,19 +32,21 @@ class SupplierController extends Controller
     {
         $model = new Products();
 
-        $export = request('exports', []);
+        $export = request('exports');
         $stores = request('stores', []);
 
         $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores)->whereMinBalanceNotNull());
 
-        if ($export) {
-            return $this->export($dataTable->getCollection());
+        if ($export == 'suppliers') {
+            return $this->exportForSuppliers($dataTable->getCollection());
+        } else if ($export == 'buyers') {
+            return $this->exportForBuyers($dataTable->getCollection());
         }
 
         return $dataTable->getJson();
     }
 
-    private function export(Collection $collection)
+    private function exportForSuppliers(Collection $collection)
     {
         $columns = request('columns');
 
@@ -52,6 +55,13 @@ class SupplierController extends Controller
         if ($columns[self::SUPPLIER_INDEX]['search']['value']) {
             $export->setFileName($collection->value('suppliers.name') . '-' . Carbon::now() . SuppliersExport::EXE);
         }
+
+        return $export->download();
+    }
+
+    private function exportForBuyers(Collection $collection)
+    {
+        $export = new BuyersExport($collection);
 
         return $export->download();
     }

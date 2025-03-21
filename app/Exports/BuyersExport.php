@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SuppliersExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
+class BuyersExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
 {
     use Exportable;
 
@@ -54,10 +54,18 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, Shou
 
         $rows = [
             $this->row,
+            $supplier->code,
             $supplier->article,
             $supplier->name,
+            $supplier->suppliers->name,
             $supplier->toBuy,
             $supplier->uoms->name,
+            $supplier->minimumBalance,
+            $supplier->minimumBalanceLager,
+            $supplier->stock,
+            $supplier->stockPercent,
+            $supplier->reserve,
+            $supplier->transit,
             $supplier->buyPrice,
             $supplier->buyPrice * $supplier->toBuy,
         ];
@@ -66,6 +74,14 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, Shou
             return [
                 $rows,
                 [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -84,11 +100,19 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, Shou
     {
         return [
             '#',
+            __('Код'),
             __('Артикул'),
             __('Наименование товаров'),
+            __('Поставщик'),
             __('Кол-во'),
             __('Ед. изм.'),
-            __('Цена'),
+            __('Неснижаемый остаток'),
+            __('Неснижаемый остаток lager'),
+            __('Остаток'),
+            __('Процент остатка'),
+            __('Резерв'),
+            __('Ожидание'),
+            __('Закупочная цена'),
             __('Итого'),
         ];
     }
