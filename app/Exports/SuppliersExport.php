@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SuppliersExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
+class SuppliersExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles, ExportInterface
 {
     use Exportable;
 
@@ -41,9 +41,14 @@ class SuppliersExport implements FromCollection, WithMapping, WithHeadings, Shou
         $this->fileName = $fileName;
     }
 
-    public function collection()
+    public function getCollection(): Collection
     {
         return $this->supplier;
+    }
+
+    public function collection()
+    {
+        return $this->getCollection();
     }
 
     public function map($supplier): array

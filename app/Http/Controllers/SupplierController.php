@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\DataTables\SuppliersDataTable;
 use App\Exports\BuyersExport;
+use App\Exports\ExportInterface;
 use App\Exports\SuppliersExport;
 use App\Models\Products;
 use App\Models\Store;
-use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -38,31 +36,33 @@ class SupplierController extends Controller
         $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores)->whereMinBalanceNotNull());
 
         if ($export == 'suppliers') {
-            return $this->exportForSuppliers($dataTable->getCollection());
+            return $this->export(new SuppliersExport($dataTable->getCollection()));
         } else if ($export == 'buyers') {
-            return $this->exportForBuyers($dataTable->getCollection());
+            return $this->export(new BuyersExport($dataTable->getCollection()));
         }
 
         return $dataTable->getJson();
     }
 
-    private function exportForSuppliers(Collection $collection)
+    private function export(ExportInterface $export)
     {
-        $columns = request('columns');
+        if ($this->hasSearchableValue(self::SUPPLIER_INDEX)) {
+            $name = $export->getCollection()->value('suppliers.name');
 
-        $export = new SuppliersExport($collection);
-
-        if ($columns[self::SUPPLIER_INDEX]['search']['value']) {
-            $export->setFileName($collection->value('suppliers.name') . '-' . Carbon::now() . SuppliersExport::EXE);
+            $export->setFileName(implode(' - ', [$name, Carbon::now() . SuppliersExport::EXE]));
         }
 
         return $export->download();
     }
 
-    private function exportForBuyers(Collection $collection)
+    private function hasSearchableValue(int $idx): bool
     {
-        $export = new BuyersExport($collection);
+        $columns = request('columns');
 
-        return $export->download();
+        if ($columns[$idx]['search']['value']) {
+            return true;
+        }
+
+        return false;
     }
 }
