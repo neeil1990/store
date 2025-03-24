@@ -6,8 +6,10 @@ use App\DataTables\SuppliersDataTable;
 use App\Exports\BuyersExport;
 use App\Exports\ExportInterface;
 use App\Exports\SuppliersExport;
+use App\Helpers\ProductHelper;
 use App\Models\Products;
 use App\Models\Store;
+use App\Services\PackingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +19,12 @@ class SupplierController extends Controller
     const SUPPLIER_INDEX = 2;
 
     protected $excelFileName = null;
+    protected $packingService;
+
+    public function __construct(PackingService $packingService)
+    {
+        $this->packingService = $packingService;
+    }
 
     public function index()
     {
@@ -50,6 +58,14 @@ class SupplierController extends Controller
             $name = $export->getCollection()->value('suppliers.name');
 
             $export->setFileName(implode(' - ', [$name, Carbon::now() . SuppliersExport::EXE]));
+        }
+
+        foreach ($export->getCollection() as $collect) {
+            $size = ProductHelper::getPackSize($collect);
+
+            if ($size > 0) {
+                $collect->toBuy = $this->packingService->calculatePackedQuantity($collect->toBuy, $size);
+            }
         }
 
         return $export->download();
