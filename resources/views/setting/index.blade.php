@@ -8,6 +8,7 @@
     <div class="row">
         <div class="col-6">
             @include('setting.partials.store-token-form')
+            @include('setting.partials.minimum-balance-import')
         </div>
         <div class="col-6">
             @include('setting.partials.create-token-form')

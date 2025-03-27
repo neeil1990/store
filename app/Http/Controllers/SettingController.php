@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SettingStoreRequest;
+use App\Imports\MinimumBalanceImport;
 use App\Lib\Moysklad\StoreToken;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SettingController extends Controller
 {
@@ -26,5 +28,12 @@ class SettingController extends Controller
         );
 
         return redirect()->route('setting.index')->with('status', 'setting-store');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new MinimumBalanceImport, $request->file('excel'));
+
+        return redirect()->route('setting.index')->with('status', 'setting-import');
     }
 }

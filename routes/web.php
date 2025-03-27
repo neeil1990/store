@@ -27,19 +27,14 @@ use Spatie\Permission\Models\Permission;
 Route::get('get-product', function () {
 
     $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product?filter=code~2807');
+    $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product?filter=minimumBalance!=0;');
     $rows = $api->getRows();
 
-    dd($rows);
+    dd($rows[1]);
 });
 
 Route::get('dev', function () {
-    // 7d2031b8-d467-11e8-9ff4-31500038ce02
-    // https://online.moysklad.ru/app/#good/edit?id=7d202835-d467-11e8-9ff4-31500038ce00
-
-    // $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    // $api->send('https://api.moysklad.ru/api/remap/1.2/report/stock/bystore/current?stockType=reserve&filter=assortmentId=b2b393e2-d466-11e8-9ff4-315000386e13');
-    // $rows = $api->getRows();
+    //
 });
 
 Route::get('/', function () {
