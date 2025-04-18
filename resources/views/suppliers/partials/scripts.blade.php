@@ -35,13 +35,21 @@
             },
         });
 
-        $("#products-table").on("focusout", ".minimum-balance-lager", function () {
-            axios.post('{{ route('products.minimum-balance-lager-store') }}', {
-                id: $(this).data('id'),
-                val: $(this).val(),
-            }).then(function (response) {
-                toastr.success('Успешно сохранено!');
-            });
+        $("#products-table").on("click", ".minimum-balance-lager", function () {
+            let $form = $(this).closest('.input-group');
+            let $input = $form.find('input');
+            let id = $form.data('id');
+
+            if ($input.val().length > 0 && id) {
+                axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+                    id: id,
+                    val: $input.val(),
+                }).then(function (response) {
+                    toastr.success('Успешно сохранено!');
+                });
+            }
+
+            return true;
         });
 
     })(jQuery);

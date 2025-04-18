@@ -5,6 +5,7 @@ namespace App\Lib\Sale;
 
 use App\Lib\DataTable\DataTableRequest;
 use \App\Models\Products;
+use App\Services\DataTableViewService;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProductsTable extends DataTableRequest
@@ -38,7 +39,13 @@ class ProductsTable extends DataTableRequest
             ->orderCol($order['column'], $order['dir'])
             ->paginate($this->length, ['*'], 'page', ($this->start / $this->length) + 1);
 
-        $this->setData($pagination->items());
+        $data = $pagination->items();
+
+        foreach ($data as $i) {
+            $i->minimumBalanceLager = DataTableViewService::minimumBalanceLagerView($i->minimumBalanceLager, $i->id, true);
+        }
+
+        $this->setData($data);
         $this->setRecordsTotal($model->count());
         $this->setRecordsFiltered($pagination->total());
     }

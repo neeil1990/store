@@ -65,14 +65,7 @@
             { data: 'code', title: 'Код' },
             { data: 'externalCode', title: 'Внешний код' },
             { title: 'Неснижаемый остаток', data: 'minimumBalance'},
-            { title: 'Неснижаемый остаток lager', render: function (data, type, row) {
-                    return $('<input />', {
-                        type: 'number',
-                        value: row.minimumBalanceLager,
-                        class: "form-control form-control-border form-control-sm minimum-balance-lager",
-                        "data-id": row.id,
-                    })[0].outerHTML;
-                } },
+            { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: 'align-middle'},
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },
@@ -156,12 +149,20 @@
         body.find('td:nth-child(2)').highlight(table.search().split(" "));
     });
 
-    $("#products-table").on("focusout", ".minimum-balance-lager", function () {
-        axios.post('{{ route('products.minimum-balance-lager-store') }}', {
-            id: $(this).data('id'),
-            val: $(this).val(),
-        }).then(function (response) {
-            toastr.success('Успешно сохранено!');
-        });
+    $("#products-table").on("click", ".minimum-balance-lager", function () {
+        let $form = $(this).closest('.input-group');
+        let $input = $form.find('input');
+        let id = $form.data('id');
+
+        if ($input.val().length > 0 && id) {
+            axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+                id: id,
+                val: $input.val(),
+            }).then(function (response) {
+                toastr.success('Успешно сохранено!');
+            });
+        }
+
+        return true;
     });
 </script>

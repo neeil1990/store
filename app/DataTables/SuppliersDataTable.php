@@ -2,6 +2,8 @@
 
 namespace App\DataTables;
 
+use App\Models\Products;
+use App\Services\DataTableViewService;
 use DataTables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -54,7 +56,11 @@ class SuppliersDataTable
 
     public function getJson()
     {
-        return $this->get()->toJson();
+        return $this->get()
+            ->editColumn('minimumBalanceLager', function (Products $products) {
+                return DataTableViewService::minimumBalanceLagerView($products->minimumBalanceLager, $products->id);
+            })
+            ->toJson();
     }
 
 }
