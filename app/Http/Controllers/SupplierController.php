@@ -63,7 +63,7 @@ class SupplierController extends Controller
         foreach ($export->getCollection() as $collect) {
             $size = ProductHelper::getPackSize($collect);
 
-            if ($size > 0) {
+            if ($size > 0 && $collect->uoms->name !== "уп") {
                 $collect->toBuy = $this->packingService->calculatePackedQuantity($collect->toBuy, $size);
             }
         }
