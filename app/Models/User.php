@@ -57,4 +57,15 @@ class User extends Authenticatable
             return $value ?? 'Должность/отдел';
         });
     }
+
+    public function isSelected(array $users): bool
+    {
+        foreach ($users as $user) {
+            if ($user->id === $this->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

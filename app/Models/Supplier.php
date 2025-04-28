@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Supplier extends Model
 {
@@ -15,4 +16,9 @@ class Supplier extends Model
     ];
 
     use HasFactory;
+
+    public function shipper(): HasOne
+    {
+        return $this->hasOne(Shipper::class);
+    }
 }
