@@ -24,7 +24,7 @@
             },
             ordering: false,
             order: [[0, 'asc']],
-            lengthMenu: [30, 50],
+            lengthMenu: [10, 30, 50],
             responsive: false,
             autoWidth: false,
             processing: true,
