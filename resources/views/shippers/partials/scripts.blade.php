@@ -54,6 +54,7 @@
             ],
             initComplete: function () {
 
+                $('[data-toggle="tooltip"]').tooltip();
             },
         });
 

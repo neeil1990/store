@@ -52,11 +52,13 @@ class ShipperService
 
     private function attachProductsToShippers(array $shippers): void
     {
+        /** @var Shipper $shipper */
         foreach ($shippers as $shipper) {
             $products = $this->productRepository->getAvailableProductsToShipper($shipper);
 
-            /** @var Shipper $shipper */
-            $shipper->setProducts($products);
+            foreach ($products as $product) {
+                $shipper->addProduct($product);
+            }
         }
     }
 

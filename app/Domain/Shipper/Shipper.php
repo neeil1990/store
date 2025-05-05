@@ -32,13 +32,6 @@ class Shipper
         $this->products[] = $product;
     }
 
-    public function setProducts(array $products): void
-    {
-        foreach ($products as $product) {
-            $this->addProduct($product);
-        }
-    }
-
     public function addUsers(array $users): void
     {
         $this->users = $users;
@@ -54,18 +47,6 @@ class Shipper
         return count(array_filter($this->products, function (Product $product) {
             return $product->hasBalance();
         }));
-    }
-
-    public function isAvailableProducts(): int
-    {
-        return count(array_filter($this->products, function (Product $product) {
-            return $product->isAvailable();
-        }));
-    }
-
-    public function totalProducts(): int
-    {
-        return count($this->products);
     }
 
     public function totalToBuy(): int
@@ -84,8 +65,37 @@ class Shipper
         return round(array_sum($sum), 2);
     }
 
+    public function totalStockProducts(): int
+    {
+        $stock = 0;
+
+        foreach ($this->products as $product) {
+            $stock += $product->stock;
+        }
+
+        return $stock;
+    }
+
+    public function totalMinBalanceProducts(): int
+    {
+        $balance = 0;
+
+        foreach ($this->products as $product) {
+            $balance += $product->minimumBalance;
+        }
+
+        return $balance;
+    }
+
     public function fillPercent(): float
     {
-        return round(($this->isAvailableProducts() / $this->totalProducts()) * 100, 2);
+        $stock = $this->totalStockProducts();
+        $balance = $this->totalMinBalanceProducts();
+
+        if ($balance > 0) {
+            return round(($stock / $balance) * 100, 2);
+        }
+
+        return 0;
     }
 }

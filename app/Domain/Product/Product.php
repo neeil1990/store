@@ -38,11 +38,6 @@ class Product
         return $this->minimumBalance > 0;
     }
 
-    public function isAvailable(): bool
-    {
-        return $this->stock > 0;
-    }
-
     public function setBuyPrice(float $buyPrice): void
     {
         $this->buyPrice = $buyPrice;
