@@ -54,8 +54,10 @@
             ],
             initComplete: function () {
 
-                $('[data-toggle="tooltip"]').tooltip();
             },
+            drawCallback: function (settings) {
+                $('[data-toggle="tooltip"]').tooltip();
+            }
         });
 
     })(jQuery);
