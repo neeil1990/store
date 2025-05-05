@@ -18,10 +18,10 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'filter' => '',
             'min_sum' => $shipper->min_sum,
             'fill_storage' => $shipper->fill_storage,
-            'fill' => round(($shipper->isAvailableProducts() / $shipper->totalProducts()) * 100, 2),
+            'fill' => $shipper->fillProductPercent(),
             'quantity' => $shipper->quantity(),
             'to_buy' => $shipper->totalToBuy(),
-            'total_cost' => round($shipper->totalToBuy() * $shipper->quantity() * $shipper->min_sum, 2),
+            'total_cost' => $shipper->buyPrice(),
             'sender' => '',
             'text_for_sender' => '',
             'export' => '',
@@ -30,7 +30,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
         ];
     }
 
-    public static function present(ShipperPaginationDTO $dto)
+    public static function present(ShipperPaginationDTO $dto): string
     {
         $collect = collect([
             'draw' => request('draw'),

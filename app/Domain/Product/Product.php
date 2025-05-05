@@ -9,6 +9,8 @@ class Product
     public ?int $minimumBalance = 0;
     public ?int $stock = 0;
     public ?int $to_buy = 0;
+
+    public float $buyPrice = 0;
     public ?string $name;
 
     public array $attributes = [];
@@ -41,4 +43,17 @@ class Product
         return $this->stock > 0;
     }
 
+    public function setBuyPrice(float $buyPrice): void
+    {
+        $this->buyPrice = $buyPrice;
+    }
+
+    public function totalBuyPrice(): float
+    {
+        if ($this->to_buy > 0) {
+            return $this->buyPrice * $this->to_buy;
+        }
+
+        return 0;
+    }
 }

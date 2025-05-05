@@ -14,9 +14,9 @@ use App\DTO\ShipperPaginationDTO;
 
 class ShipperService
 {
-    private $productRepository;
-    private $shipperRepository;
-    private $userRepository;
+    private ProductRepository $productRepository;
+    private ShipperRepository $shipperRepository;
+    private UserRepository $userRepository;
 
     public function __construct(ShipperRepository $shipperRepository, ProductRepository $productRepository, UserRepository $userRepository)
     {
@@ -30,7 +30,7 @@ class ShipperService
         $dto = $this->shipperRepository->getAvailableShippers($sdt);
 
         $this->attachProductsToShippers($dto->shippers);
-
+        
         $this->addUsersToShippers($dto->shippers);
 
         return $dto;

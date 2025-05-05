@@ -98,4 +98,18 @@ class Shipper
             return max(0, $product->to_buy);
         }, $this->products));
     }
+
+    public function buyPrice(): float
+    {
+        $sum = array_map(function (Product $product) {
+            return $product->totalBuyPrice();
+        }, $this->products);
+
+        return array_sum($sum);
+    }
+
+    public function fillProductPercent(): float
+    {
+        return round(($this->isAvailableProducts() / $this->totalProducts()) * 100, 2);
+    }
 }

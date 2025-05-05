@@ -9,16 +9,13 @@ class ProductFactory
 {
     public function makeFromModel(Products $product): Product
     {
-        $obj = new Product(
-            $product->id,
-            $product->name,
-            $product->minimumBalance,
-            $product->attributes,
-        );
+        $obj = new Product($product->id, $product->name, $product->minimumBalance, $product->attributes);
 
         $obj->setStock($product->stock ?? 0);
 
-        $obj->setToBuy($product['toBuy'] > 0 ? $product['toBuy'] : 0);
+        $obj->setToBuy(max(0, $product['toBuy']));
+
+        $obj->setBuyPrice(floatval($product['buyPrice']));
 
         return $obj;
     }
