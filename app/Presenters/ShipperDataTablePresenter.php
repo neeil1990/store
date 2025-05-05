@@ -18,7 +18,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'filter' => '',
             'min_sum' => $shipper->min_sum,
             'fill_storage' => $shipper->fill_storage,
-            'fill' => $shipper->fillProductPercent(),
+            'fill' => $shipper->fillPercent(),
             'quantity' => $shipper->quantity(),
             'to_buy' => $shipper->totalToBuy(),
             'total_cost' => $shipper->buyPrice(),

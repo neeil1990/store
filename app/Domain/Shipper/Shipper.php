@@ -108,7 +108,7 @@ class Shipper
         return round(array_sum($sum), 2);
     }
 
-    public function fillProductPercent(): float
+    public function fillPercent(): float
     {
         return round(($this->isAvailableProducts() / $this->totalProducts()) * 100, 2);
     }
