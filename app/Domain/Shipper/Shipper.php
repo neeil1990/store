@@ -8,50 +8,24 @@ use App\Domain\Product\Product;
 
 class Shipper
 {
-    public ?string $uuid;
-    public ?string $origin_name;
-    public ?string $name;
-    public ?string $email;
-    public ?string $plan_fix_email;
-    public ?string $plan_fix_link;
-    public ?string $comment;
-
-    public ?int $id;
-    public ?int $supplier_id;
     public int $quantity = 0;
-    public int $min_sum = 0;
-    public int $fill_storage = 0;
 
     public array $products = [];
     public array $users = [];
 
-
     public function __construct(
-        ?int $id,
-        ?int $supplier_id,
-        ?string $uuid,
-        ?string $origin_name,
-        ?string $name,
-        ?string $email,
-        ?string $plan_fix_email,
-        ?string $plan_fix_link,
-        ?string $comment,
-        ?string $min_sum,
-        ?string $fill_storage
-    )
-    {
-        $this->id = $id;
-        $this->supplier_id = $supplier_id;
-        $this->uuid = $uuid;
-        $this->origin_name = $origin_name;
-        $this->name = $name;
-        $this->email = $email;
-        $this->plan_fix_email = $plan_fix_email;
-        $this->plan_fix_link = $plan_fix_link;
-        $this->comment = $comment;
-        $this->min_sum = $min_sum;
-        $this->fill_storage = $fill_storage;
-    }
+        public ?int $id,
+        public ?int $supplier_id,
+        public ?string $uuid,
+        public ?string $origin_name,
+        public ?string $name,
+        public ?string $email,
+        public ?string $plan_fix_email,
+        public ?string $plan_fix_link,
+        public ?string $comment,
+        public ?string $min_sum,
+        public ?string $fill_storage
+    ) {}
 
     public function addProduct(Product $product)
     {
