@@ -18,7 +18,7 @@ class ProductFactory
 
         $obj->setStock($product->stock ?? 0);
 
-        $obj->setToBuy($product->toBuy ?? 0);
+        $obj->setToBuy($product['toBuy'] > 0 ? $product['toBuy'] : 0);
 
         return $obj;
     }

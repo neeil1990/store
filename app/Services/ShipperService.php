@@ -10,6 +10,7 @@ use App\Domain\Shipper\ShipperRepository;
 use App\Domain\User\UserRepository;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
+use App\DTO\ShipperPaginationDTO;
 
 class ShipperService
 {
@@ -24,7 +25,7 @@ class ShipperService
         $this->userRepository = $userRepository;
     }
 
-    public function getAvailableWithProducts(ShipperDataTableDTO $sdt)
+    public function getAvailableWithProducts(ShipperDataTableDTO $sdt): ShipperPaginationDTO
     {
         $dto = $this->shipperRepository->getAvailableShippers($sdt);
 
@@ -49,7 +50,7 @@ class ShipperService
         return $this->shipperRepository->updateShipper($shipperRequestDTO);
     }
 
-    private function attachProductsToShippers(array $shippers)
+    private function attachProductsToShippers(array $shippers): void
     {
         foreach ($shippers as $shipper) {
             /** @var Shipper $shipper */

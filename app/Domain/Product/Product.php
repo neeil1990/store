@@ -9,7 +9,6 @@ class Product
     public ?int $minimumBalance = 0;
     public ?int $stock = 0;
     public ?int $to_buy = 0;
-
     public ?string $name;
 
     public array $attributes = [];

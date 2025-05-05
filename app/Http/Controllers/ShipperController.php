@@ -7,16 +7,18 @@ use App\DTO\ShipperRequestDTO;
 use App\Models\User;
 use App\Presenters\ShipperDataTablePresenter;
 use App\Services\ShipperService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ShipperController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('shippers.index');
     }
 
-    public function json(Request $request, ShipperService $service)
+    public function json(Request $request, ShipperService $service): string
     {
         $sdt = ShipperDataTableDTO::fromRequest($request);
 
@@ -25,7 +27,7 @@ class ShipperController extends Controller
         return ShipperDataTablePresenter::present($dto);
     }
 
-    public function edit($id, ShipperService $service)
+    public function edit($id, ShipperService $service): View
     {
         $shipper = $service->getShipperById($id);
 
@@ -34,7 +36,7 @@ class ShipperController extends Controller
         return view('shippers.edit', compact('shipper', 'users', 'id'));
     }
 
-    public function update(Request $request, int $id, ShipperService $service)
+    public function update(Request $request, int $id, ShipperService $service): RedirectResponse
     {
         $shipperRequestDTO = ShipperRequestDTO::makeFromRequest($request, $id);
 

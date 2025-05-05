@@ -94,10 +94,8 @@ class Shipper
 
     public function totalToBuy(): int
     {
-        $to_buy = array_map(function (Product $product) {
-            return $product->to_buy;
-        }, $this->products);
-
-        return array_sum($to_buy) > 0 ? array_sum($to_buy) : 0;
+        return array_sum(array_map(function (Product $product) {
+            return max(0, $product->to_buy);
+        }, $this->products));
     }
 }
