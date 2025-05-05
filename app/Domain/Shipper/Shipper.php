@@ -105,7 +105,7 @@ class Shipper
             return $product->totalBuyPrice();
         }, $this->products);
 
-        return array_sum($sum);
+        return round(array_sum($sum), 2);
     }
 
     public function fillProductPercent(): float
