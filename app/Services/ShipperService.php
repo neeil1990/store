@@ -30,7 +30,7 @@ class ShipperService
         $dto = $this->shipperRepository->getAvailableShippers($sdt);
 
         $this->attachProductsToShippers($dto->shippers);
-        
+
         $this->addUsersToShippers($dto->shippers);
 
         return $dto;
@@ -40,7 +40,7 @@ class ShipperService
     {
         $shipper = $this->shipperRepository->getShipperById($id);
 
-        $this->attachUsersToShipper($shipper);
+        $shipper->addUsers($this->userRepository->getUsersBy($shipper));
 
         return $shipper;
     }
@@ -53,20 +53,17 @@ class ShipperService
     private function attachProductsToShippers(array $shippers): void
     {
         foreach ($shippers as $shipper) {
-            /** @var Shipper $shipper */
-            $shipper->setProducts($this->productRepository->getAvailableProductsToShipper($shipper));
-        }
-    }
+            $products = $this->productRepository->getAvailableProductsToShipper($shipper);
 
-    private function attachUsersToShipper(Shipper $shipper)
-    {
-        $shipper->addUsers($this->userRepository->getUsersBy($shipper));
+            /** @var Shipper $shipper */
+            $shipper->setProducts($products);
+        }
     }
 
     private function addUsersToShippers(array $shippers): void
     {
         foreach ($shippers as $shipper) {
-            $this->attachUsersToShipper($shipper);
+            $shipper->addUsers($this->userRepository->getUsersBy($shipper));
         }
     }
 

@@ -27,14 +27,16 @@ class Shipper
         public ?string $fill_storage
     ) {}
 
-    public function addProduct(Product $product)
+    public function addProduct(Product $product): void
     {
         $this->products[] = $product;
     }
 
     public function setProducts(array $products): void
     {
-        $this->products = $products;
+        foreach ($products as $product) {
+            $this->addProduct($product);
+        }
     }
 
     public function addUsers(array $users): void
