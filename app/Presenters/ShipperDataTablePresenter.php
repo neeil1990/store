@@ -19,7 +19,12 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'min_sum' => $shipper->min_sum,
             'fill_storage' => $shipper->fill_storage,
             'fill' => view('shippers.columns.fill', ['stock' => $shipper->totalStockProducts(), 'minBalance' => $shipper->totalMinBalanceProducts(), 'fill' => $shipper->fillPercent()])->render(),
-            'fillByStorage' => view('shippers.columns.fillByStorage', ['stock' => $shipper->totalStockProducts(collect($shipper->storages)->pluck('uuid')->all()), 'minBalance' => $shipper->totalMinBalanceProducts(), 'fill' => $shipper->fillPercentByStorage()])->render(),
+            'fillByStorage' => view('shippers.columns.fillByStorage', [
+                'storages' => collect($shipper->storages)->pluck('name')->all(),
+                'stock' => $shipper->totalStockProducts(collect($shipper->storages)->pluck('uuid')->all()),
+                'minBalance' => $shipper->totalMinBalanceProducts(),
+                'fill' => $shipper->fillPercentByStorage()
+            ])->render(),
             'quantity' => $shipper->quantity(),
             'to_buy' => $shipper->totalToBuy(),
             'total_cost' => $shipper->buyPrice(),
