@@ -12,6 +12,7 @@ class Shipper
 
     public array $products = [];
     public array $users = [];
+    public array $storages = [];
 
     public function __construct(
         public ?int $id,
@@ -37,6 +38,11 @@ class Shipper
         $this->users = $users;
     }
 
+    public function addStorages(array $stores): void
+    {
+        $this->storages = $stores;
+    }
+
     public static function isAvailableShipper(): array
     {
         return ['name' => 'Складская позиция', 'value' => true];
@@ -52,7 +58,7 @@ class Shipper
     public function totalToBuy(): int
     {
         return array_sum(array_map(function (Product $product) {
-            return max(0, $product->to_buy);
+            return $product->calculateQuantityToBuy();
         }, $this->products));
     }
 
@@ -65,12 +71,13 @@ class Shipper
         return round(array_sum($sum), 2);
     }
 
-    public function totalStockProducts(): int
+    public function totalStockProducts(array $storages = []): int
     {
         $stock = 0;
 
+        /** @var Product $product */
         foreach ($this->products as $product) {
-            $stock += $product->stock;
+            $stock += $product->totalStock($storages);
         }
 
         return $stock;
@@ -80,20 +87,35 @@ class Shipper
     {
         $balance = 0;
 
+        /** @var Product $product */
         foreach ($this->products as $product) {
-            $balance += $product->minimumBalance;
+            $balance += $product->minimumBalance();
         }
 
         return $balance;
     }
 
-    public function fillPercent(): float
+    public function fillPercent(): int
     {
         $stock = $this->totalStockProducts();
         $balance = $this->totalMinBalanceProducts();
 
         if ($balance > 0) {
-            return round(($stock / $balance) * 100, 2);
+            return round(($stock / $balance) * 100);
+        }
+
+        return 0;
+    }
+
+    public function fillPercentByStorage(): int
+    {
+        $storage = collect($this->storages)->pluck('uuid')->all();
+
+        $stock = $this->totalStockProducts($storage);
+        $balance = $this->totalMinBalanceProducts();
+
+        if ($balance > 0) {
+            return round(($stock / $balance) * 100);
         }
 
         return 0;

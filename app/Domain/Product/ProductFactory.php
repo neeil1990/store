@@ -9,11 +9,19 @@ class ProductFactory
 {
     public function makeFromModel(Products $product): Product
     {
-        $obj = new Product($product->id, $product->name, $product->minimumBalance, $product->attributes);
+        $minBalance = $product->minimumBalanceLager ?: $product->minimumBalance;
 
-        $obj->setStock($product->stock ?? 0);
+        $obj = new Product($product->id, $product->name, $minBalance, $product->attributes);
 
-        $obj->setToBuy(max(0, $product['toBuy']));
+        $stocks = $product->stocks->pluck('quantity', 'storeId')->all();
+        $reserves = $product->reserves->pluck('quantity', 'storeId')->all();
+        $transits = $product->transits->pluck('quantity', 'storeId')->all();
+
+        $obj->setStocks($stocks);
+
+        $obj->setReserves($reserves);
+
+        $obj->setTransits($transits);
 
         $obj->setBuyPrice(floatval($product['buyPrice']));
 

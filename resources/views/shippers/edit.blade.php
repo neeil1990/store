@@ -21,6 +21,7 @@
 
                             <div class="col-md-6">
                                 @include('shippers.cards.form-details')
+                                @include('shippers.cards.form-storage')
                                 @include('shippers.cards.form-sender')
                             </div>
                         </div>

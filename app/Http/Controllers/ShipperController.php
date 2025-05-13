@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
+use App\Models\Store;
 use App\Models\User;
 use App\Presenters\ShipperDataTablePresenter;
 use App\Services\ShipperService;
@@ -33,7 +34,9 @@ class ShipperController extends Controller
 
         $users = User::all();
 
-        return view('shippers.edit', compact('shipper', 'users', 'id'));
+        $storages = Store::all();
+
+        return view('shippers.edit', compact('shipper', 'users', 'storages', 'id'));
     }
 
     public function update(Request $request, int $id, ShipperService $service): RedirectResponse

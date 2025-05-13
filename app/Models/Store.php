@@ -33,4 +33,15 @@ class Store extends Model
     {
         return $this->hasMany(Transit::class, 'storeId', 'uuid');
     }
+
+    public function isSelected(array $storages): bool
+    {
+        foreach ($storages as $storage) {
+            if ($storage->id === $this->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

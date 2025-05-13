@@ -12,7 +12,10 @@ class EloquentProductRepository implements ProductRepository
 {
     public function getAvailableProductsToShipper(Shipper $shipper): array
     {
-        $collection = Products::where('supplier', $shipper->uuid)->suppliersDataTable()->whereJsonContains('attributes', Shipper::isAvailableShipper())->get();
+        $collection = Products::where('supplier', $shipper->uuid)
+            ->with(['stocks', 'reserves', 'transits'])
+            ->whereJsonContains('attributes', Shipper::isAvailableShipper())
+            ->get();
 
         $factory = new ProductFactory;
 

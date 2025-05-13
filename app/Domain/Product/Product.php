@@ -7,13 +7,15 @@ class Product
 {
     public ?int $id;
     public ?int $minimumBalance = 0;
-    public ?int $stock = 0;
-    public ?int $to_buy = 0;
 
     public float $buyPrice = 0;
+
     public ?string $name;
 
     public array $attributes = [];
+    public array $stocks = [];
+    public array $reserves = [];
+    public array $transits = [];
 
     public function __construct(int $id, string $name, ?int $minimumBalance, array $attributes)
     {
@@ -23,14 +25,19 @@ class Product
         $this->minimumBalance = $minimumBalance;
     }
 
-    public function setStock(int $stock): void
+    public function setStocks(array $stocks): void
     {
-        $this->stock = $stock;
+        $this->stocks = $stocks;
     }
 
-    public function setToBuy(int $to_buy): void
+    public function setReserves(array $reserves): void
     {
-        $this->to_buy = $to_buy;
+        $this->reserves = $reserves;
+    }
+
+    public function setTransits(array $transits): void
+    {
+        $this->transits = $transits;
     }
 
     public function hasBalance(): bool
@@ -45,10 +52,76 @@ class Product
 
     public function totalBuyPrice(): float
     {
-        if ($this->to_buy > 0) {
-            return $this->buyPrice * $this->to_buy;
+        return $this->getBuyPrice() * $this->calculateQuantityToBuy();
+    }
+
+    public function calculateQuantityToBuy(array $filter = []): int
+    {
+        $stock = $this->totalStock($filter);
+
+        $reserve = $this->totalReserves($filter);
+
+        $transit = $this->totalTransits($filter);
+
+        $toBuy = $this->minimumBalance() - $stock - $reserve - $transit;
+
+        if ($toBuy > 0) {
+            return $toBuy;
         }
 
         return 0;
     }
+
+    public function totalStock(array $filter = []): int
+    {
+        return array_sum($this->getFilteredStockStores($filter));
+    }
+
+    public function totalReserves(array $filter = []): int
+    {
+        return array_sum($this->getFilteredReservesStores($filter));
+    }
+
+    public function totalTransits(array $filter = []): int
+    {
+        return array_sum($this->getFilteredTransitsStores($filter));
+    }
+
+    public function minimumBalance(): int
+    {
+        return $this->minimumBalance;
+    }
+
+    public function getBuyPrice(): float
+    {
+        return $this->buyPrice;
+    }
+
+    public function getFilteredStockStores(array $storeIds): array
+    {
+        return $this->filteredStores($this->stocks, $storeIds);
+    }
+
+    public function getFilteredReservesStores(array $storeIds): array
+    {
+        return $this->filteredStores($this->reserves, $storeIds);
+    }
+
+    public function getFilteredTransitsStores(array $storeIds): array
+    {
+        return $this->filteredStores($this->transits, $storeIds);
+    }
+
+    private function filteredStores(array $stores, array $ids): array
+    {
+        if (empty($ids)) {
+            return $stores;
+        }
+
+        return array_filter($stores, function ($key) use ($ids) {
+            return in_array($key, $ids);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+
 }

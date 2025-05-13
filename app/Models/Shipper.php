@@ -16,4 +16,9 @@ class Shipper extends Model
     {
         return $this->BelongsToMany(User::class);
     }
+
+    public function stores(): BelongsToMany
+    {
+        return $this->BelongsToMany(Store::class);
+    }
 }

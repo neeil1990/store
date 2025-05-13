@@ -66,6 +66,8 @@ class EloquentShipperRepository implements ShipperRepository
 
             $shipper->users()->sync($shipperRequestDTO->users);
 
+            $shipper->stores()->sync($shipperRequestDTO->storages);
+
             $supplier->refresh();
         }
 

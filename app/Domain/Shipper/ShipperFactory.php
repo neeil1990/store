@@ -12,7 +12,7 @@ class ShipperFactory
     {
         $sm = $supplier->shipper;
 
-        return new Shipper(
+        $shipper = new Shipper(
             $sm->id ?? null,
             $supplier->id ?? null,
             $supplier->uuid ?? null,
@@ -25,5 +25,9 @@ class ShipperFactory
             $sm ? $sm->min_sum : 0,
             $sm ? $sm->fill_storage : 0
         );
+
+        $shipper->addStorages($sm ? $sm->stores->all() : []);
+
+        return $shipper;
     }
 }
