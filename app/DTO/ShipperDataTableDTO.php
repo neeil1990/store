@@ -14,15 +14,19 @@ class ShipperDataTableDTO
     public ?string $orderBy;
     public ?string $dir;
 
+    public ?string $search;
+
     public array $columns = [];
 
-    public function __construct(int $start, int $length, string $orderBy, string $dir, array $columns)
+    public function __construct(int $start, int $length, string $orderBy, string $dir, array $columns, ?string $search)
     {
         $this->start = $start;
         $this->length = $length;
 
         $this->orderBy = $orderBy;
         $this->dir = $dir;
+
+        $this->search = $search;
 
         $this->columns = $columns;
     }
@@ -34,7 +38,8 @@ class ShipperDataTableDTO
             $request->input('length', 30),
             $request->input('order.0.column', 0),
             $request->input('order.0.dir', 'asc'),
-            $request->input('columns')
+            $request->input('columns'),
+            $request->input('search.value')
         );
     }
 

@@ -43,6 +43,11 @@ class Shipper
         $this->storages = $stores;
     }
 
+    public function getStorages(): ?array
+    {
+        return $this->storages;
+    }
+
     public static function isAvailableShipper(): array
     {
         return ['name' => 'Складская позиция', 'value' => true];
@@ -71,6 +76,23 @@ class Shipper
         return round(array_sum($sum), 2);
     }
 
+    public function getStockByStorages(): array
+    {
+        $stocks = [];
+
+        $storages = $this->getStorages();
+
+        foreach ($storages as $storage) {
+            $stocks[] = [
+                'uuid' => $storage->uuid,
+                'name' => $storage->name,
+                'quantity' => $this->totalStockProducts([$storage->uuid])
+            ];
+        }
+
+        return $stocks;
+    }
+
     public function totalStockProducts(array $storages = []): int
     {
         $stock = 0;
@@ -93,31 +115,5 @@ class Shipper
         }
 
         return $balance;
-    }
-
-    public function fillPercent(): int
-    {
-        $stock = $this->totalStockProducts();
-        $balance = $this->totalMinBalanceProducts();
-
-        if ($balance > 0) {
-            return round(($stock / $balance) * 100);
-        }
-
-        return 0;
-    }
-
-    public function fillPercentByStorage(): int
-    {
-        $storage = collect($this->storages)->pluck('uuid')->all();
-
-        $stock = $this->totalStockProducts($storage);
-        $balance = $this->totalMinBalanceProducts();
-
-        if ($balance > 0) {
-            return round(($stock / $balance) * 100);
-        }
-
-        return 0;
     }
 }

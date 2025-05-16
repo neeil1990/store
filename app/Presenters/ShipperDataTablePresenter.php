@@ -6,11 +6,24 @@ namespace App\Presenters;
 
 use App\Domain\Shipper\Shipper;
 use App\DTO\ShipperPaginationDTO;
+use Illuminate\Support\Arr;
+
 
 class ShipperDataTablePresenter extends ShipperPresenter
 {
     public static function data(Shipper $shipper): array
     {
+
+        $minBalance = $shipper->totalMinBalanceProducts();
+
+        $storages = $shipper->getStockByStorages();
+        $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
+
+        $fillByStorageValue = self::fillCalc($sumStock, $minBalance);
+
+        $totalStock = $shipper->totalStockProducts();
+        $fillValue = self::fillCalc($totalStock, $minBalance);
+
         return [
             'id' => $shipper->supplier_id,
             'name' => view('shippers.columns.name', ['origin_name' => $shipper->origin_name, 'name' => $shipper->name])->render(),
@@ -18,13 +31,8 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'filter' => '',
             'min_sum' => $shipper->min_sum,
             'fill_storage' => $shipper->fill_storage,
-            'fill' => view('shippers.columns.fill', ['stock' => $shipper->totalStockProducts(), 'minBalance' => $shipper->totalMinBalanceProducts(), 'fill' => $shipper->fillPercent()])->render(),
-            'fillByStorage' => view('shippers.columns.fillByStorage', [
-                'storages' => collect($shipper->storages)->pluck('name')->all(),
-                'stock' => $shipper->totalStockProducts(collect($shipper->storages)->pluck('uuid')->all()),
-                'minBalance' => $shipper->totalMinBalanceProducts(),
-                'fill' => $shipper->fillPercentByStorage()
-            ])->render(),
+            'fill' => view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render(),
+            'fillByStorage' => view('shippers.columns.fillByStorage', compact('minBalance', 'storages', 'sumStock', 'fillByStorageValue'))->render(),
             'quantity' => $shipper->quantity(),
             'to_buy' => $shipper->totalToBuy(),
             'total_cost' => $shipper->buyPrice(),
@@ -47,5 +55,14 @@ class ShipperDataTablePresenter extends ShipperPresenter
         ]);
 
         return $collect->toJson();
+    }
+
+    public static function fillCalc($totalStock, $minBalance): int
+    {
+        if ($minBalance > 0) {
+            return round(($totalStock / $minBalance) * 100);
+        }
+
+        return 0;
     }
 }

@@ -52,5 +52,9 @@
             return true;
         });
 
+        $('[data-toggle="tooltip"]').tooltip({
+            'html': true
+        });
+
     })(jQuery);
 </script>

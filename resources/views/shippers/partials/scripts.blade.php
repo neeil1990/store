@@ -24,11 +24,12 @@
             },
             ordering: false,
             order: [[0, 'asc']],
-            lengthMenu: [10, 30, 50],
+            lengthMenu: [3, 5, 10, 30, 50],
             responsive: false,
             autoWidth: false,
             processing: true,
             serverSide: true,
+            stateSave: true,
             ajax: {
                 url: '{{ route('shipper.json') }}',
                 data: function (data) {
@@ -55,13 +56,40 @@
             ],
             initComplete: function () {
 
+                let quantity = 8;
+                hintHeader(quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
+
+                let fillByStorage = 7;
+                hintHeader(fillByStorage, '{{ __('Именно по выбранным складам') }}');
+
+                let fill = 6;
+                hintHeader(fill, '{{ __('По всем складам') }}');
+
+                tooltip();
             },
             drawCallback: function (settings) {
-                $('[data-toggle="tooltip"]').tooltip({
-                    'html': true
-                });
+                tooltip();
             }
         });
 
     })(jQuery);
+
+    function tooltip()
+    {
+        $('[data-toggle="tooltip"]').tooltip({
+            'html': true
+        });
+    }
+
+    function hintHeader(index, text)
+    {
+        let column = $('#products-table thead').find('th').get(index);
+
+        if (column) {
+            $(column).attr({
+                'data-toggle': 'tooltip',
+                title: text
+            }).append($('<i />', {'class': 'far fa-question-circle ml-1'}));
+        }
+    }
 </script>

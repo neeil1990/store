@@ -29,6 +29,9 @@ class EloquentShipperRepository implements ShipperRepository
         $items = Supplier::joinSub($availableShippers, 'available_supplier', function (JoinClause $join) {
             $join->on('suppliers.uuid', '=', 'available_supplier.supplier');
         })->with('shipper')
+            ->when($sdt->search, function ($query, $search) {
+                $query->where('suppliers.name', 'LIKE', '%'. $search .'%');
+            })
             ->orderBy($order, $sdt->dir)
             ->paginate($sdt->length, ['*'], 'page', $page);
 
