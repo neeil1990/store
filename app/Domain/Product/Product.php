@@ -89,7 +89,7 @@ class Product
 
     public function minimumBalance(): int
     {
-        return $this->minimumBalance;
+        return $this->minimumBalance ?? 0;
     }
 
     public function getBuyPrice(): float
