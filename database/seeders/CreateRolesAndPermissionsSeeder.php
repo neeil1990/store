@@ -23,8 +23,16 @@ class CreateRolesAndPermissionsSeeder extends Seeder
         $createUser = Permission::firstOrCreate(['name' => 'create user']);
         $editUser = Permission::firstOrCreate(['name' => 'edit user']);
         $deleteUser = Permission::firstOrCreate(['name' => 'delete user']);
+        $updateMinSum = Permission::firstOrCreate(['name' => 'update min sum']);
+        $updateFillStorage = Permission::firstOrCreate(['name' => 'update fill storage']);
 
-        $admin->givePermissionTo([$createUser, $editUser, $deleteUser]);
+        $admin->givePermissionTo([
+            $createUser,
+            $editUser,
+            $deleteUser,
+            $updateMinSum,
+            $updateFillStorage,
+        ]);
 
         $user = User::find($this->userID);
 

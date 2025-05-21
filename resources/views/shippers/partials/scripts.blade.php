@@ -1,7 +1,7 @@
 <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+
 <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
 <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
 <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
@@ -12,7 +12,7 @@
 <script>
     (function ($) {
 
-        let table = $('#products-table').dataTable({
+        let table = $('#products-table').DataTable({
             language: {
                 lengthMenu: '_MENU_',
                 search: 'Поиск _INPUT_',
@@ -55,6 +55,7 @@
                 { data: 'edit', title: '{{ __('Редактирование') }}' }
             ],
             initComplete: function () {
+                let api = this.api();
 
                 let quantity = 8;
                 hintHeader(quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
@@ -66,10 +67,36 @@
                 hintHeader(fill, '{{ __('По всем складам') }}');
 
                 tooltip();
+
+                api.buttons().container().prependTo('.buttons .col-12');
             },
             drawCallback: function (settings) {
                 tooltip();
-            }
+            },
+            buttons: [
+                {
+                    className: 'btn btn-default btn-sm',
+                    text: 'Мин. сумма закупки',
+                    attr: {
+                        "data-toggle": 'modal',
+                        "data-target": '#form-min-sum',
+                    },
+                    available: function (dt, config) {
+                        return {{ auth()->user()->can('update min sum') }};
+                    }
+                },
+                {
+                    className: 'btn btn-default btn-sm',
+                    text: 'Наполняемость склада, %',
+                    attr: {
+                        "data-toggle": 'modal',
+                        "data-target": '#form-fill-storage',
+                    },
+                    available: function (dt, config) {
+                        return {{ auth()->user()->can('update fill storage') }};
+                    }
+                }
+            ]
         });
 
     })(jQuery);
