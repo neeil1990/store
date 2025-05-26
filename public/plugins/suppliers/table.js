@@ -191,7 +191,6 @@ var ST = (function($){
 
     ST.prototype.code = function (data, type, row) {
         return `
-        
         <div class="text-center">${row.code}</div>
         <div class="btn-group">
             <a title="Раздел Товары" href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">

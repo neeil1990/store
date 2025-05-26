@@ -62,7 +62,23 @@
             { data: 'name', title: 'Наименование' },
             { data: 'owner', title: 'Сотрудник' },
             { data: 'article', title: 'Артикул' },
-            { data: 'code', title: 'Код' },
+            {
+                title: 'Код',
+                data: 'code',
+                render: function (data, type, row) {
+                    return `
+                            <div class="text-center">${row.code}</div>
+                            <div class="btn-group">
+                                <a title="Раздел Товары" href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fas fa-warehouse"></i>
+                                </a>
+                                <a title="Раздел Остатки" href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=[null, null, ${row.name.replaceAll(',', ' ')}, null, null],equals" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fas fa-chart-pie"></i>
+                                </a>
+                            </div>
+                            `;
+                }
+            },
             { data: 'externalCode', title: 'Внешний код' },
             { title: 'Неснижаемый остаток', data: 'minimumBalance'},
             { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: 'align-middle'},
