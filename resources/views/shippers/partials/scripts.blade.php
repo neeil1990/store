@@ -95,6 +95,24 @@
                     available: function (dt, config) {
                         return {{ auth()->user()->can('update fill storage') }};
                     }
+                },
+                {
+                    extend: 'spacer',
+                    style: 'bar',
+                    text: 'Настройка столбцов',
+                },
+                {
+                    extend: 'colvis',
+                    collectionLayout: 'fixed columns',
+                    text: 'Видимость столбцов',
+                    popoverTitle: 'Контроль видимости столбцов',
+                    className: 'btn btn-default btn-sm',
+                },
+                {
+                    extend: 'colvisGroup',
+                    className: 'btn btn-default btn-sm',
+                    text: 'Показать все',
+                    show: ':hidden'
                 }
             ]
         });

@@ -129,7 +129,7 @@ div.dt-button-collection {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
   width: 200px;
 }
 div.dt-button-collection div.dropdown-menu {
@@ -232,9 +232,19 @@ div.dt-button-collection.columns > :last-child {
   padding-bottom: 1px;
 }
 div.dt-button-collection.columns > :last-child .dt-button {
-  min-width: 200px;
-  flex: 0 1;
-  margin: 0;
+    min-width: 200px;
+    flex: 0 1;
+    margin: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #444;
+    border-radius: .2rem;
+}
+.dt-down-arrow {
+    display:none;
+}
+div.dt-button-collection.columns > :last-child .dt-button.active {
+    background-color: #f8f9fa;
 }
 div.dt-button-collection.columns.dtb-b3 > :last-child, div.dt-button-collection.columns.dtb-b2 > :last-child, div.dt-button-collection.columns.dtb-b1 > :last-child {
   justify-content: space-between;
