@@ -1,8 +1,15 @@
 <?php
 
-if (!function_exists('mf')) {
-    function mf($amount): string
+if (!function_exists('money')) {
+    function money(float $amount): string
     {
-        return money($amount)->format();
+        return number_format($amount, 2, ',' , ' ');
+    }
+}
+
+if (!function_exists('amount')) {
+    function amount(int $amount): string
+    {
+        return number_format($amount, 0, ',' , ' ');
     }
 }
