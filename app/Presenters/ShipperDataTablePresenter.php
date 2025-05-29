@@ -9,6 +9,7 @@ use App\DTO\ShipperPaginationDTO;
 use Illuminate\Support\Arr;
 
 
+
 class ShipperDataTablePresenter extends ShipperPresenter
 {
     public static function data(Shipper $shipper): array
@@ -29,13 +30,13 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'name' => view('shippers.columns.name', ['origin_name' => $shipper->origin_name, 'name' => $shipper->name])->render(),
             'employee' => view('shippers.columns.users', ['users' => $shipper->users])->render(),
             'filter' => '',
-            'min_sum' => $shipper->min_sum,
+            'min_sum' => mf($shipper->min_sum),
             'fill_storage' => $shipper->fill_storage,
             'fill' => view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render(),
             'fillByStorage' => view('shippers.columns.fillByStorage', compact('minBalance', 'storages', 'sumStock', 'fillByStorageValue'))->render(),
             'quantity' => $shipper->quantity(),
             'to_buy' => $shipper->totalToBuy(),
-            'total_cost' => $shipper->buyPrice(),
+            'total_cost' => mf($shipper->buyPrice()),
             'sender' => '',
             'text_for_sender' => '',
             'export' => '',

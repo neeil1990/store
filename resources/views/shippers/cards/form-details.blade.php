@@ -4,7 +4,7 @@
     </div>
 
     <div class="card-body">
-        <x-forms.text-group label="{{ __('Минимальная сумма закупки') }}" name="min_sum" value="{{ $shipper->min_sum }}"/>
+        <x-forms.text-group label="{{ __('Минимальная сумма закупки') }}" type="number" min="0" step=".01" name="min_sum" value="{{ $shipper->min_sum }}"/>
 
         <x-forms.text-group label="{{ __('Наполняемость склада, %') }}" name="fill_storage" value="{{ $shipper->fill_storage }}"/>
     </div>

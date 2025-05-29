@@ -27,4 +27,3 @@ $('#generate-password').click(function () {
 });
 
 
-

@@ -14,8 +14,9 @@ class ShipperRequestDTO
     public ?string $comment;
 
     public int $id;
-    public int $min_sum = 0;
     public int $fill_storage = 0;
+
+    public float $min_sum = 0;
 
     public array $users = [];
 
