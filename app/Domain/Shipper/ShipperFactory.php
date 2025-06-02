@@ -4,6 +4,7 @@
 namespace App\Domain\Shipper;
 
 
+use App\Models\Filter;
 use App\Models\Supplier;
 
 class ShipperFactory
@@ -28,6 +29,13 @@ class ShipperFactory
 
         $shipper->addStorages($sm ? $sm->stores->all() : []);
 
+        $shipper->setFilter($this->getFilterModel($sm?->filter_id));
+
         return $shipper;
+    }
+
+    private function getFilterModel(?int $filter_id): ?Filter
+    {
+        return Filter::with('user')->find($filter_id);
     }
 }

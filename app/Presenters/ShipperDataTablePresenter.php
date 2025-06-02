@@ -14,7 +14,6 @@ class ShipperDataTablePresenter extends ShipperPresenter
 {
     public static function data(Shipper $shipper): array
     {
-
         $minBalance = $shipper->totalMinBalanceProducts();
 
         $storages = $shipper->getStockByStorages();
@@ -25,11 +24,16 @@ class ShipperDataTablePresenter extends ShipperPresenter
         $totalStock = $shipper->totalStockProducts();
         $fillValue = self::fillCalc($totalStock, $minBalance);
 
+        $filter = $shipper->filter();
+
+        $exportSuppliers = $shipper->generateSuppliersExportLink();
+        $exportBuyers = $shipper->generateBuyersExportLink();
+
         return [
             'id' => $shipper->supplier_id,
             'name' => view('shippers.columns.name', ['origin_name' => $shipper->origin_name, 'name' => $shipper->name])->render(),
             'employee' => view('shippers.columns.users', ['users' => $shipper->users])->render(),
-            'filter' => '',
+            'filter' => view('shippers.columns.filter', ['filter' => $filter])->render(),
             'min_sum' => money($shipper->min_sum),
             'fill_storage' => $shipper->fill_storage,
             'fill' => view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render(),
@@ -39,7 +43,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'total_cost' => money($shipper->buyPrice()),
             'sender' => '',
             'text_for_sender' => '',
-            'export' => '',
+            'export' => view('shippers.columns.export', ['suppliers' => $exportSuppliers, 'buyers' => $exportBuyers])->render(),
             'stat' => '',
             'edit' => view('shippers.columns.edit', ['link' => route('shipper.edit', $shipper->supplier_id)])->render(),
         ];

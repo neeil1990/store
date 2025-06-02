@@ -5,6 +5,7 @@ namespace App\Domain\Shipper;
 
 
 use App\Domain\Product\Product;
+use App\Models\Filter;
 
 class Shipper
 {
@@ -13,6 +14,8 @@ class Shipper
     public array $products = [];
     public array $users = [];
     public array $storages = [];
+
+    private ?Filter $filter;
 
     public function __construct(
         public ?int $id,
@@ -27,6 +30,11 @@ class Shipper
         public ?string $min_sum,
         public ?string $fill_storage
     ) {}
+
+    public function setFilter(?Filter $filter): void
+    {
+        $this->filter = $filter;
+    }
 
     public function addProduct(Product $product): void
     {
@@ -115,5 +123,76 @@ class Shipper
         }
 
         return $balance;
+    }
+
+    public function filter(): array
+    {
+        $filter = [
+            'description' => '',
+            'error' => '',
+            'params' => [],
+        ];
+
+        if (!$this->filter) {
+            $filter['error'] = __('Фильтр не найден');
+        }
+
+        if (!$filter['error']) {
+            $filter['description'] = implode(': ', [$this->getFilterName(), $this->getFilterUserName()]);
+            $filter['params'] = $this->getFilterParams();
+        }
+
+        return $filter;
+    }
+
+    public function getFilterId(): ?int
+    {
+        return $this->filter?->id;
+    }
+
+    public function getFilterName(): ?string
+    {
+        return $this->filter?->name;
+    }
+
+    public function getFilterUserName(): ?string
+    {
+        return $this->filter?->user->name;
+    }
+
+    public function getFilterParams(): ?array
+    {
+        return json_decode($this->filter?->payload, true);
+    }
+
+    public function generateSuppliersExportLink(): ?string
+    {
+        $params = $this->getFilterParams();
+
+        if (!$params) {
+            return null;
+        }
+
+        unset($params['length']);
+
+        $params['exports'] = 'suppliers';
+        $params['toBuy'] = true;
+
+        return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
+    }
+
+    public function generateBuyersExportLink(): ?string
+    {
+        $params = $this->getFilterParams();
+
+        if (!$params) {
+            return null;
+        }
+
+        unset($params['length']);
+
+        $params['exports'] = 'buyers';
+
+        return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
 }

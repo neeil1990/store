@@ -58,6 +58,7 @@ class EloquentShipperRepository implements ShipperRepository
         if ($supplier) {
 
             $shipper = $supplier->shipper()->updateOrCreate(['supplier_id' => $shipperRequestDTO->id], [
+                'filter_id' => $shipperRequestDTO->filter_id,
                 'name' => $shipperRequestDTO->name,
                 'email' => $shipperRequestDTO->email,
                 'plan_fix_email' => $shipperRequestDTO->plan_fix_email,

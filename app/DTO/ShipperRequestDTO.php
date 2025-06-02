@@ -16,13 +16,15 @@ class ShipperRequestDTO
     public int $id;
     public int $fill_storage = 0;
 
+    public ?int $filter_id = null;
+
     public float $min_sum = 0;
 
     public array $users = [];
 
     public array $storages = [];
 
-    public function __construct($id, $name, $email, $plan_fix_email, $plan_fix_link, $comment, $min_sum, $fill_storage, $users, $storages)
+    public function __construct($id, $name, $email, $plan_fix_email, $plan_fix_link, $comment, $min_sum, $fill_storage, $users, $storages, $filter_id)
     {
         $this->id = $id;
         $this->name = $name;
@@ -34,6 +36,7 @@ class ShipperRequestDTO
         $this->fill_storage = $fill_storage;
         $this->users = $users;
         $this->storages = $storages;
+        $this->filter_id = $filter_id;
     }
 
     public static function makeFromRequest(Request $request, int $id)
@@ -49,6 +52,7 @@ class ShipperRequestDTO
             $request->input('fill_storage'),
             $request->input('users', []),
             $request->input('storages', []),
+            $request->input('filter', null),
         );
     }
 

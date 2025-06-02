@@ -26,4 +26,16 @@ $('#generate-password').click(function () {
     $($(this).data('class')).val(password);
 });
 
+function tooltip()
+{
+    $('[data-toggle="tooltip"]').tooltip({
+        'html': true
+    });
+}
+
+window.tooltip = tooltip;
+
+tooltip();
+
+
 

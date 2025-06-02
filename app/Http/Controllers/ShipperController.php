@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
+use App\Models\Filter;
 use App\Models\Shipper;
 use App\Models\Store;
 use App\Models\User;
@@ -27,9 +28,9 @@ class ShipperController extends Controller
     {
         $sdt = ShipperDataTableDTO::fromRequest($request);
 
-        $dto = $service->getAvailableWithProducts($sdt);
+        $shippers = $service->getAvailableWithProducts($sdt);
 
-        return ShipperDataTablePresenter::present($dto);
+        return ShipperDataTablePresenter::present($shippers);
     }
 
     public function edit($id, ShipperService $service): View
@@ -40,7 +41,9 @@ class ShipperController extends Controller
 
         $storages = Store::all();
 
-        return view('shippers.edit', compact('shipper', 'users', 'storages', 'id'));
+        $filters = Filter::with('user')->get();
+
+        return view('shippers.edit', compact('shipper', 'users', 'storages', 'id', 'filters'));
     }
 
     public function update(Request $request, int $id, ShipperService $service): RedirectResponse

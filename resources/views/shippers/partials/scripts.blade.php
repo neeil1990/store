@@ -119,13 +119,6 @@
 
     })(jQuery);
 
-    function tooltip()
-    {
-        $('[data-toggle="tooltip"]').tooltip({
-            'html': true
-        });
-    }
-
     function hintHeader(index, text)
     {
         let column = $('#products-table thead').find('th').get(index);

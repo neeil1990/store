@@ -21,6 +21,7 @@
 
                             <div class="col-md-6">
                                 @include('shippers.cards.form-details')
+                                @include('shippers.cards.form-filter')
                                 @include('shippers.cards.form-storage')
                                 @include('shippers.cards.form-sender')
                             </div>
@@ -41,11 +42,21 @@
     </div>
 
     @push('styles')
-
+        <!-- Select2 -->
+        <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     @endpush
 
     @push('scripts')
+        <!-- Select2 -->
+        <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 
+        <script>
+            (function ($) {
+
+               $('.select2').select2();
+
+            })(jQuery);
+        </script>
     @endpush
 
 </x-app-layout>
