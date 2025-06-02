@@ -52,7 +52,7 @@
                 { data: 'text_for_sender', title: '{{ __('Текст для рассылки') }}' },
                 { data: 'export', title: '{{ __('Экспорт') }}' },
                 { data: 'stat', title: '{{ __('Статистика') }}' },
-                { data: 'edit', title: '{{ __('Редактирование') }}' }
+                { data: 'edit', title: '' }
             ],
             initComplete: function () {
                 let api = this.api();
