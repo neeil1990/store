@@ -1,6 +1,7 @@
 <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
 
 <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
 <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
@@ -97,22 +98,9 @@
                     }
                 },
                 {
-                    extend: 'spacer',
-                    style: 'bar',
-                    text: 'Настройка столбцов',
-                },
-                {
                     extend: 'colvis',
-                    collectionLayout: 'fixed columns',
                     text: 'Видимость столбцов',
-                    popoverTitle: 'Контроль видимости столбцов',
                     className: 'btn btn-default btn-sm',
-                },
-                {
-                    extend: 'colvisGroup',
-                    className: 'btn btn-default btn-sm',
-                    text: 'Показать все',
-                    show: ':hidden'
                 }
             ]
         });
