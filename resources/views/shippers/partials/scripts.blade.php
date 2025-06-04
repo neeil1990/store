@@ -38,21 +38,9 @@
             },
             columns: [
                 { data: 'id', title: '{{ __('№') }}' },
-                {
-                    data: 'name',
-                    orderable: false,
-                    title: '{{ __('Поставщик') }}'
-                },
-                {
-                    data: 'employee',
-                    orderable: false,
-                    title: '{{ __('Привязан сотрудник') }}'
-                },
-                {
-                    data: 'filter',
-                    orderable: false,
-                    title: '{{ __('Фильтр ') }}'
-                },
+                { data: 'name', title: '{{ __('Поставщик') }}' },
+                { data: 'employee', title: '{{ __('Привязан сотрудник') }}' },
+                { data: 'filter', orderable: false, title: '{{ __('Фильтр ') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
                 { data: 'fill', title: '{{ __('Наполняемость, %') }}' },
@@ -60,11 +48,7 @@
                 { data: 'quantity', title: '{{ __('Кол-во товаров всего') }}' },
                 { data: 'to_buy', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
-                {
-                    data: 'sender',
-                    orderable: false,
-                    title: '{{ __('Авто рассылка') }}'
-                },
+                { data: 'sender', title: '{{ __('Авто рассылка') }}' },
                 {
                     data: 'text_for_sender',
                     orderable: false,
