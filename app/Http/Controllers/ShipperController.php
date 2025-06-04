@@ -12,6 +12,7 @@ use App\Presenters\ShipperDataTablePresenter;
 use App\Services\ShipperService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class ShipperController extends Controller

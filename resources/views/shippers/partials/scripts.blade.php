@@ -23,7 +23,6 @@
                     next: '>',
                 },
             },
-            ordering: false,
             order: [[0, 'asc']],
             lengthMenu: [3, 5, 10, 30, 50, 150],
             responsive: false,
@@ -39,9 +38,21 @@
             },
             columns: [
                 { data: 'id', title: '{{ __('№') }}' },
-                { data: 'name', title: '{{ __('Поставщик') }}' },
-                { data: 'employee', title: '{{ __('Привязан сотрудник') }}' },
-                { data: 'filter', title: '{{ __('Фильтр ') }}' },
+                {
+                    data: 'name',
+                    orderable: false,
+                    title: '{{ __('Поставщик') }}'
+                },
+                {
+                    data: 'employee',
+                    orderable: false,
+                    title: '{{ __('Привязан сотрудник') }}'
+                },
+                {
+                    data: 'filter',
+                    orderable: false,
+                    title: '{{ __('Фильтр ') }}'
+                },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
                 { data: 'fill', title: '{{ __('Наполняемость, %') }}' },
@@ -49,11 +60,31 @@
                 { data: 'quantity', title: '{{ __('Кол-во товаров всего') }}' },
                 { data: 'to_buy', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
-                { data: 'sender', title: '{{ __('Авто рассылка') }}' },
-                { data: 'text_for_sender', title: '{{ __('Текст для рассылки') }}' },
-                { data: 'export', title: '{{ __('Экспорт') }}' },
-                { data: 'stat', title: '{{ __('Статистика') }}' },
-                { data: 'edit', title: '{{ __('Редактирование') }}' }
+                {
+                    data: 'sender',
+                    orderable: false,
+                    title: '{{ __('Авто рассылка') }}'
+                },
+                {
+                    data: 'text_for_sender',
+                    orderable: false,
+                    title: '{{ __('Текст для рассылки') }}'
+                },
+                {
+                    data: 'export',
+                    orderable: false,
+                    title: '{{ __('Экспорт') }}'
+                },
+                {
+                    data: 'stat',
+                    orderable: false,
+                    title: '{{ __('Статистика') }}'
+                },
+                {
+                    data: 'edit',
+                    orderable: false,
+                    title: '{{ __('Редактирование') }}'
+                }
             ],
             initComplete: function () {
                 let api = this.api();
