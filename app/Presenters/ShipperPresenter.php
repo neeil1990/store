@@ -7,5 +7,5 @@ use App\DTO\ShipperPaginationDTO;
 
 abstract class ShipperPresenter
 {
-    abstract public static function present(ShipperPaginationDTO $dto);
+    abstract public function present(ShipperPaginationDTO $dto);
 }

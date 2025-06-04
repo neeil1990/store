@@ -3,39 +3,25 @@
 
 namespace App\Domain\Shipper;
 
-
-use App\Models\Filter;
 use App\Models\Supplier;
 
 class ShipperFactory
 {
     public function makeShipper(Supplier $supplier)
     {
-        $sm = $supplier->shipper;
-
-        $shipper = new Shipper(
-            $sm->id ?? null,
-            $supplier->id ?? null,
-            $supplier->uuid ?? null,
-            $supplier->name ?? null,
-            $sm ? $sm->name : null,
-            $sm ? $sm->email : null,
-            $sm ? $sm->plan_fix_email : null,
-            $sm ? $sm->plan_fix_link : null,
-            $sm ? $sm->comment : null,
-            $sm ? $sm->min_sum : 0,
-            $sm ? $sm->fill_storage : 0
+        return new Shipper(
+            $supplier->shipper_id,
+            $supplier,
+            $supplier->uuid,
+            $supplier->name,
+            $supplier->shipper_name,
+            $supplier->shipper_email,
+            $supplier->shipper_plan_fix_email,
+            $supplier->shipper_plan_fix_link,
+            $supplier->shipper_comment,
+            $supplier->shipper_min_sum ?? 0,
+            $supplier->shipper_fill_storage ?? 0,
+            $supplier->shipper_filter_id
         );
-
-        $shipper->addStorages($sm ? $sm->stores->all() : []);
-
-        $shipper->setFilter($this->getFilterModel($sm?->filter_id));
-
-        return $shipper;
-    }
-
-    private function getFilterModel(?int $filter_id): ?Filter
-    {
-        return Filter::with('user')->find($filter_id);
     }
 }

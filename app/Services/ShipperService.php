@@ -6,8 +6,8 @@ namespace App\Services;
 
 use App\Domain\Product\ProductRepository;
 use App\Domain\Shipper\Shipper;
+use App\Domain\Shipper\ShipperFacade;
 use App\Domain\Shipper\ShipperRepository;
-use App\Domain\User\UserRepository;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
 use App\DTO\ShipperPaginationDTO;
@@ -16,57 +16,46 @@ class ShipperService
 {
     private ProductRepository $productRepository;
     private ShipperRepository $shipperRepository;
-    private UserRepository $userRepository;
 
-    public function __construct(ShipperRepository $shipperRepository, ProductRepository $productRepository, UserRepository $userRepository)
+    public function __construct(ShipperRepository $shipperRepository, ProductRepository $productRepository)
     {
         $this->shipperRepository = $shipperRepository;
         $this->productRepository = $productRepository;
-        $this->userRepository = $userRepository;
     }
 
     public function getAvailableWithProducts(ShipperDataTableDTO $sdt): ShipperPaginationDTO
     {
         $dto = $this->shipperRepository->getAvailableShippers($sdt);
 
-        $this->attachProductsToShippers($dto->shippers);
+        /** @var Shipper $shipper */
+        foreach ($dto->shippers as $shipper) {
 
-        $this->addUsersToShippers($dto->shippers);
+            $shipperFacade = new ShipperFacade($shipper);
+
+            $shipperFacade->setUsersToShipper();
+
+            $shipperFacade->setProductsToShipper();
+
+            $shipperFacade->setFilterToShipper();
+
+            $shipperFacade->setStoragesToShipper();
+        }
 
         return $dto;
     }
 
     public function getShipperById(int $id): Shipper
     {
-        $shipper = $this->shipperRepository->getShipperById($id);
+        $shipper = new ShipperFacade($this->shipperRepository->getShipperById($id));
 
-        $shipper->addUsers($this->userRepository->getUsersBy($shipper));
+        $shipper->setUsersToShipper();
 
-        return $shipper;
+        return $shipper->getShipper();
     }
 
     public function update(ShipperRequestDTO $shipperRequestDTO): Shipper
     {
         return $this->shipperRepository->updateShipper($shipperRequestDTO);
-    }
-
-    private function attachProductsToShippers(array $shippers): void
-    {
-        /** @var Shipper $shipper */
-        foreach ($shippers as $shipper) {
-            $products = $this->productRepository->getAvailableProductsToShipper($shipper);
-
-            foreach ($products as $product) {
-                $shipper->addProduct($product);
-            }
-        }
-    }
-
-    private function addUsersToShippers(array $shippers): void
-    {
-        foreach ($shippers as $shipper) {
-            $shipper->addUsers($this->userRepository->getUsersBy($shipper));
-        }
     }
 
 }

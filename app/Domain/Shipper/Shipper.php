@@ -6,6 +6,8 @@ namespace App\Domain\Shipper;
 
 use App\Domain\Product\Product;
 use App\Models\Filter;
+use App\Models\Supplier;
+use Illuminate\Support\Arr;
 
 class Shipper
 {
@@ -19,7 +21,7 @@ class Shipper
 
     public function __construct(
         public ?int $id,
-        public ?int $supplier_id,
+        public Supplier $supplier,
         public ?string $uuid,
         public ?string $origin_name,
         public ?string $name,
@@ -27,26 +29,44 @@ class Shipper
         public ?string $plan_fix_email,
         public ?string $plan_fix_link,
         public ?string $comment,
-        public ?string $min_sum,
-        public ?string $fill_storage
+        public float $min_sum,
+        public int $fill_storage,
+        public ?int $filter_id
     ) {}
+
+    public function getShipperId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getSupplier(): Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function getSupplierId(): int
+    {
+        $supplier = $this->getSupplier();
+
+        return $supplier->id;
+    }
 
     public function setFilter(?Filter $filter): void
     {
         $this->filter = $filter;
     }
 
-    public function addProduct(Product $product): void
+    public function setProducts($products): void
     {
-        $this->products[] = $product;
+        $this->products = $products;
     }
 
-    public function addUsers(array $users): void
+    public function setUsers(array $users): void
     {
         $this->users = $users;
     }
 
-    public function addStorages(array $stores): void
+    public function setStorages(array $stores): void
     {
         $this->storages = $stores;
     }
@@ -147,7 +167,7 @@ class Shipper
 
     public function getFilterId(): ?int
     {
-        return $this->filter?->id;
+        return $this->filter_id;
     }
 
     public function getFilterName(): ?string
@@ -194,5 +214,48 @@ class Shipper
         $params['exports'] = 'buyers';
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function getOldName(): ?string
+    {
+        return $this->origin_name;
+    }
+
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
+
+    public function getMinSum(): float
+    {
+        return $this->min_sum;
+    }
+
+    public function getFillStorage(): int
+    {
+        return $this->calculateFillStorage($this->totalStockProducts());
+    }
+
+    public function getFillStorageByStorages(): int
+    {
+        $storages = $this->getStockByStorages();
+
+        return $this->calculateFillStorage(array_sum(Arr::pluck($storages, 'quantity')));
+    }
+
+    private function calculateFillStorage($sum): int
+    {
+        $balance = $this->totalMinBalanceProducts();
+
+        if ($balance > 0) {
+            return round(($sum / $balance) * 100);
+        }
+
+        return 0;
     }
 }

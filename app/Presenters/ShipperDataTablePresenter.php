@@ -9,65 +9,126 @@ use App\DTO\ShipperPaginationDTO;
 use Illuminate\Support\Arr;
 
 
-
 class ShipperDataTablePresenter extends ShipperPresenter
 {
-    public static function data(Shipper $shipper): array
+    protected Shipper $shipper;
+    protected int $minBalance;
+
+    public function data(Shipper $shipper): array
     {
-        $minBalance = $shipper->totalMinBalanceProducts();
-
-        $storages = $shipper->getStockByStorages();
-        $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
-
-        $fillByStorageValue = self::fillCalc($sumStock, $minBalance);
-
-        $totalStock = $shipper->totalStockProducts();
-        $fillValue = self::fillCalc($totalStock, $minBalance);
-
-        $filter = $shipper->filter();
-
-        $exportSuppliers = $shipper->generateSuppliersExportLink();
-        $exportBuyers = $shipper->generateBuyersExportLink();
+        $this->shipper = $shipper;
+        $this->minBalance = $shipper->totalMinBalanceProducts();
 
         return [
-            'id' => $shipper->supplier_id,
-            'name' => view('shippers.columns.name', ['origin_name' => $shipper->origin_name, 'name' => $shipper->name])->render(),
-            'employee' => view('shippers.columns.users', ['users' => $shipper->users])->render(),
-            'filter' => view('shippers.columns.filter', ['filter' => $filter])->render(),
-            'min_sum' => money($shipper->min_sum),
+            'id' => $shipper->getSupplierId(),
+            'name' => $this->nameView(),
+            'employee' => $this->employeeView(),
+            'filter' => $this->filterView(),
+            'min_sum' => $this->minSumView(),
             'fill_storage' => $shipper->fill_storage,
-            'fill' => view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render(),
-            'fillByStorage' => view('shippers.columns.fillByStorage', compact('minBalance', 'storages', 'sumStock', 'fillByStorageValue'))->render(),
+            'fill' => $this->fillView(),
+            'fillByStorage' => $this->fillByStorageView(),
             'quantity' => $shipper->quantity(),
             'to_buy' => amount($shipper->totalToBuy()),
             'total_cost' => money($shipper->buyPrice()),
             'sender' => '',
             'text_for_sender' => '',
-            'export' => view('shippers.columns.export', ['suppliers' => $exportSuppliers, 'buyers' => $exportBuyers])->render(),
+            'export' => $this->exportView(),
             'stat' => '',
-            'edit' => view('shippers.columns.edit', ['link' => route('shipper.edit', $shipper->supplier_id)])->render(),
+            'edit' => $this->editView(),
         ];
     }
 
-    public static function present(ShipperPaginationDTO $dto): string
+    public function present(ShipperPaginationDTO $dto): string
     {
         $collect = collect([
             'draw' => request('draw'),
             'recordsTotal' => $dto->total,
             'recordsFiltered' => $dto->total,
-            'data' => array_map([self::class, 'data'], $dto->shippers),
+            'data' => array_map([$this, 'data'], $dto->shippers),
             'error' => '',
         ]);
 
         return $collect->toJson();
     }
 
-    public static function fillCalc($totalStock, $minBalance): int
+    protected function nameView(): string
     {
-        if ($minBalance > 0) {
-            return round(($totalStock / $minBalance) * 100);
-        }
+        $shipper = $this->shipper;
 
-        return 0;
+        $name = $shipper->getName();
+        $old_name = $shipper->getOldName();
+
+        return view('shippers.columns.name', compact('name', 'old_name'))->render();
+    }
+
+    protected function employeeView(): string
+    {
+        $shipper = $this->shipper;
+
+        $users = $shipper->getUsers();
+
+        return view('shippers.columns.users', compact('users'))->render();
+    }
+
+    protected function filterView(): string
+    {
+        $shipper = $this->shipper;
+
+        $filter = $shipper->filter();
+
+        return view('shippers.columns.filter', compact('filter'))->render();
+    }
+
+    protected function minSumView(): string
+    {
+        $shipper = $this->shipper;
+
+        return money($shipper->getMinSum());
+    }
+
+    protected function fillView(): string
+    {
+        $shipper = $this->shipper;
+
+        $totalStock = $shipper->totalStockProducts();
+
+        $minBalance = $this->minBalance;
+
+        $fillValue = $shipper->getFillStorage();
+
+        return view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render();
+    }
+
+    protected function fillByStorageView(): string
+    {
+        $shipper = $this->shipper;
+
+        $minBalance = $this->minBalance;
+
+        $storages = $shipper->getStockByStorages();
+
+        $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
+
+        $fillByStorageValue = $shipper->getFillStorageByStorages();
+
+        return view('shippers.columns.fillByStorage', compact('minBalance', 'storages', 'sumStock', 'fillByStorageValue'))->render();
+    }
+
+    protected function exportView(): string
+    {
+        $shipper = $this->shipper;
+
+        $exportSuppliers = $shipper->generateSuppliersExportLink();
+        $exportBuyers = $shipper->generateBuyersExportLink();
+
+        return view('shippers.columns.export', ['suppliers' => $exportSuppliers, 'buyers' => $exportBuyers])->render();
+    }
+
+    protected function editView(): string
+    {
+        $shipper = $this->shipper;
+
+        return view('shippers.columns.edit', ['link' => route('shipper.edit', $shipper->getSupplierId())])->render();
     }
 }

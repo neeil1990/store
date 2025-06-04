@@ -1,8 +1,6 @@
 @if ($name)
-    <a>{{ $name }}</a>
-    <br/>
-    <small>{{ $origin_name }}</small>
+    <a><i class="nav-icon far fa-circle text-success" data-toggle="tooltip" title="{{ __('Поставщик создан') }}"></i> {{ $name }}</a>
 @else
-    <a>{{ $origin_name }}</a>
+    <a><i class="nav-icon far fa-circle text-warning" data-toggle="tooltip" title="{{ __('Данные Мой склад') }}"></i> {{ $old_name }}</a>
 @endif
 

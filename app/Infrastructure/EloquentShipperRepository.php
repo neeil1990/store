@@ -11,7 +11,6 @@ use App\DTO\ShipperPaginationDTO;
 use App\DTO\ShipperRequestDTO;
 use App\Models\Supplier;
 use App\Models\Products;
-use Illuminate\Database\Query\JoinClause;
 
 class EloquentShipperRepository implements ShipperRepository
 {
@@ -26,9 +25,8 @@ class EloquentShipperRepository implements ShipperRepository
             ->whereJsonContains('attributes', Shipper::isAvailableShipper())
             ->groupBy('supplier');
 
-        $items = Supplier::joinSub($availableShippers, 'available_supplier', function (JoinClause $join) {
-            $join->on('suppliers.uuid', '=', 'available_supplier.supplier');
-        })->with('shipper')
+        $items = Supplier::whereIn('uuid', $availableShippers)
+            ->withShippers()
             ->when($sdt->search, function ($query, $search) {
                 $query->where('suppliers.name', 'LIKE', '%'. $search .'%');
             })
@@ -46,7 +44,7 @@ class EloquentShipperRepository implements ShipperRepository
 
     public function getShipperById(int $id): Shipper
     {
-        $supplier = Supplier::with('shipper')->find($id);
+        $supplier = Supplier::withShippers()->find($id);
 
         return (new ShipperFactory)->makeShipper($supplier);
     }

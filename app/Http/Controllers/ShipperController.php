@@ -30,7 +30,7 @@ class ShipperController extends Controller
 
         $shippers = $service->getAvailableWithProducts($sdt);
 
-        return ShipperDataTablePresenter::present($shippers);
+        return (new ShipperDataTablePresenter)->present($shippers);
     }
 
     public function edit($id, ShipperService $service): View

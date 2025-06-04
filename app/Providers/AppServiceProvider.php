@@ -27,6 +27,5 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ProductRepository::class, EloquentProductRepository::class);
         $this->app->bind(ShipperRepository::class, EloquentShipperRepository::class);
-        $this->app->bind(UserRepository::class, EloquentUserRepository::class);
     }
 }

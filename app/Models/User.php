@@ -68,4 +68,17 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function getUsersForShipper(?int $shipperId): array
+    {
+        $users = User::join('shipper_user', 'users.id', '=', 'shipper_user.user_id')
+            ->where('shipper_user.shipper_id', $shipperId)
+            ->get();
+
+        if ($users) {
+            return $users->all();
+        }
+
+        return [];
+    }
 }
