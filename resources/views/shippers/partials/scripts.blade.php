@@ -40,7 +40,7 @@
                 { data: 'id', title: '{{ __('№') }}' },
                 { data: 'name', title: '{{ __('Поставщик') }}' },
                 { data: 'employee', title: '{{ __('Привязан сотрудник') }}' },
-                { data: 'filter', orderable: false, title: '{{ __('Фильтр ') }}' },
+                { data: 'filter', title: '{{ __('Фильтр ') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
                 { data: 'fill', title: '{{ __('Наполняемость, %') }}' },
