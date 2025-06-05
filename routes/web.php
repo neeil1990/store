@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Infrastructure\EloquentShipperRepository;
 use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Sale\Store\StoreProductToDataBase;
 use App\Lib\Sale\SyncMyStoreWithDataBase;

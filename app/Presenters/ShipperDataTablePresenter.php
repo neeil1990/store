@@ -26,8 +26,8 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'filter' => $this->filterView(),
             'min_sum' => $this->minSumView(),
             'fill_storage' => $shipper->fill_storage,
-            'fill' => $this->fillView(),
-            'fillByStorage' => $this->fillByStorageView(),
+            'calc_occupancy_percent_all' => $this->warehouseOccupancyPercentAll(),
+            'calc_occupancy_percent_selected' => $this->warehouseOccupancyPercentSelected(),
             'quantity' => $shipper->quantity(),
             'to_buy' => amount($shipper->totalToBuy()),
             'total_cost' => money($shipper->buyPrice()),
@@ -87,32 +87,37 @@ class ShipperDataTablePresenter extends ShipperPresenter
         return money($shipper->getMinSum());
     }
 
-    protected function fillView(): string
+    protected function warehouseOccupancyPercentAll(): string
     {
         $shipper = $this->shipper;
 
-        $totalStock = $shipper->totalStockProducts();
+        // остаток
+        // $totalStock = $shipper->totalStockProducts();
 
-        $minBalance = $this->minBalance;
+        // неснижаемый остаток
+        // $minBalance = $this->minBalance;
 
-        $fillValue = $shipper->getFillStorage();
+        $value = $shipper->getCalcWarehouseOccupancyPercentAll();
 
-        return view('shippers.columns.fill', compact('totalStock', 'minBalance', 'fillValue'))->render();
+        return view('shippers.columns.occupancy-percent-all', compact('value'))->render();
     }
 
-    protected function fillByStorageView(): string
+    protected function warehouseOccupancyPercentSelected(): string
     {
         $shipper = $this->shipper;
 
-        $minBalance = $this->minBalance;
+        // неснижаемый остаток
+        // $minBalance = $this->minBalance;
 
-        $storages = $shipper->getStockByStorages();
+        // остаток по складам
+        // $storages = $shipper->getStockByStorages();
 
-        $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
+        // сумма остатка
+        // $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
 
-        $fillByStorageValue = $shipper->getFillStorageByStorages();
+        $value = $shipper->getCalcWarehouseOccupancyPercentSelected();
 
-        return view('shippers.columns.fillByStorage', compact('minBalance', 'storages', 'sumStock', 'fillByStorageValue'))->render();
+        return view('shippers.columns.occupancy-percent-selected', compact('value'))->render();
     }
 
     protected function exportView(): string

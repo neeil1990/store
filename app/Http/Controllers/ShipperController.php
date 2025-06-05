@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
+use App\Infrastructure\EloquentShipperRepository;
 use App\Models\Filter;
 use App\Models\Shipper;
 use App\Models\Store;
 use App\Models\User;
 use App\Presenters\ShipperDataTablePresenter;
 use App\Services\ShipperService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
+use App\Actions\CalculateWarehouseOccupancyAction;
 
 class ShipperController extends Controller
 {
@@ -68,5 +70,16 @@ class ShipperController extends Controller
         Shipper::query()->update(['fill_storage' => $request->input('fill_storage', 0)]);
 
         return redirect()->route('shipper.index');
+    }
+
+    public function calculateOccupancy(): JsonResponse
+    {
+        $calc = new CalculateWarehouseOccupancyAction(new EloquentShipperRepository);
+        $updated = $calc->execute();
+
+        return response()->json([
+            'message' => __('Процент заполняемости рассчитан успешно!'),
+            'result' => $updated,
+        ]);
     }
 }

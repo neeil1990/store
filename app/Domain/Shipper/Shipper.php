@@ -31,7 +31,9 @@ class Shipper
         public ?string $comment,
         public float $min_sum,
         public int $fill_storage,
-        public ?int $filter_id
+        public ?int $filter_id,
+        public int $calc_occupancy_percent_all,
+        public int $calc_occupancy_percent_selected,
     ) {}
 
     public function getShipperId(): ?int
@@ -236,16 +238,31 @@ class Shipper
         return $this->min_sum;
     }
 
-    public function getFillStorage(): int
+    public function getWarehouseOccupancyPercentAll(): int
     {
         return $this->calculateFillStorage($this->totalStockProducts());
     }
 
-    public function getFillStorageByStorages(): int
+    public function getWarehouseOccupancyPercentSelected(): int
     {
         $storages = $this->getStockByStorages();
 
         return $this->calculateFillStorage(array_sum(Arr::pluck($storages, 'quantity')));
+    }
+
+    public function getCalcWarehouseOccupancyPercentAll(): int
+    {
+        return $this->calc_occupancy_percent_all;
+    }
+
+    public function getCalcWarehouseOccupancyPercentSelected(): int
+    {
+        return $this->calc_occupancy_percent_selected;
+    }
+
+    public function isCreated(): bool
+    {
+        return $this->getShipperId() ? true : false;
     }
 
     private function calculateFillStorage($sum): int

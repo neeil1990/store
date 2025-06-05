@@ -43,8 +43,8 @@
                 { data: 'filter', title: '{{ __('Фильтр ') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
-                { data: 'fill', title: '{{ __('Наполняемость, %') }}' },
-                { data: 'fillByStorage', title: '{{ __('Наполняемость по складам, %') }}' },
+                { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}' },
+                { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}' },
                 { data: 'quantity', title: '{{ __('Кол-во товаров всего') }}' },
                 { data: 'to_buy', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
@@ -110,6 +110,22 @@
                     },
                     available: function (dt, config) {
                         return {{ auth()->user()->can('update fill storage') }};
+                    }
+                },
+                {
+                    className: 'btn btn-default btn-sm',
+                    text: 'Рассчитать наполняемость',
+                    action: function (e, dt, node, config, cb) {
+                        this.disable();
+                        this.processing(true);
+
+                        axios.get('{{ route('shipper.calculate-occupancy') }}').then((response) => {
+                            this.enable();
+                            this.processing(false);
+                            this.draw(true);
+
+                            this.buttons.info('Рассчитать наполняемость', response.data.message + ' Обновленно: ' + response.data.result, 3000);
+                        });
                     }
                 },
                 {

@@ -36,9 +36,10 @@ class ShipperService
 
             $shipperFacade->setProductsToShipper();
 
+            $shipperFacade->setStoragesToShipper();
+
             $shipperFacade->setFilterToShipper();
 
-            $shipperFacade->setStoragesToShipper();
         }
 
         return $dto;

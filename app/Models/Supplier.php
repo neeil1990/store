@@ -37,6 +37,8 @@ class Supplier extends Model
                 'shippers.min_sum as shipper_min_sum',
                 'shippers.fill_storage as shipper_fill_storage',
                 'shippers.filter_id as shipper_filter_id',
+                'shippers.calc_occupancy_percent_all as shipper_calc_occupancy_percent_all',
+                'shippers.calc_occupancy_percent_selected as shipper_calc_occupancy_percent_selected',
             );
     }
 }

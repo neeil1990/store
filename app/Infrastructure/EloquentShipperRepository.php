@@ -42,9 +42,13 @@ class EloquentShipperRepository implements ShipperRepository
         return new ShipperPaginationDTO($shippers, $items->total(), $items->total());
     }
 
-    public function getShipperById(int $id): Shipper
+    /**
+     * @param int $supplier_id
+     * @return Shipper
+     */
+    public function getShipperById(int $supplier_id): Shipper
     {
-        $supplier = Supplier::withShippers()->find($id);
+        $supplier = Supplier::withShippers()->find($supplier_id);
 
         return (new ShipperFactory)->makeShipper($supplier);
     }

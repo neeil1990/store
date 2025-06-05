@@ -21,7 +21,9 @@ class ShipperFactory
             $supplier->shipper_comment,
             $supplier->shipper_min_sum ?? 0,
             $supplier->shipper_fill_storage ?? 0,
-            $supplier->shipper_filter_id
+            $supplier->shipper_filter_id,
+            $supplier->shipper_calc_occupancy_percent_all ?? 0,
+            $supplier->shipper_calc_occupancy_percent_selected ?? 0,
         );
     }
 }

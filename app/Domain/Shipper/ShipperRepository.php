@@ -11,7 +11,7 @@ interface ShipperRepository
 {
     public function getAvailableShippers(ShipperDataTableDTO $requestDTO): ShipperPaginationDTO;
 
-    public function getShipperById(int $id): Shipper;
+    public function getShipperById(int $supplier_id): Shipper;
 
     public function updateShipper(ShipperRequestDTO $shipperRequestDTO): Shipper;
 }
