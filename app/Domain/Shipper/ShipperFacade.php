@@ -33,7 +33,7 @@ class ShipperFacade
         return $this;
     }
 
-    public function getShipper(): ?Shipper
+    public function getShipper(): Shipper
     {
         return $this->shipper;
     }
@@ -65,5 +65,24 @@ class ShipperFacade
         $this->shipper->setStorages($supplier->shipper?->stores->all() ?? []);
 
         return $this;
+    }
+
+    public function getWarehouseStockAll(): int
+    {
+        $this->setProductsToShipper();
+
+        return $this->getShipper()->totalStockProducts();
+    }
+
+    public function getWarehouseStockSelected(): int
+    {
+
+    }
+
+    public function getMinimumBalance(): int
+    {
+        $this->setProductsToShipper();
+
+        return $this->getShipper()->totalMinBalanceProducts();
     }
 }

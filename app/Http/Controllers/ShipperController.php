@@ -82,4 +82,18 @@ class ShipperController extends Controller
             'result' => $updated,
         ]);
     }
+
+    public function warehouseStockAll(int $supplier_id): string
+    {
+        $repository = new EloquentShipperRepository;
+
+        $shipper = $repository->getShipperById($supplier_id);
+
+        $facade = new \App\Domain\Shipper\ShipperFacade($shipper);
+
+        return view('shippers.partials.warehouse-occupancy-all-tooltip', [
+            'stock' => $facade->getWarehouseStockAll(),
+            'balance' => $facade->getMinimumBalance()
+        ])->render();
+    }
 }

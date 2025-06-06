@@ -5,6 +5,7 @@ use App\Http\Controllers\ShipperController;
 
 Route::get('/shipper/json', [ShipperController::class, 'json'])->name('shipper.json');
 Route::get('/shipper/calculate-occupancy', [ShipperController::class, 'calculateOccupancy'])->name('shipper.calculate-occupancy');
+Route::get('/shipper/warehouse-stock-all/{supplier_id}', [ShipperController::class, 'warehouseStockAll'])->name('shipper.warehouse-stock-all');
 
 Route::resource('shipper', ShipperController::class)->only([
     'index', 'edit', 'update'

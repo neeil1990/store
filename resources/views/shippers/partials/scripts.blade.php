@@ -36,6 +36,7 @@
 
                 }
             },
+            rowId: 'id',
             columns: [
                 { data: 'id', title: '{{ __('№') }}' },
                 { data: 'name', title: '{{ __('Поставщик') }}' },
@@ -43,8 +44,8 @@
                 { data: 'filter', title: '{{ __('Фильтр ') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
-                { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}' },
-                { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}' },
+                { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}', className: 'calc_occupancy_percent_all' },
+                { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}', className: 'calc_occupancy_percent_selected' },
                 { data: 'quantity', title: '{{ __('Кол-во товаров всего') }}' },
                 { data: 'to_buy', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
@@ -87,7 +88,11 @@
                 api.buttons().container().prependTo('.buttons .col-12');
             },
             drawCallback: function (settings) {
-                tooltip();
+                let api = this.api();
+
+                api.rows().ids().each(function (supplier_id) {
+                    loadWarehouseOccupancyTooltip(supplier_id);
+                });
             },
             buttons: [
                 {
@@ -135,6 +140,28 @@
                 }
             ]
         });
+
+        function loadWarehouseOccupancyTooltip(supplier_id)
+        {
+            try {
+                let row = table.row(`#${supplier_id}`).node();
+
+                let $all = $(table.cell(row, '.calc_occupancy_percent_all').node()).find('span');
+                let $selected = $(table.cell(row, '.calc_occupancy_percent_selected').node()).find('span');
+
+                axios.get('/shipper/warehouse-stock-all/' + supplier_id).then((response) => {
+                    $all.tooltip({
+                        html: true,
+                        title: response.data
+                    });
+
+                    $all.addClass('bg-success');
+                });
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
     })(jQuery);
 

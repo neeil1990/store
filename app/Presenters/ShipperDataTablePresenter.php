@@ -89,15 +89,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
 
     protected function warehouseOccupancyPercentAll(): string
     {
-        $shipper = $this->shipper;
-
-        // остаток
-        // $totalStock = $shipper->totalStockProducts();
-
-        // неснижаемый остаток
-        // $minBalance = $this->minBalance;
-
-        $value = $shipper->getCalcWarehouseOccupancyPercentAll();
+        $value = $this->shipper->getCalcWarehouseOccupancyPercentAll();
 
         return view('shippers.columns.occupancy-percent-all', compact('value'))->render();
     }
