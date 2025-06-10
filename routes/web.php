@@ -37,11 +37,11 @@ Route::get('get-product', function () {
 Route::get('dev', function () {
     $repository = new EloquentShipperRepository();
 
-    $shipper = $repository->getShipperById(61);
+    //$shipper = $repository->getShipperById(61);
 
-    $facade = new \App\Domain\Shipper\ShipperFacade($shipper);
+    //$facade = new \App\Domain\Shipper\ShipperFacade($shipper);
 
-    dd($facade->getWarehouseStockAll(), $facade->getMinimumBalance());
+    //$shipper = $facade->getShipperWithProducts();
 });
 
 Route::get('/', function () {

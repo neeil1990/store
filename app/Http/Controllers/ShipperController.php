@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\UpdateQuantityProductsAction;
 use App\Domain\Shipper\ShipperFacade;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
@@ -73,14 +74,26 @@ class ShipperController extends Controller
         return redirect()->route('shipper.index');
     }
 
-    public function calculateOccupancy(): JsonResponse
+    public function calculateFields(): JsonResponse
     {
-        $calc = new CalculateWarehouseOccupancyAction(new EloquentShipperRepository);
-        $updated = $calc->execute();
+        $repository = new EloquentShipperRepository;
+
+        $message = __('Вычисляемые поля успешно обновлены! ');
+
+        $occupancyCount = (new CalculateWarehouseOccupancyAction($repository))
+            ->execute();
+
+        $message .= 'Процент наполняемости: ' . $occupancyCount;
+
+        $quantityUpdate = new UpdateQuantityProductsAction($repository);
+        $quantityUpdate->execute();
+
+        $quantityCount = $quantityUpdate->getCount();
+
+        $message .= ' Количество товаров: ' . $quantityCount;
 
         return response()->json([
-            'message' => __('Процент заполняемости рассчитан успешно!'),
-            'result' => $updated,
+            'message' => $message,
         ]);
     }
 

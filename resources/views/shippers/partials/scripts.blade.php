@@ -46,7 +46,7 @@
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
                 { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}', className: 'calc_occupancy_percent_all' },
                 { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}', className: 'calc_occupancy_percent_selected' },
-                { data: 'quantity', title: '{{ __('Кол-во товаров всего') }}' },
+                { data: 'calc_quantity', title: '{{ __('Кол-во товаров всего') }}' },
                 { data: 'to_buy', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
                 { data: 'sender', title: '{{ __('Авто рассылка') }}' },
@@ -119,17 +119,17 @@
                 },
                 {
                     className: 'btn btn-default btn-sm',
-                    text: 'Рассчитать наполняемость',
+                    text: 'Обновить вычисляемые поля',
                     action: function (e, dt, node, config, cb) {
                         this.disable();
                         this.processing(true);
 
-                        axios.get('{{ route('shipper.calculate-occupancy') }}').then((response) => {
+                        axios.get('{{ route('shipper.calculate-fields') }}').then((response) => {
                             this.enable();
                             this.processing(false);
                             this.draw(true);
 
-                            this.buttons.info('Рассчитать наполняемость', response.data.message + ' Обновленно: ' + response.data.result, 3000);
+                            this.buttons.info('Вычисляемые поля', response.data.message, 3000);
                         });
                     }
                 },

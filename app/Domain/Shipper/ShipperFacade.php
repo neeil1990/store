@@ -81,6 +81,13 @@ class ShipperFacade
         return $this->getShipper()->totalMinBalanceProducts();
     }
 
+    public function getShipperWithProducts(): Shipper
+    {
+        $this->setProductsToShipper();
+
+        return $this->getShipper();
+    }
+
     public function getShipperWithWarehouses(): Shipper
     {
         $this->setProductsToShipper();
