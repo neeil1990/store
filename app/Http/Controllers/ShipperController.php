@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\UpdateQuantityProductsAction;
+use App\Actions\UpdateOccupancyShipperAction;
+use App\Actions\UpdateQuantityShipperAction;
+use App\Actions\UpdateToPurchaseShipperAction;
 use App\Domain\Shipper\ShipperFacade;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
@@ -76,24 +78,25 @@ class ShipperController extends Controller
 
     public function calculateFields(): JsonResponse
     {
-        $repository = new EloquentShipperRepository;
+        $message = __('Вычисляемые поля успешно обновлены! ') . PHP_EOL;
 
-        $message = __('Вычисляемые поля успешно обновлены! ');
+        $occupancyCount = new UpdateOccupancyShipperAction;
+        $occupancyCount->execute();
 
-        $occupancyCount = (new CalculateWarehouseOccupancyAction($repository))
-            ->execute();
+        $message .= 'Процент наполняемости: ' . $occupancyCount->getCount() . PHP_EOL;
 
-        $message .= 'Процент наполняемости: ' . $occupancyCount;
-
-        $quantityUpdate = new UpdateQuantityProductsAction($repository);
+        $quantityUpdate = new UpdateQuantityShipperAction;
         $quantityUpdate->execute();
 
-        $quantityCount = $quantityUpdate->getCount();
+        $message .= ' Количество товаров: ' . $quantityUpdate->getCount() . PHP_EOL;
 
-        $message .= ' Количество товаров: ' . $quantityCount;
+        $purchase = new UpdateToPurchaseShipperAction;
+        $purchase->execute();
+
+        $message .= ' К закупке: ' . $purchase->getCount() . PHP_EOL;
 
         return response()->json([
-            'message' => $message,
+            'message' => nl2br($message),
         ]);
     }
 

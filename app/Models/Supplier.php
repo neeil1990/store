@@ -40,6 +40,7 @@ class Supplier extends Model
                 'shippers.calc_occupancy_percent_all as shipper_calc_occupancy_percent_all',
                 'shippers.calc_occupancy_percent_selected as shipper_calc_occupancy_percent_selected',
                 'shippers.calc_quantity as shipper_calc_quantity',
+                'shippers.calc_to_purchase as shipper_calc_to_purchase',
             );
     }
 }

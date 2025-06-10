@@ -3,36 +3,21 @@
 namespace App\Actions;
 
 use App\Domain\Shipper\Shipper as ShipperEntity;
-use App\Domain\Shipper\ShipperRepository;
 use App\Domain\Shipper\ShipperFacade;
-use App\Models\Shipper;
 
-class CalculateWarehouseOccupancyAction
+class UpdateOccupancyShipperAction extends UpdateShipperMain
 {
-    private ShipperRepository $shipperRepository;
-
-    protected int $updated = 0;
-
-    public function __construct(ShipperRepository $shipperRepository)
+    public function execute(): void
     {
-        $this->shipperRepository = $shipperRepository;
-    }
-
-    public function execute(): int
-    {
-        $suppliers = Shipper::pluck('supplier_id');
-
-        foreach ($suppliers as $supplier_id) {
+        foreach ($this->supplier_ids as $supplier_id) {
             $shipper = $this->shipperRepository->getShipperById($supplier_id);
 
             $data = $this->calculateWarehouseOccupancyPercent($shipper);
 
-            if ($this->saveWarehouseOccupancyPercent($shipper->getShipperId(), $data)) {
-                $this->updated++;
+            if ($this->update($shipper->getShipperId(), $data)) {
+                $this->count++;
             }
         }
-
-        return $this->updated;
     }
 
     protected function calculateWarehouseOccupancyPercent(ShipperEntity $shipper): array
@@ -51,11 +36,6 @@ class CalculateWarehouseOccupancyAction
             'calc_occupancy_percent_all' => $occupancyPercentAll,
             'calc_occupancy_percent_selected' => $occupancyPercentSelected,
         ];
-    }
-
-    protected function saveWarehouseOccupancyPercent(int $id, array $data): bool
-    {
-        return Shipper::where('id', $id)->update($data);
     }
 
 }

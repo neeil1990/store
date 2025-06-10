@@ -27,7 +27,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'calc_occupancy_percent_all' => $this->warehouseOccupancyPercentAll(),
             'calc_occupancy_percent_selected' => $this->warehouseOccupancyPercentSelected(),
             'calc_quantity' => $shipper->getCalcQuantityProducts(),
-            'to_buy' => amount($shipper->totalToBuy()),
+            'calc_to_purchase' => amount($shipper->getCalcToPurchase()),
             'total_cost' => money($shipper->buyPrice()),
             'sender' => '',
             'text_for_sender' => '',

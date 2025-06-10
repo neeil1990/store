@@ -47,7 +47,7 @@
                 { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}', className: 'calc_occupancy_percent_all' },
                 { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}', className: 'calc_occupancy_percent_selected' },
                 { data: 'calc_quantity', title: '{{ __('Кол-во товаров всего') }}' },
-                { data: 'to_buy', title: '{{ __('К закупке') }}' },
+                { data: 'calc_to_purchase', title: '{{ __('К закупке') }}' },
                 { data: 'total_cost', title: '{{ __('Общая сумма закупки по поставщику') }}' },
                 { data: 'sender', title: '{{ __('Авто рассылка') }}' },
                 {
@@ -129,7 +129,7 @@
                             this.processing(false);
                             this.draw(true);
 
-                            this.buttons.info('Вычисляемые поля', response.data.message, 3000);
+                            this.buttons.info('Вычисляемые поля', response.data.message, 4000);
                         });
                     }
                 },
