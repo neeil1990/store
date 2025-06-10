@@ -6,8 +6,6 @@ namespace App\Presenters;
 
 use App\Domain\Shipper\Shipper;
 use App\DTO\ShipperPaginationDTO;
-use Illuminate\Support\Arr;
-
 
 class ShipperDataTablePresenter extends ShipperPresenter
 {
@@ -96,18 +94,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
 
     protected function warehouseOccupancyPercentSelected(): string
     {
-        $shipper = $this->shipper;
-
-        // неснижаемый остаток
-        // $minBalance = $this->minBalance;
-
-        // остаток по складам
-        // $storages = $shipper->getStockByStorages();
-
-        // сумма остатка
-        // $sumStock = array_sum(Arr::pluck($storages, 'quantity'));
-
-        $value = $shipper->getCalcWarehouseOccupancyPercentSelected();
+        $value = $this->shipper->getCalcWarehouseOccupancyPercentSelected();
 
         return view('shippers.columns.occupancy-percent-selected', compact('value'))->render();
     }

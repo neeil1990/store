@@ -26,10 +26,15 @@ $('#generate-password').click(function () {
     $($(this).data('class')).val(password);
 });
 
-function tooltip()
+function tooltip($node = null, title = '')
 {
-    $('[data-toggle="tooltip"]').tooltip({
-        'html': true
+    if (!$node) {
+        $node = $('[data-toggle="tooltip"]');
+    }
+
+    $node.tooltip({
+        'html': true,
+        'title': title
     });
 }
 

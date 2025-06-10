@@ -150,14 +150,12 @@
                 let $selected = $(table.cell(row, '.calc_occupancy_percent_selected').node()).find('span');
 
                 axios.get('/shipper/warehouse-stock-all/' + supplier_id).then((response) => {
-                    $all.tooltip({
-                        html: true,
-                        title: response.data
-                    });
-
-                    $all.addClass('bg-success');
+                    tooltip($all.addClass('bg-success'), response.data);
                 });
 
+                axios.get('/shipper/warehouse-stock-selected/' + supplier_id).then((response) => {
+                    tooltip($selected.addClass('bg-success'), response.data);
+                });
             } catch (error) {
                 console.error(error);
             }

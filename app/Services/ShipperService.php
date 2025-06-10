@@ -39,7 +39,6 @@ class ShipperService
             $shipperFacade->setStoragesToShipper();
 
             $shipperFacade->setFilterToShipper();
-
         }
 
         return $dto;
@@ -49,9 +48,7 @@ class ShipperService
     {
         $shipper = new ShipperFacade($this->shipperRepository->getShipperById($id));
 
-        $shipper->setUsersToShipper();
-
-        return $shipper->getShipper();
+        return $shipper->getShipperWithWarehousesAndUsers();
     }
 
     public function update(ShipperRequestDTO $shipperRequestDTO): Shipper

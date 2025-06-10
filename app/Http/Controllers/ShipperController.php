@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shipper\ShipperFacade;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
 use App\Infrastructure\EloquentShipperRepository;
@@ -94,6 +95,21 @@ class ShipperController extends Controller
         return view('shippers.partials.warehouse-occupancy-all-tooltip', [
             'stock' => $facade->getWarehouseStockAll(),
             'balance' => $facade->getMinimumBalance()
+        ])->render();
+    }
+
+    public function warehouseStockSelected(int $supplier_id): string
+    {
+        $repository = new EloquentShipperRepository;
+
+        $facade = new \App\Domain\Shipper\ShipperFacade($repository->getShipperById($supplier_id));
+
+        $shipper = $facade->getShipperWithWarehouses();
+
+        return view('shippers.partials.warehouse-occupancy-selected-tooltip', [
+            'warehouses' => $shipper->getStockByStorages(),
+            'balance' => $facade->getMinimumBalance(),
+            'stock' => $facade->getWarehouseStockAll()
         ])->render();
     }
 }
