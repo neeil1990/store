@@ -34,10 +34,6 @@ class ShipperService
 
             $shipperFacade->setUsersToShipper();
 
-            $shipperFacade->setProductsToShipper();
-
-            $shipperFacade->setStoragesToShipper();
-
             $shipperFacade->setFilterToShipper();
         }
 

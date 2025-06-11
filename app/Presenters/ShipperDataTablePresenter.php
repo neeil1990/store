@@ -10,25 +10,23 @@ use App\DTO\ShipperPaginationDTO;
 class ShipperDataTablePresenter extends ShipperPresenter
 {
     protected Shipper $shipper;
-    protected int $minBalance;
 
     public function data(Shipper $shipper): array
     {
         $this->shipper = $shipper;
-        $this->minBalance = $shipper->totalMinBalanceProducts();
 
         return [
             'id' => $shipper->getSupplierId(),
             'name' => $this->nameView(),
             'employee' => $this->employeeView(),
             'filter' => $this->filterView(),
-            'min_sum' => $this->minSumView(),
+            'min_sum' => money($shipper->getMinSum()),
             'fill_storage' => $shipper->fill_storage,
             'calc_occupancy_percent_all' => $this->warehouseOccupancyPercentAll(),
             'calc_occupancy_percent_selected' => $this->warehouseOccupancyPercentSelected(),
             'calc_quantity' => $shipper->getCalcQuantityProducts(),
             'calc_to_purchase' => amount($shipper->getCalcToPurchase()),
-            'total_cost' => money($shipper->buyPrice()),
+            'calc_purchase_total' => money($shipper->getCalcPurchaseTotal()),
             'sender' => '',
             'text_for_sender' => '',
             'export' => $this->exportView(),
@@ -62,27 +60,16 @@ class ShipperDataTablePresenter extends ShipperPresenter
 
     protected function employeeView(): string
     {
-        $shipper = $this->shipper;
-
-        $users = $shipper->getUsers();
+        $users = $this->shipper->getUsers();
 
         return view('shippers.columns.users', compact('users'))->render();
     }
 
     protected function filterView(): string
     {
-        $shipper = $this->shipper;
-
-        $filter = $shipper->filter();
+        $filter = $this->shipper->filter();
 
         return view('shippers.columns.filter', compact('filter'))->render();
-    }
-
-    protected function minSumView(): string
-    {
-        $shipper = $this->shipper;
-
-        return money($shipper->getMinSum());
     }
 
     protected function warehouseOccupancyPercentAll(): string
@@ -111,8 +98,6 @@ class ShipperDataTablePresenter extends ShipperPresenter
 
     protected function editView(): string
     {
-        $shipper = $this->shipper;
-
-        return view('shippers.columns.edit', ['link' => route('shipper.edit', $shipper->getSupplierId())])->render();
+        return view('shippers.columns.edit', ['link' => route('shipper.edit', $this->shipper->getSupplierId())])->render();
     }
 }

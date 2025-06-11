@@ -26,6 +26,7 @@ class ShipperFactory
             $supplier->shipper_calc_occupancy_percent_selected ?? 0,
             $supplier->shipper_calc_quantity ?? 0,
             $supplier->shipper_calc_to_purchase ?? 0,
+            $supplier->shipper_calc_purchase_total ?? 0,
         );
     }
 }

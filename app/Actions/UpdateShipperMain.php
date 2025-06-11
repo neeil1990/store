@@ -6,7 +6,7 @@ use App\Domain\Shipper\ShipperRepository;
 use App\Infrastructure\EloquentShipperRepository;
 use App\Models\Shipper;
 
-class UpdateShipperMain
+abstract class UpdateShipperMain
 {
     protected int $count = 0;
 
@@ -18,6 +18,8 @@ class UpdateShipperMain
         $this->shipperRepository = new EloquentShipperRepository;
         $this->supplier_ids = Shipper::pluck('supplier_id')->toArray();
     }
+
+    abstract public function execute(): void;
 
     protected function update(int $id, array $update): bool
     {

@@ -36,6 +36,7 @@ class Shipper
         public int $calc_occupancy_percent_selected,
         public int $calc_quantity,
         public int $calc_to_purchase,
+        public float $calc_purchase_total,
     ) {}
 
     public function getShipperId(): ?int
@@ -275,6 +276,11 @@ class Shipper
     public function getCalcToPurchase(): int
     {
         return $this->calc_to_purchase ?? 0;
+    }
+
+    public function getCalcPurchaseTotal(): float
+    {
+        return $this->calc_purchase_total ?? 0;
     }
 
     private function calculateFillStorage($sum): int
