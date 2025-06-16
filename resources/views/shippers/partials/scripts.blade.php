@@ -119,6 +119,17 @@
                 },
                 {
                     className: 'btn btn-default btn-sm',
+                    text: 'Склады',
+                    attr: {
+                        "data-toggle": 'modal',
+                        "data-target": '#form-warehouses',
+                    },
+                    available: function (dt, config) {
+                        return {{ auth()->user()->can('update warehouses') }};
+                    }
+                },
+                {
+                    className: 'btn btn-default btn-sm',
                     text: 'Обновить вычисляемые поля',
                     action: function (e, dt, node, config, cb) {
                         this.disable();

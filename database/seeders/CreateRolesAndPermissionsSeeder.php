@@ -25,6 +25,7 @@ class CreateRolesAndPermissionsSeeder extends Seeder
         $deleteUser = Permission::firstOrCreate(['name' => 'delete user']);
         $updateMinSum = Permission::firstOrCreate(['name' => 'update min sum']);
         $updateFillStorage = Permission::firstOrCreate(['name' => 'update fill storage']);
+        $updateWarehouses = Permission::firstOrCreate(['name' => 'update warehouses']);
 
         $admin->givePermissionTo([
             $createUser,
@@ -32,6 +33,7 @@ class CreateRolesAndPermissionsSeeder extends Seeder
             $deleteUser,
             $updateMinSum,
             $updateFillStorage,
+            $updateWarehouses,
         ]);
 
         $user = User::find($this->userID);

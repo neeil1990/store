@@ -31,8 +31,9 @@
         </div>
     </div>
 
-    <x-modal-default modal="form-min-sum" :body="$minSumView" :action="route('shipper.minSumUpdate')" />
-    <x-modal-default modal="form-fill-storage" :body="$fillStorageView" :action="route('shipper.fillStorageUpdate')" />
+    <x-modal-default modal="form-min-sum" :body="view('shippers.cards.form-min-sum')->render()" :action="route('shipper.bulkUpdate', 'min_sum')" />
+    <x-modal-default modal="form-fill-storage" :body="view('shippers.cards.form-fill-storage')->render()" :action="route('shipper.bulkUpdate', 'fill_storage')" />
+    <x-modal-default modal="form-warehouses" :body="view('shippers.cards.form-warehouses')->render()" :action="route('shipper.bulkUpdateWarehouse')" />
 
     @push('styles')
         @include('shippers.partials.styles')

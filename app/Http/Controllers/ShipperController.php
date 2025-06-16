@@ -26,10 +26,7 @@ class ShipperController extends Controller
 {
     public function index(): View
     {
-        return view('shippers.index', [
-            'minSumView' => view('shippers.cards.form-min-sum')->render(),
-            'fillStorageView' => view('shippers.cards.form-fill-storage')->render(),
-        ]);
+        return view('shippers.index');
     }
 
     public function json(Request $request, ShipperService $service): string
@@ -63,19 +60,24 @@ class ShipperController extends Controller
         return redirect()->route('shipper.index');
     }
 
-    public function minSumUpdate(Request $request): RedirectResponse
+    public function bulkUpdate(Request $request, string $field): RedirectResponse
     {
-        Shipper::query()->update(['min_sum' => $request->input('min_sum', 0)]);
+        Shipper::query()->update([$field => $request->input($field, 0)]);
 
         return redirect()->route('shipper.index');
     }
 
-    public function fillStorageUpdate(Request $request): RedirectResponse
+    public function bulkUpdateWarehouse(Request $request): RedirectResponse
     {
-        Shipper::query()->update(['fill_storage' => $request->input('fill_storage', 0)]);
+        $warehouses = $request->input('warehouses', []);
+
+        foreach (Shipper::all() as $shipper) {
+            $shipper->stores()->sync($warehouses);
+        }
 
         return redirect()->route('shipper.index');
     }
+
 
     public function calculateFields(): JsonResponse
     {
