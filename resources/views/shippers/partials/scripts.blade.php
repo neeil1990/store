@@ -24,6 +24,7 @@
                 },
             },
             order: [[0, 'asc']],
+            pageLength: 150,
             lengthMenu: [3, 5, 10, 30, 50, 150],
             responsive: false,
             autoWidth: false,
