@@ -43,6 +43,7 @@
                 { data: 'name', title: '{{ __('Поставщик') }}' },
                 { data: 'employee', title: '{{ __('Привязан сотрудник') }}' },
                 { data: 'filter', title: '{{ __('Фильтр ') }}' },
+                { data: 'comment', title: '{{ __('Комментарий') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
                 { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}', className: 'calc_occupancy_percent_all' },

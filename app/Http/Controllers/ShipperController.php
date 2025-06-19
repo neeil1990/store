@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\UpdateOccupancyShipperAction;
-use App\Actions\UpdatePurchaseTotalShipperAction;
-use App\Actions\UpdateQuantityShipperAction;
-use App\Actions\UpdateToPurchaseShipperAction;
-use App\Domain\Shipper\ShipperFacade;
+use App\Actions\CalculateFieldsAction;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
 use App\Infrastructure\EloquentShipperRepository;
@@ -20,13 +16,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Actions\CalculateWarehouseOccupancyAction;
 
 class ShipperController extends Controller
 {
     public function index(): View
     {
-        return view('shippers.index');
+        $calculate = new CalculateFieldsAction();
+
+        return view('shippers.index', ['computedAt' =>  $calculate->computedAt()]);
     }
 
     public function json(Request $request, ShipperService $service): string
@@ -81,30 +78,12 @@ class ShipperController extends Controller
 
     public function calculateFields(): JsonResponse
     {
-        $message = __('Вычисляемые поля успешно обновлены! ') . PHP_EOL;
+        $calculate = new CalculateFieldsAction();
 
-        $occupancyCount = new UpdateOccupancyShipperAction;
-        $occupancyCount->execute();
-
-        $message .= 'Процент наполняемости: ' . $occupancyCount->getCount() . PHP_EOL;
-
-        $quantityUpdate = new UpdateQuantityShipperAction;
-        $quantityUpdate->execute();
-
-        $message .= 'Количество товаров: ' . $quantityUpdate->getCount() . PHP_EOL;
-
-        $purchase = new UpdateToPurchaseShipperAction;
-        $purchase->execute();
-
-        $message .= 'К закупке: ' . $purchase->getCount() . PHP_EOL;
-
-        $purchaseTotal = new UpdatePurchaseTotalShipperAction;
-        $purchaseTotal->execute();
-
-        $message .= 'Общая сумма закупки по поставщику: ' . $purchaseTotal->getCount() . PHP_EOL;
+        $calculate->execute();
 
         return response()->json([
-            'message' => nl2br($message)
+            'message' => $calculate->getMessage(),
         ]);
     }
 

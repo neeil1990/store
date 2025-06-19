@@ -15,6 +15,24 @@
 
                 <div class="card-body">
 
+                    <div class="row">
+                        @if ($computedAt)
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <div class="info-box mb-3">
+                                <span class="info-box-icon bg-info"><i class="fas fa-calculator"></i></span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{{ __('Дата обновления вычисляемых полей') }}</span>
+                                    <span class="info-box-number">{{ $computedAt }}</span>
+                                </div>
+                                <!-- /.info-box-content -->
+                            </div>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                        @endif
+                    </div>
+
                     <div class="row buttons mb-2">
                         <div class="col-12"></div>
                     </div>

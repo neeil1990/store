@@ -283,6 +283,11 @@ class Shipper
         return $this->calc_purchase_total ?? 0;
     }
 
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
     private function calculateFillStorage($sum): int
     {
         $balance = $this->totalMinBalanceProducts();

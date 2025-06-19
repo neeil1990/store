@@ -20,6 +20,7 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'name' => $this->nameView(),
             'employee' => $this->employeeView(),
             'filter' => $this->filterView(),
+            'comment' => $shipper->getComment(),
             'min_sum' => money($shipper->getMinSum()),
             'fill_storage' => $shipper->fill_storage,
             'calc_occupancy_percent_all' => $this->warehouseOccupancyPercentAll(),
