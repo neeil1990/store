@@ -10,6 +10,9 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
+<script src="{{ asset('plugins/datatables-searchbuilder/js/dataTables.searchBuilder.js') }}"></script>
+<script src="{{ asset('plugins/datatables-searchbuilder/js/searchBuilder.bootstrap4.js') }}"></script>
+
 <script>
     (function ($) {
 
@@ -21,6 +24,11 @@
                 paginate: {
                     previous: '<',
                     next: '>',
+                },
+                searchBuilder: {
+                    title: 'Фильтр (%d)',
+                    button: 'Фильтр',
+                    clearAll: 'Очистить',
                 },
             },
             order: [[0, 'asc']],
@@ -76,13 +84,13 @@
             initComplete: function () {
                 let api = this.api();
 
-                let quantity = 8;
+                let quantity = 9;
                 hintHeader(quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
 
-                let fillByStorage = 7;
+                let fillByStorage = 8;
                 hintHeader(fillByStorage, '{{ __('Именно по выбранным складам') }}');
 
-                let fill = 6;
+                let fill = 7;
                 hintHeader(fill, '{{ __('По всем складам') }}');
 
                 tooltip();
@@ -97,6 +105,13 @@
                 });
             },
             buttons: [
+                {
+                    className: 'btn btn-default btn-sm',
+                    extend: 'searchBuilder',
+                    config: {
+                        depthLimit: 1
+                    },
+                },
                 {
                     className: 'btn btn-default btn-sm',
                     text: 'Мин. сумма закупки',
