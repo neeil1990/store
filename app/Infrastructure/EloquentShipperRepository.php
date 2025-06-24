@@ -20,6 +20,8 @@ class EloquentShipperRepository implements ShipperRepository
 
         $order = $this->getColumnByIndex($sdt->columns, $sdt->orderBy);
 
+        $searchBuilder = $sdt->searchBuilder;
+
         $availableShippers = Products::select('supplier')
             ->whereNotNull('supplier')
             ->whereJsonContains('attributes', Shipper::isAvailableShipper())
@@ -29,6 +31,22 @@ class EloquentShipperRepository implements ShipperRepository
             ->withShippers()
             ->when($sdt->search, function ($query, $search) {
                 $query->where('suppliers.name', 'LIKE', '%'. $search .'%');
+            })
+            ->when($searchBuilder, function ($query, $search) {
+
+                $criteria = $search['criteria'];
+
+                if ($search['logic'] === "AND") {
+                    foreach ($criteria as  $value) {
+                        if ($value['condition'] === "between") {
+                            $query->whereBetween($value['origData'], $value['value']);
+                        } else {
+                            $query->where($value['origData'], $value['condition'], $value['value1']);
+                        }
+                    }
+                } else {
+                    //
+                }
             })
             ->orderBy($order, $sdt->dir)
             ->paginate($sdt->length, ['*'], 'page', $page);

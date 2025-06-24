@@ -16,6 +16,11 @@
 <script>
     (function ($) {
 
+        const employee = 2;
+        const calc_occupancy_percent_all = 7;
+        const calc_occupancy_percent_selected = 8;
+        const calc_quantity = 9;
+
         let table = $('#products-table').DataTable({
             language: {
                 lengthMenu: '_MENU_',
@@ -29,6 +34,19 @@
                     title: 'Фильтр (%d)',
                     button: 'Фильтр',
                     clearAll: 'Очистить',
+                    condition: 'Условие',
+                    value: 'Значение',
+                    conditions: {
+                        number: {
+                            equals: 'Равно',
+                            gt: 'Больше',
+                            lt: 'Меньше',
+                            between: 'Между',
+                        },
+                        string: {
+                            'equals': 'Равно'
+                        }
+                    },
                 },
             },
             order: [[0, 'asc']],
@@ -84,14 +102,11 @@
             initComplete: function () {
                 let api = this.api();
 
-                let quantity = 9;
-                hintHeader(quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
+                hintHeader(calc_quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
 
-                let fillByStorage = 8;
-                hintHeader(fillByStorage, '{{ __('Именно по выбранным складам') }}');
+                hintHeader(calc_occupancy_percent_selected, '{{ __('Именно по выбранным складам') }}');
 
-                let fill = 7;
-                hintHeader(fill, '{{ __('По всем складам') }}');
+                hintHeader(calc_occupancy_percent_all, '{{ __('По всем складам') }}');
 
                 tooltip();
 
@@ -109,7 +124,31 @@
                     className: 'btn btn-default btn-sm',
                     extend: 'searchBuilder',
                     config: {
-                        depthLimit: 1
+                        depthLimit: 1,
+                        columns: [calc_occupancy_percent_all, calc_occupancy_percent_selected, employee],
+                        conditions: {
+                            "html-num": {
+                                'null': null,
+                                '!null': null,
+                                '!between': null,
+                                '!=': null,
+                                '<=': null,
+                                '>=': null,
+                            },
+                            "html": {
+                                'contains': null,
+                                '!contains': null,
+                                'starts': null,
+                                '!starts': null,
+                                'ends': null,
+                                '!ends': null,
+                                'null': null,
+                                '!null': null,
+                                '!=': null,
+                                '<=': null,
+                                '>=': null,
+                            }
+                        },
                     },
                 },
                 {
