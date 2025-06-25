@@ -201,7 +201,6 @@ class Shipper
         unset($params['length']);
 
         $params['exports'] = 'suppliers';
-        $params['toBuy'] = true;
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
