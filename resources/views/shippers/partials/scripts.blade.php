@@ -44,7 +44,7 @@
                             between: 'Между',
                         },
                         string: {
-                            'equals': 'Равно'
+                            startsWith: 'Начинается с'
                         }
                     },
                 },
@@ -138,12 +138,12 @@
                             "html": {
                                 'contains': null,
                                 '!contains': null,
-                                'starts': null,
                                 '!starts': null,
                                 'ends': null,
                                 '!ends': null,
                                 'null': null,
                                 '!null': null,
+                                '=': null,
                                 '!=': null,
                                 '<=': null,
                                 '>=': null,

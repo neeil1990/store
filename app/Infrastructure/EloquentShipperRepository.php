@@ -40,6 +40,8 @@ class EloquentShipperRepository implements ShipperRepository
                     foreach ($criteria as  $value) {
                         if ($value['condition'] === "between") {
                             $query->whereBetween($value['origData'], $value['value']);
+                        } elseif ($value['condition'] === "starts") {
+                            $query->havingRaw($value['origData'] . ' LIKE ?', [$value['value1'] . '%']);
                         } else {
                             $query->where($value['origData'], $value['condition'], $value['value1']);
                         }

@@ -26,6 +26,8 @@ class Supplier extends Model
     public function scopeWithShippers(Builder $query): void
     {
         $query->leftJoin('shippers', 'suppliers.id', '=', 'shippers.supplier_id')
+        ->leftJoin('shipper_user', 'shippers.id', '=', 'shipper_user.shipper_id')
+        ->leftJoin('users', 'users.id', '=', 'shipper_user.user_id')
             ->select(
                 'suppliers.*',
                 'shippers.id as shipper_id',
@@ -41,7 +43,9 @@ class Supplier extends Model
                 'shippers.calc_occupancy_percent_selected as shipper_calc_occupancy_percent_selected',
                 'shippers.calc_quantity as shipper_calc_quantity',
                 'shippers.calc_to_purchase as shipper_calc_to_purchase',
-                'shippers.calc_purchase_total as shipper_calc_purchase_total',
-            );
+                'shippers.calc_purchase_total as shipper_calc_purchase_total'
+            )
+            ->selectRaw('GROUP_CONCAT(users.name SEPARATOR ", ") as employee')
+            ->groupBy('suppliers.id', 'shippers.id');
     }
 }
