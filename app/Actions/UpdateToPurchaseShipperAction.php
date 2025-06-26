@@ -10,9 +10,10 @@ class UpdateToPurchaseShipperAction extends UpdateShipperMain
     {
         foreach ($this->supplier_ids as $supplier_id) {
 
-            $shipper = (new ShipperFacade($this->shipperRepository->getShipperById($supplier_id)))->getShipperWithProducts();
+            $shipper = (new ShipperFacade($this->shipperRepository->getShipperById($supplier_id)))
+                ->getShipperWithWarehouses();
 
-            if ($this->update($shipper->getShipperId(), ['calc_to_purchase' => $shipper->totalToBuy()])) {
+            if ($this->update($shipper->getShipperId(), ['calc_to_purchase' => $shipper->totalPurchaseByWarehouses()])) {
                 $this->count++;
             }
         }

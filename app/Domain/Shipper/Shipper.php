@@ -109,6 +109,18 @@ class Shipper
         return round(array_sum($sum), 2);
     }
 
+    public function totalPurchaseByWarehouses(): float
+    {
+        $storages = $this->getStorages();
+        $uuids_warehouses = collect($storages)->pluck('uuid')->toArray();
+
+        $sum = array_map(function (Product $product) use ($uuids_warehouses) {
+            return $product->totalBuyPrice($uuids_warehouses);
+        }, $this->products);
+
+        return round(array_sum($sum), 2);
+    }
+
     public function getStockByStorages(): array
     {
         $stocks = [];

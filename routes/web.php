@@ -35,13 +35,15 @@ Route::get('get-product', function () {
 });
 
 Route::get('dev', function () {
-    $repository = new EloquentShipperRepository();
+    // $repository = new EloquentShipperRepository();
 
-    //$shipper = $repository->getShipperById(61);
+    // $shipper = $repository->getShipperById(4807);
 
-    //$facade = new \App\Domain\Shipper\ShipperFacade($shipper);
+    // $facade = new \App\Domain\Shipper\ShipperFacade($shipper);
 
-    //$shipper = $facade->getShipperWithProducts();
+    // $shipper = $facade->getShipperWithWarehouses();
+
+    // dd($shipper->totalPurchaseByWarehouses());
 });
 
 Route::get('/', function () {

@@ -50,9 +50,9 @@ class Product
         $this->buyPrice = $buyPrice;
     }
 
-    public function totalBuyPrice(): float
+    public function totalBuyPrice(array $filter = []): float
     {
-        return $this->getBuyPrice() * $this->calculateQuantityToBuy();
+        return $this->getBuyPrice() * $this->calculateQuantityToBuy($filter);
     }
 
     public function calculateQuantityToBuy(array $filter = []): int
