@@ -95,8 +95,11 @@ class Shipper
 
     public function totalToBuy(): int
     {
-        return array_sum(array_map(function (Product $product) {
-            return $product->calculateQuantityToBuy();
+        $storages = $this->getStorages();
+        $uuids_warehouses = collect($storages)->pluck('uuid')->toArray();
+
+        return array_sum(array_map(function (Product $product) use ($uuids_warehouses) {
+            return $product->calculateQuantityToBuy($uuids_warehouses);
         }, $this->products));
     }
 
