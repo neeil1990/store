@@ -213,12 +213,12 @@ class Shipper
             return null;
         }
 
-        unset($params['search']);
         unset($params['length']);
         unset($params['fbo']);
 
         $params['exports'] = 'suppliers';
         $params['toBuy'] = true;
+        $params['search'] = '';
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
@@ -231,11 +231,11 @@ class Shipper
             return null;
         }
 
-        unset($params['search']);
         unset($params['length']);
         unset($params['fbo']);
 
         $params['exports'] = 'buyers';
+        $params['search'] = '';
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
