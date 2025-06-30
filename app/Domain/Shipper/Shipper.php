@@ -213,6 +213,7 @@ class Shipper
             return null;
         }
 
+        unset($params['search']);
         unset($params['length']);
         unset($params['fbo']);
 
@@ -230,6 +231,7 @@ class Shipper
             return null;
         }
 
+        unset($params['search']);
         unset($params['length']);
         unset($params['fbo']);
 
