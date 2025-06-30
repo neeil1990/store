@@ -3,6 +3,9 @@
 
 namespace App\Domain\Product;
 
+use App\Helpers\ProductHelper;
+use App\Services\PackingService;
+
 class Product
 {
     public ?int $id;
@@ -11,6 +14,7 @@ class Product
     public float $buyPrice = 0;
 
     public ?string $name;
+    public ?string $uoms;
 
     public array $attributes = [];
     public array $stocks = [];
@@ -23,6 +27,16 @@ class Product
         $this->name = $name;
         $this->attributes = $attributes;
         $this->minimumBalance = $minimumBalance;
+    }
+
+    public function getUoms(): ?string
+    {
+        return $this->uoms;
+    }
+
+    public function setUoms(?string $uoms): void
+    {
+        $this->uoms = $uoms;
     }
 
     public function setStocks(array $stocks): void
@@ -52,7 +66,15 @@ class Product
 
     public function totalBuyPrice(array $filter = []): float
     {
-        return $this->getBuyPrice() * $this->calculateQuantityToBuy($filter);
+        $quantity = $this->calculateQuantityToBuy($filter);
+
+        $size = ProductHelper::getPackSize($this);
+
+        if ($size > 0 && $this->getUoms() !== "уп") {
+            $quantity = (new PackingService())->calculatePackedQuantity($quantity, $size);
+        }
+
+        return $this->getBuyPrice() * $quantity;
     }
 
     public function calculateQuantityToBuy(array $filter = []): int

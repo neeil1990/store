@@ -25,6 +25,8 @@ class ProductFactory
 
         $obj->setBuyPrice(floatval($product['buyPrice']));
 
+        $obj->setUoms($product->uoms->name);
+
         return $obj;
     }
 }

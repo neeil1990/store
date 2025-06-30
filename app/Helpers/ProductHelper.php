@@ -3,11 +3,11 @@
 
 namespace App\Helpers;
 
-use App\Models\Products;
+
 
 class ProductHelper
 {
-    public static function getPackSize(Products $product): int
+    public static function getPackSize($product): int
     {
         $size = 0;
 
@@ -20,7 +20,7 @@ class ProductHelper
         return $size;
     }
 
-    public static function getAttribute(Products $product, string $key, string $value)
+    public static function getAttribute($product, string $key, string $value)
     {
         return collect($product->attributes)->firstWhere($key, $value);
     }
