@@ -218,7 +218,7 @@ class Shipper
 
         $params['exports'] = 'suppliers';
         $params['toBuy'] = true;
-        $params['search'] = '';
+        $params['search']['value'] = '';
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
@@ -235,7 +235,7 @@ class Shipper
         unset($params['fbo']);
 
         $params['exports'] = 'buyers';
-        $params['search'] = '';
+        $params['search']['value'] = '';
 
         return implode('?', [route('suppliers.json'), http_build_query(convertBoolToStrings($params))]);
     }
