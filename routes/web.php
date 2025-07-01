@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,39 @@ Route::get('dev', function () {
     $shipper = $facade->getShipperWithWarehouses();
 
     // dd($shipper->totalPurchaseByWarehouses());
+});
+
+Route::get('/profit/{id?}', function ($id = 45147) {
+
+    $product = Products::find($id);
+
+    $uuid = $product->uuid;
+
+    dump($product->name);
+
+    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+
+    $salesPeriods = [
+        30 => Carbon::now()->subDay(30)->toDateTimeString(),
+        60 => Carbon::now()->subDay(60)->toDateTimeString(),
+        90 => Carbon::now()->subDay(90)->toDateTimeString(),
+        180 => Carbon::now()->subDay(180)->toDateTimeString(),
+        365 => Carbon::now()->subDay(365)->toDateTimeString()
+    ];
+
+    foreach ($salesPeriods as $key => $period) {
+
+        $api->send("https://api.moysklad.ru/api/remap/1.2/report/profit/byproduct", [
+            'filter' => "product=https://api.moysklad.ru/api/remap/1.2/entity/product/$uuid",
+            'momentFrom' => $period
+        ]);
+
+        if ($profit = $api->getRows()) {
+            $sellQuantity = $profit[0]['sellQuantity'];
+
+            dump(implode(" - ", [$key, $sellQuantity, 'проданное количество']));
+        }
+    }
 });
 
 Route::get('/', function () {

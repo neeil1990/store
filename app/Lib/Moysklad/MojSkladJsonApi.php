@@ -12,11 +12,12 @@ class MojSkladJsonApi
     protected $meta = [];
     protected $error = [];
 
-    public function send(string $href): void
+    public function send(string $href, $params = []): void
     {
         $token = (new StoreToken())->getToken();
 
         $response = Curl::to($href)
+            ->withData($params)
             ->withAuthorization($token)
             ->withHeader('Accept-Encoding: gzip')
             ->withOption('ENCODING', 'gzip')
