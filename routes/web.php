@@ -56,6 +56,8 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
     $product = Products::find($id);
 
+    dd($product);
+
     dump('-- Товар --');
 
     $sell = $profit->getProfitByProduct($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
