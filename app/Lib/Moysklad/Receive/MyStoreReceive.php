@@ -23,6 +23,8 @@ abstract class MyStoreReceive implements MyStoreReceiveInterface
             $arr[] = $this->getRows();
         }
 
+        dd($arr);
+
         return call_user_func_array('array_merge', $arr);
     }
 
