@@ -15,6 +15,17 @@ abstract class MyStoreReceive implements MyStoreReceiveInterface
         return $this->getApi()->getRows();
     }
 
+    public function allRows(): array
+    {
+        $arr = [$this->getRows()];
+
+        while ($this->nextPage()) {
+            $arr[] = $this->getRows();
+        }
+
+        return call_user_func_array('array_merge', $arr);
+    }
+
     public function getApi(): MojSkladJsonApi
     {
         return $this->api;

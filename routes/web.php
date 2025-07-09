@@ -6,6 +6,7 @@ use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Sale\Store\StoreProductToDataBase;
 use App\Lib\Sale\SyncMyStoreWithDataBase;
 use App\Models\Products;
+use App\Services\BundleService;
 use Illuminate\Support\Facades\Route;
 use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Artisan;
@@ -47,37 +48,34 @@ Route::get('dev', function () {
     // dd($shipper->totalPurchaseByWarehouses());
 });
 
-Route::get('/profit/{id?}', function ($id = 45147) {
+Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
+
+    $bundle = new BundleService();
+
+    $profit = new \App\Services\ProductProfitService();
 
     $product = Products::find($id);
 
-    $uuid = $product->uuid;
+    dump('-- Товар --');
 
-    dump($product->name);
+    $sell = $profit->getProfitByProduct($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
 
-    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
+    if ($sell) {
+        dump($product->name, $sell[0]['sellQuantity']);
+    }
 
-    $salesPeriods = [
-        30 => Carbon::now()->subDay(30)->toDateTimeString(),
-        60 => Carbon::now()->subDay(60)->toDateTimeString(),
-        90 => Carbon::now()->subDay(90)->toDateTimeString(),
-        180 => Carbon::now()->subDay(180)->toDateTimeString(),
-        365 => Carbon::now()->subDay(365)->toDateTimeString()
-    ];
+    dump('-- Комплекты --');
 
-    foreach ($salesPeriods as $key => $period) {
+    $bundles = $bundle->getBundleByProduct($product->uuid);
 
-        $api->send("https://api.moysklad.ru/api/remap/1.2/report/profit/byproduct", [
-            'filter' => "product=https://api.moysklad.ru/api/remap/1.2/entity/product/$uuid",
-            'momentFrom' => $period
-        ]);
+    foreach ($bundles as $bundle) {
+        $sell = $profit->getProfitByProduct($bundle['id'], Carbon::now()->subDay($day)->toDateTimeString());
 
-        if ($profit = $api->getRows()) {
-            $sellQuantity = $profit[0]['sellQuantity'];
-
-            dump(implode(" - ", [$key, $sellQuantity, 'проданное количество']));
+        if ($sell) {
+            dump($bundle['name'], $sell[0]['sellQuantity']);
         }
     }
+
 });
 
 Route::get('/', function () {
