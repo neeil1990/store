@@ -54,8 +54,6 @@ Route::get('dev', function () {
 
 Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
-    set_time_limit(0);
-
     $bundle = new BundleService();
 
     $profit = new \App\Services\ProductProfitService();
@@ -82,7 +80,7 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
         }
     }
 
-    dd('finish');
+    dd('done');
 });
 
 Route::get('/', function () {

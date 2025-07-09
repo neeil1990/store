@@ -23,9 +23,10 @@ abstract class MyStoreReceive implements MyStoreReceiveInterface
 
             $page = $this->currentPage();
 
-            // Pause every 40 request
-            if($page > 0 && $page % 20 === 0)
+            // Pause every 20 request
+            if($page > 0 && $page % 20 === 0) {
                 Sleep::for(1)->seconds();
+            }
 
             $arr[] = $this->getRows();
         }
