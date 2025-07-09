@@ -52,11 +52,12 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
     $bundle = new BundleService();
 
+    dd(111);
+
     $profit = new \App\Services\ProductProfitService();
 
     $product = Products::find($id);
 
-    dd($product);
 
     dump('-- Товар --');
 
