@@ -27,6 +27,10 @@ use Carbon\Carbon;
 |
 */
 
+Route::get('info', function () {
+    phpinfo();
+});
+
 Route::get('get-product', function () {
 
     $api = new \App\Lib\Moysklad\MojSkladJsonApi;
@@ -57,7 +61,6 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
     $profit = new \App\Services\ProductProfitService();
 
     $product = Products::find($id);
-
 
     dump('-- Товар --');
 
