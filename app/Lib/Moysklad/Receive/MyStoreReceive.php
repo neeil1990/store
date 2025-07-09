@@ -20,10 +20,15 @@ abstract class MyStoreReceive implements MyStoreReceiveInterface
         $arr = [$this->getRows()];
 
         while ($this->nextPage()) {
+
+            $page = $this->currentPage();
+
+            // Pause every 40 request
+            if($page > 0 && $page % 20 === 0)
+                Sleep::for(1)->seconds();
+
             $arr[] = $this->getRows();
         }
-
-        dd($arr);
 
         return call_user_func_array('array_merge', $arr);
     }
