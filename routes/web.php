@@ -50,6 +50,8 @@ Route::get('dev', function () {
 
 Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
+    dd($id, $day);
+
     $bundle = new BundleService();
 
     $profit = new \App\Services\ProductProfitService();
