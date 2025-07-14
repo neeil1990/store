@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Lib\Sale\ProductsTable;
 use App\Models\Products;
 use App\Models\Store;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -16,6 +17,16 @@ class ProductsController extends Controller
 
     public function show(Products $product)
     {
+        $stocks = [
+            3 => stockZeros($product, 3),
+            5 => stockZeros($product, 5),
+            7 => stockZeros($product, 7),
+            15 => stockZeros($product, 15),
+            30 => stockZeros($product, 30),
+            60 => stockZeros($product, 60),
+            90 => stockZeros($product, 90),
+        ];
+
         $stores = $this->stores($product);
 
         $total = [
@@ -24,7 +35,7 @@ class ProductsController extends Controller
             'transits' => $stores->pluck('transits')->flatten()->sum('quantity'),
         ];
 
-        return view('products.show', compact('product', 'stores', 'total'));
+        return view('products.show', compact('product', 'stores', 'total', 'stocks'));
     }
 
     public function json(Request $request)

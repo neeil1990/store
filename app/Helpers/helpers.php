@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Products;
+
 if (!function_exists('money')) {
     function money(float $amount): string
     {
@@ -25,3 +27,11 @@ if (!function_exists('convertBoolToStrings')) {
         return $data;
     }
 }
+
+if (!function_exists('stockZeros')) {
+    function stockZeros(Products $product, int $days): int
+    {
+        return $product->stockTotal()->where('created_at', '>', \Carbon\Carbon::now()->subDays($days))->count();
+    }
+}
+
