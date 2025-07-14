@@ -127,4 +127,9 @@ class Products extends ProductsScopes
     {
         return $this->hasMany(Transit::class, 'assortmentId', 'uuid');
     }
+
+    public function stockTotal()
+    {
+        return $this->hasMany(StockTotal::class, 'assortmentId', 'uuid');
+    }
 }

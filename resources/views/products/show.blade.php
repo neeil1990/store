@@ -13,6 +13,9 @@
             @include('products.partials.minimum-balance-detail-card')
             @include('products.partials.minimum-balance-lager-detail-card')
             @include('products.partials.stocks-detail-card')
+            @if($product->stockTotal)
+                @include('products.partials.stocks-total-detail-card')
+            @endif
         </div>
 
         <div class="col-4">
