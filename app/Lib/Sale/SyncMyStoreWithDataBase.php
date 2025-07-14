@@ -11,6 +11,7 @@ use App\Lib\Moysklad\Receive\MyStoreProductFolder;
 use \App\Lib\Moysklad\Receive\MyStoreProducts;
 use App\Lib\Moysklad\Receive\MyStoreReserve;
 use App\Lib\Moysklad\Receive\MyStoreStock;
+use App\Lib\Moysklad\Receive\MyStoreStockTotal;
 use App\Lib\Moysklad\Receive\MyStoreStore;
 use App\Lib\Moysklad\Receive\MyStoreSupplier;
 use App\Lib\Moysklad\Receive\MyStoreTransit;
@@ -33,6 +34,7 @@ use App\Models\Stock;
 use App\Models\Store;
 use App\Models\Transit;
 use App\Models\Uom;
+use App\Models\StockTotal;
 
 class SyncMyStoreWithDataBase
 {
@@ -91,6 +93,12 @@ class SyncMyStoreWithDataBase
 
         $stocks = (new MyStoreStock())->getRows();
         (new StoreStockToDataBase($model))->create($stocks);
+
+        foreach ((new MyStoreStockTotal())->getRows() as $item) {
+            if ($item['stock'] === 0) {
+                (new StockTotal())->create($item);
+            }
+        }
     }
 
     public function reserveSync()

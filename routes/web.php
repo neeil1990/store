@@ -3,7 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Infrastructure\EloquentShipperRepository;
 use App\Lib\Moysklad\Receive\MyStoreStock;
+use App\Lib\Moysklad\Receive\MyStoreStockTotal;
 use App\Lib\Sale\Store\StoreProductToDataBase;
+use App\Lib\Sale\Store\StoreStockToDataBase;
 use App\Lib\Sale\SyncMyStoreWithDataBase;
 use App\Models\Products;
 use App\Services\BundleService;
@@ -32,12 +34,7 @@ Route::get('info', function () {
 });
 
 Route::get('get-product', function () {
-
-    $api = new \App\Lib\Moysklad\MojSkladJsonApi;
-    $api->send('https://api.moysklad.ru/api/remap/1.2/entity/product?filter=minimumBalance!=0;');
-    $rows = $api->getRows();
-
-    dd($rows[1]);
+    //
 });
 
 Route::get('dev', function () {
