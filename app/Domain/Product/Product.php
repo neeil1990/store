@@ -85,7 +85,7 @@ class Product
 
         $transit = $this->totalTransits($filter);
 
-        $toBuy = $this->minimumBalance() - $stock - $reserve - $transit;
+        $toBuy = ($this->minimumBalance() - (($stock - $reserve) + $transit));
 
         if ($toBuy > 0) {
             return $toBuy;
