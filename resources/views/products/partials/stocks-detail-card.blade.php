@@ -12,13 +12,13 @@
                     <th>{{ __('Остаток') }}</th>
                     <th>{{ __('Резерв') }}</th>
                     <th>{{ __('Ожидание') }}</th>
-                    <th>{{ __('3') }}</th>
-                    <th>{{ __('5') }}</th>
-                    <th>{{ __('7') }}</th>
-                    <th>{{ __('15') }}</th>
-                    <th>{{ __('30') }}</th>
-                    <th>{{ __('60') }}</th>
-                    <th>{{ __('90') }}</th>
+                    <th style="white-space: nowrap">{{ __('3') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[3]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('5') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[5]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('7') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[7]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('15') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[15]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('30') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[30]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('60') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[60]['dateFrom'] }}"></i></th>
+                    <th style="white-space: nowrap">{{ __('90') }} <i class="far fa-question-circle" data-toggle="tooltip" title="{{ $stocks[90]['dateFrom'] }}"></i></th>
                 </tr>
             </thead>
 
@@ -43,13 +43,13 @@
                 <th>{{ $total['stocks'] }}</th>
                 <th>{{ $total['reserves'] }}</th>
                 <th>{{ $total['transits'] }}</th>
-                <td>{{ $stocks[3] }}</td>
-                <td>{{ $stocks[5] }}</td>
-                <td>{{ $stocks[7] }}</td>
-                <td>{{ $stocks[15] }}</td>
-                <td>{{ $stocks[30] }}</td>
-                <td>{{ $stocks[60] }}</td>
-                <td>{{ $stocks[90] }}</td>
+                <td>{{ $stocks[3]['count'] }}</td>
+                <td>{{ $stocks[5]['count'] }}</td>
+                <td>{{ $stocks[7]['count'] }}</td>
+                <td>{{ $stocks[15]['count'] }}</td>
+                <td>{{ $stocks[30]['count'] }}</td>
+                <td>{{ $stocks[60]['count'] }}</td>
+                <td>{{ $stocks[90]['count'] }}</td>
             </tr>
             </tbody>
         </table>

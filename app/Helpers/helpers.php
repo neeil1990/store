@@ -29,9 +29,14 @@ if (!function_exists('convertBoolToStrings')) {
 }
 
 if (!function_exists('stockZeros')) {
-    function stockZeros(Products $product, int $days): int
+    function stockZeros(Products $product, int $days): array
     {
-        return $product->stockTotal()->where('created_at', '>', \Carbon\Carbon::now()->subDays($days))->count();
+        $carbon = \Carbon\Carbon::now()->subDays($days);
+
+        return [
+            'count' => $product->stockTotal()->where('created_at', '>', $carbon)->count(),
+            'dateFrom' => $carbon->format('d.m.Y H:i:s')
+        ];
     }
 }
 
