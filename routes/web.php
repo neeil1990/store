@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Infrastructure\EloquentShipperRepository;
+use App\Lib\Moysklad\Receive\MyStoreBundle;
 use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Moysklad\Receive\MyStoreStockTotal;
 use App\Lib\Sale\Store\StoreProductToDataBase;

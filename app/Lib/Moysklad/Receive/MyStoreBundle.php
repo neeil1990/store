@@ -2,6 +2,7 @@
 
 namespace App\Lib\Moysklad\Receive;
 
+use App\Events\MyStoreBundleRowsReceived;
 use App\Lib\Moysklad\MojSkladJsonApi;
 
 class MyStoreBundle extends MyStoreReceive
@@ -14,6 +15,6 @@ class MyStoreBundle extends MyStoreReceive
 
     protected function eventClass($rows)
     {
-        // TODO: Implement eventClass() method.
+        MyStoreBundleRowsReceived::dispatch($rows);
     }
 }

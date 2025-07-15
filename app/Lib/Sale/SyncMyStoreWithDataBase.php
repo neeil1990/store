@@ -4,6 +4,7 @@
 namespace App\Lib\Sale;
 
 use App\Lib\Moysklad\Receive\MyStoreAttributes;
+use App\Lib\Moysklad\Receive\MyStoreBundle;
 use App\Lib\Moysklad\Receive\MyStoreCountry;
 use App\Lib\Moysklad\Receive\MyStoreEmployee;
 use App\Lib\Moysklad\Receive\MyStoreGroup;
@@ -52,6 +53,7 @@ class SyncMyStoreWithDataBase
         $this->reserveSync();
         $this->transitSync();
         $this->storeSync();
+        $this->bundleSync();
     }
 
     public function employeeSync()
@@ -146,5 +148,10 @@ class SyncMyStoreWithDataBase
         $attribute = (new MyStoreAttributes())->getRows();
 
         (new StoreAttributesToDataBase(new Attribute()))->updateOrCreate($attribute);
+    }
+
+    public function bundleSync()
+    {
+        (new MyStoreBundle())->event();
     }
 }

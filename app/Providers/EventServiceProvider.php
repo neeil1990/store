@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\MyStoreBundleRowsReceived;
 use App\Events\MyStoreProductFolderRowsReceived;
 use App\Events\MyStoreProductRowsReceived;
 use App\Events\MyStoreSupplierRowsReceived;
 use App\Listeners\AssignRoleToUser;
+use App\Listeners\UpdateOrCreateBundleToDataBase;
 use App\Listeners\UpdateOrCreateProductFolderToDataBase;
 use App\Listeners\UpdateOrCreateProductsToDataBase;
 use App\Listeners\UpdateOrCreateSupplierToDataBase;
@@ -34,6 +36,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MyStoreProductFolderRowsReceived::class => [
             UpdateOrCreateProductFolderToDataBase::class,
+        ],
+        MyStoreBundleRowsReceived::class => [
+            UpdateOrCreateBundleToDataBase::class,
         ],
     ];
 
