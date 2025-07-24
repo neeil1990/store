@@ -56,9 +56,9 @@ class ProductsScopes extends Model
             });
     }
 
-    public function scopeWhereMinBalanceNotNull(Builder $query)
+    public function scopeinStock(Builder $query)
     {
-        $query->whereRaw('IFNULL(minimumBalance, 0) - IFNULL(stock, 0) > ?', [0]);
+        $query->whereRaw('IFNULL(stock, 0) > ?', [0]);
     }
 
     public function scopeAddSelectToBuy(Builder $query)

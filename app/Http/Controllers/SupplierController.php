@@ -41,7 +41,7 @@ class SupplierController extends Controller
         $export = request('exports');
         $stores = request('stores', []);
 
-        $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores)->whereMinBalanceNotNull());
+        $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores)->inStock());
 
         if ($export == 'suppliers') {
             return $this->export(new SuppliersExport($dataTable->getCollection()));
