@@ -36,6 +36,7 @@ use App\Models\Store;
 use App\Models\Transit;
 use App\Models\Uom;
 use App\Models\StockTotal;
+use Carbon\Carbon;
 
 class SyncMyStoreWithDataBase
 {
@@ -96,9 +97,11 @@ class SyncMyStoreWithDataBase
         $stocks = (new MyStoreStock())->getRows();
         (new StoreStockToDataBase($model))->create($stocks);
 
-        foreach ((new MyStoreStockTotal())->getRows() as $item) {
-            if ($item['stock'] === 0) {
-                (new StockTotal())->create($item);
+        if ((new StockTotal())->whereDate('created_at', Carbon::now())->doesntExist()) {
+            foreach ((new MyStoreStockTotal())->getRows() as $item) {
+                if ($item['stock'] === 0) {
+                    (new StockTotal())->create($item);
+                }
             }
         }
     }

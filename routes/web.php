@@ -9,6 +9,7 @@ use App\Lib\Sale\Store\StoreProductToDataBase;
 use App\Lib\Sale\Store\StoreStockToDataBase;
 use App\Lib\Sale\SyncMyStoreWithDataBase;
 use App\Models\Products;
+use App\Models\StockTotal;
 use App\Services\BundleService;
 use Illuminate\Support\Facades\Route;
 use Ixudra\Curl\Facades\Curl;
