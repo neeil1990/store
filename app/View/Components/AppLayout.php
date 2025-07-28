@@ -18,6 +18,7 @@ class AppLayout extends Component
             'users.index' => ['text' => __('Пользователи'), 'icon' => 'fas fa-users', 'selected' => ''],
             'employee.index' => ['text' => __('Сотрудники МС'), 'icon' => 'fas fa-users', 'selected' => ''],
             'products.index' => ['text' => __('Товары'), 'icon' => 'fas fa-store', 'selected' => ''],
+            'products.outOfStock' => ['text' => __('Товары по упущ.выгоде'), 'icon' => 'fas fa-wave-square', 'selected' => ''],
             'suppliers.index' => ['text' => __('К закупке'), 'icon' => 'fas fa-parachute-box', 'selected' => ''],
             'shipper.index' => ['text' => __('Поставщики'), 'icon' => 'fas fa-store-alt', 'selected' => ''],
             'setting.index' => ['text' => __('Настройки'), 'icon' => 'fas fa-tools', 'selected' => ''],

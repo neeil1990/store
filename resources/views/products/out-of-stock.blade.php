@@ -11,7 +11,7 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-12 buttons">
                             <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
@@ -29,6 +29,7 @@
                                         <th>{{ __('Закупочная цена') }}</th>
                                         <th>{{ __('Неснижаемый остаток') }}</th>
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
+                                        <th>{{ __('Остаток') }}</th>
                                         <th>3</th>
                                         <th>5</th>
                                         <th>7</th>
@@ -53,6 +54,7 @@
                                             <td>{{ $product->buyPrice }}</td>
                                             <td>{{ $product->minimumBalance }}</td>
                                             <td>{{ $product->minimumBalanceLager }}</td>
+                                            <td>{{ $product->stocks_sum_quantity }}</td>
                                             <td>{{ $product->stock_zero_3 }}</td>
                                             <td>{{ $product->stock_zero_5 }}</td>
                                             <td>{{ $product->stock_zero_7 }}</td>
@@ -77,11 +79,18 @@
 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.css') }}">
     @endpush
 
     @push('scripts')
         <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
+        <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+        <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
 
         <script>
             $('#products-zero').DataTable({
@@ -95,6 +104,17 @@
                     }
                 },
                 lengthMenu: [100, 150, 200, 250, 300],
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        className: 'btn btn-secondary btn-default btn-sm ',
+                    }
+                ],
+                initComplete: function () {
+                    let api = this.api();
+
+                    api.buttons().container().appendTo('.col-12.buttons');
+                },
             });
         </script>
     @endpush

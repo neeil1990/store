@@ -89,6 +89,7 @@ class ProductsController extends Controller
                 'stockTotal as stock_zero_365' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
             ])
             ->when($request->input('isZero'), fn ($q) => $q->doesntHave('stocks'))
+            ->withSum('stocks', 'quantity')
             ->get();
 
         return view('products.out-of-stock', compact('products'));
