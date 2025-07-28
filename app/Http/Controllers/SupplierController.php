@@ -36,12 +36,12 @@ class SupplierController extends Controller
 
     public function json()
     {
-        $model = new Products();
-
         $export = request('exports');
         $stores = request('stores', []);
 
-        $dataTable = new SuppliersDataTable($model->suppliersDataTable($stores));
+        $products = (new Products())->suppliersDataTable($stores)->isWarehousePosition();
+
+        $dataTable = new SuppliersDataTable($products);
 
         if ($export == 'suppliers') {
             return $this->export(new SuppliersExport($dataTable->getCollection()));
