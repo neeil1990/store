@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductsController;
 
 Route::get('/products/out-of-stock', [ProductsController::class, 'outOfStock'])->name('products.outOfStock');
+Route::post('/products/destroy-stock-totals', [ProductsController::class, 'destroyStockTotals'])->name('products.destroyStockTotals');
 
 Route::get('/products/json', [ProductsController::class, 'json'])->name('products.json');
 

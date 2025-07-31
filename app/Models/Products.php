@@ -19,6 +19,7 @@ class Products extends ProductsScopes
         'barcodes' => 'array',
         'attributes' => 'array',
         'images' => 'array',
+        'deleted_stock_total_at' => 'datetime',
     ];
 
     use HasFactory;
@@ -131,5 +132,12 @@ class Products extends ProductsScopes
     public function stockTotal()
     {
         return $this->hasMany(StockTotal::class, 'assortmentId', 'uuid');
+    }
+
+    protected function userWhoDeletedStockTotal(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($value) ? User::find($value)->value('name') : null,
+        );
     }
 }

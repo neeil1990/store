@@ -7,6 +7,7 @@ use App\Models\Products;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
@@ -93,6 +94,20 @@ class ProductsController extends Controller
             ->get();
 
         return view('products.out-of-stock', compact('products'));
+    }
+
+    public function destroyStockTotals(Request $request)
+    {
+        $products = Products::whereIn('id', $request->input('ids', []))->get();
+
+        foreach ($products as $product) {
+            if ($product->stockTotal->toQuery()->delete()) {
+                $product->update([
+                    'user_who_deleted_stock_total' => Auth::id(),
+                    'deleted_stock_total_at' => Carbon::now()
+                ]);
+            }
+        }
     }
 
 }

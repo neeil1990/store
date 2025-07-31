@@ -1,6 +1,12 @@
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">{{ __('Нулевые остатки по складам') }}</h3>
+        <h3 class="card-title">
+            {{ __('Нулевые остатки по складам') }}
+            @if ($product->deleted_stock_total_at && $product->user_who_deleted_stock_total)
+                <br />
+                {{ __('Обнулен') }} {{ $product->deleted_stock_total_at }} - {{ $product->user_who_deleted_stock_total }}
+            @endif
+        </h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
