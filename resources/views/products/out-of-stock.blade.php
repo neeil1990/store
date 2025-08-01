@@ -11,7 +11,7 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-5" id="control-buttons">
+                        <div class="col-4" id="control-buttons">
                             <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
@@ -136,9 +136,6 @@
                     {
                         extend: 'excelHtml5',
                         className: 'btn btn-secondary btn-default btn-sm ',
-                    },
-                    {
-                        extend: 'spacer',
                     },
                     {
                         text: 'Выбрать все',
