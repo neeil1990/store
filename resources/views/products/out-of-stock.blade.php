@@ -11,12 +11,11 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-12 buttons">
+                        <div class="col-5" id="control-buttons">
                             <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
-                    </div>
-                    <div class="row mb-2">
+
                         <div class="col-2">
                             <div class="input-group input-group-sm deleted-stock-totals">
                                 <input type="number" class="form-control">
@@ -166,7 +165,7 @@
                                     axios.post('{{ route('products.destroyStockTotals') }}', {
                                         ids: ids.toArray()
                                     }).then(function (response) {
-                                        table.rows().deselect();
+                                        window.location.reload();
                                     })
                                 }
                             }
@@ -187,7 +186,7 @@
                 initComplete: function () {
                     let api = this.api();
 
-                    api.buttons().container().appendTo('.col-12.buttons');
+                    api.buttons().container().appendTo('#control-buttons');
 
                     $('.deleted-stock-totals .btn').click(function () {
                         let days = $('.deleted-stock-totals .form-control').val();
