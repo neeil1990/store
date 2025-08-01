@@ -135,6 +135,7 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
+                        title: 'Товары с упущенной выгодой - ' + moment().format('DD-MM-YYYY'),
                         className: 'btn btn-secondary btn-default btn-sm ',
                     },
                     {
