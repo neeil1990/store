@@ -37,7 +37,7 @@ Route::get('info', function () {
 });
 
 Route::get('get-product', function () {
-    dd(User::find(2));
+    //
 });
 
 Route::get('dev', function () {
