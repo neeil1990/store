@@ -137,7 +137,15 @@ class Products extends ProductsScopes
     protected function userWhoDeletedStockTotal(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($value) ? User::find($value)->value('name') : null,
+            get: function ($value) {
+                $user = User::find($value);
+
+                if ($user) {
+                    return $user->name;
+                }
+
+                return null;
+            },
         );
     }
 }
