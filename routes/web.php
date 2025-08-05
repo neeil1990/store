@@ -73,7 +73,7 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
     $bundles = $bundle->getBundleByProduct($product->uuid);
 
     foreach ($bundles as $bundle) {
-        $sell = $profit->getProfitByProduct($bundle['id'], Carbon::now()->subDay($day)->toDateTimeString());
+        $sell = $profit->getProfitByProduct($bundle['uuid'], Carbon::now()->subDay($day)->toDateTimeString());
 
         if ($sell) {
             dump($bundle['name'], $sell[0]['sellQuantity']);
