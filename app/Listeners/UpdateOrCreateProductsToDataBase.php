@@ -8,6 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpdateOrCreateProductsToDataBase implements ShouldQueue
 {
+    public $timeout = 0;
+
     /**
      * Create the event listener.
      */
