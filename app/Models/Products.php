@@ -18,6 +18,7 @@ class Products extends ProductsScopes
     protected $casts = [
         'barcodes' => 'array',
         'attributes' => 'array',
+        'total_sell' => 'array',
         'images' => 'array',
         'deleted_stock_total_at' => 'datetime',
     ];
