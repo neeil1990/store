@@ -42,6 +42,7 @@ class SyncMyStoreWithDataBase
 {
     public function syncAll()
     {
+        $this->bundleSync();
         $this->productSync();
         $this->employeeSync();
         $this->supplierSync();
@@ -54,7 +55,6 @@ class SyncMyStoreWithDataBase
         $this->reserveSync();
         $this->transitSync();
         $this->storeSync();
-        $this->bundleSync();
     }
 
     public function employeeSync()
