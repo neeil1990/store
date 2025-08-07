@@ -54,31 +54,21 @@ Route::get('dev', function () {
 
 Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
-    $bundle = new BundleService();
-
-    $profit = new \App\Services\ProductProfitService();
+    $start = microtime(true);
 
     $product = Products::find($id);
 
-    dump('-- Товар --');
+    $profit = new \App\Services\ProductProfitService();
 
-    $sell = $profit->getProfitByProduct($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
+    $totalSell = [];
 
-    if ($sell) {
-        dump($product->name, $sell[0]['sellQuantity']);
+    foreach ([3, 5, 7, 15, 30, 60, 90, 180, 365] as $day) {
+        $totalSell[$day] = $profit->getTotalSell($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
     }
 
-    dump('-- Комплекты --');
+    $end = microtime(true);
 
-    $bundles = $bundle->getBundleByProduct($product->uuid);
-
-    foreach ($bundles as $bundle) {
-        $sell = $profit->getProfitByProduct($bundle['uuid'], Carbon::now()->subDay($day)->toDateTimeString());
-
-        if ($sell) {
-            dump($bundle['name'], $sell[0]['sellQuantity']);
-        }
-    }
+    dd($totalSell, $end - $start);
 
     dd('done');
 });
