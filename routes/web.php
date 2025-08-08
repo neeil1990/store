@@ -62,7 +62,7 @@ Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
 
     $totalSell = [];
 
-    foreach ([15, 30] as $day) {
+    foreach ([15, 30, 60, 90, 180, 365] as $day) {
         $totalSell[$day] = $profit->getTotalSell($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
     }
 
