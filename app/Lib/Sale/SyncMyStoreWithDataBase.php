@@ -30,7 +30,9 @@ use App\Models\Attribute;
 use App\Models\Country;
 use App\Models\Employee;
 use App\Models\Group;
+use App\Models\Products;
 use App\Models\Reserve;
+use App\Models\Sell;
 use App\Models\Stock;
 use App\Models\Store;
 use App\Models\Transit;
@@ -55,6 +57,7 @@ class SyncMyStoreWithDataBase
         $this->reserveSync();
         $this->transitSync();
         $this->storeSync();
+        $this->saveSales();
     }
 
     public function employeeSync()
@@ -156,5 +159,21 @@ class SyncMyStoreWithDataBase
     public function bundleSync()
     {
         (new MyStoreBundle())->event();
+    }
+
+    public function saveSales(): void
+    {
+        $latest = Sell::query()->latest()->first();
+
+        $diffDay = 15;
+
+        if ($latest == null || $latest->created_at->diffInDays() >= $diffDay) {
+
+            $products = Products::getOutOfStock();
+
+            foreach ($products as $product) {
+                \App\Jobs\SaveSales::dispatch($product, $diffDay);
+            }
+        }
     }
 }

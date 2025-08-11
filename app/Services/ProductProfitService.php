@@ -33,8 +33,6 @@ class ProductProfitService
 
         $uuids[] = $uuid;
 
-        $profit = $this->getProfitByProduct($uuids, $dateFrom);
-
-        return array_sum(Arr::pluck($profit, 'sellQuantity'));
+        return array_sum(Arr::pluck($this->getProfitByProduct($uuids, $dateFrom), 'sellQuantity'));
     }
 }

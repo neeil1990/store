@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Carbon\Carbon;
+use App\Services\ProductProfitService;
+use App\Models\Sell;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,41 +38,8 @@ Route::get('info', function () {
     phpinfo();
 });
 
-Route::get('get-product', function () {
-    //
-});
-
 Route::get('dev', function () {
-    $repository = new EloquentShipperRepository();
-
-    $shipper = $repository->getShipperById(1880);
-
-    $facade = new \App\Domain\Shipper\ShipperFacade($shipper);
-
-    $shipper = $facade->getShipperWithWarehouses();
-
-    // dd($shipper->totalPurchaseByWarehouses());
-});
-
-Route::get('/profit/{id}/days/{day}', function ($id = 28291, $day = 90) {
-
-    $start = microtime(true);
-
-    $product = Products::find($id);
-
-    $profit = new \App\Services\ProductProfitService();
-
-    $totalSell = [];
-
-    foreach ([15, 30, 60, 90, 180, 365] as $day) {
-        $totalSell[$day] = $profit->getTotalSell($product->uuid, Carbon::now()->subDay($day)->toDateTimeString());
-    }
-
-    $end = microtime(true);
-
-    dd($totalSell, $end - $start);
-
-    dd('done');
+    //
 });
 
 Route::get('/', function () {
