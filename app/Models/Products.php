@@ -135,6 +135,11 @@ class Products extends ProductsScopes
         return $this->hasMany(StockTotal::class, 'assortmentId', 'uuid');
     }
 
+    public function sell()
+    {
+        return $this->hasMany(Sell::class, 'product_id');
+    }
+
     protected function userWhoDeletedStockTotal(): Attribute
     {
         return Attribute::make(
@@ -168,6 +173,14 @@ class Products extends ProductsScopes
             ])
             ->when($isZero, fn ($q) => $q->doesntHave('stocks'))
             ->withSum('stocks', 'quantity')
+            ->withSum([
+                'sell as sell_15' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
+                'sell as sell_30' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
+                'sell as sell_60' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
+                'sell as sell_90' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
+                'sell as sell_180' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
+                'sell as sell_365' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
+            ], 'sell')
             ->get();
     }
 }

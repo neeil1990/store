@@ -49,11 +49,17 @@
                                         <th>3</th>
                                         <th>5</th>
                                         <th>7</th>
+                                        <th>15 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 15 дней"></i></th>
                                         <th>15</th>
+                                        <th>30 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 30 дней"></i></th>
                                         <th>30</th>
+                                        <th>60 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 60 дней"></i></th>
                                         <th>60</th>
+                                        <th>90 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 90 дней"></i></th>
                                         <th>90</th>
+                                        <th>180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
                                         <th>180</th>
+                                        <th>365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
                                         <th>365</th>
                                     </tr>
                                 </thead>
@@ -76,11 +82,17 @@
                                             <td>{{ $product->stock_zero_3 }}</td>
                                             <td>{{ $product->stock_zero_5 }}</td>
                                             <td>{{ $product->stock_zero_7 }}</td>
+                                            <td>{{ $product->sell_15 }}</td>
                                             <td>{{ $product->stock_zero_15 }}</td>
+                                            <td>{{ $product->sell_30 }}</td>
                                             <td>{{ $product->stock_zero_30 }}</td>
+                                            <td>{{ $product->sell_60 }}</td>
                                             <td>{{ $product->stock_zero_60 }}</td>
+                                            <td>{{ $product->sell_90 }}</td>
                                             <td>{{ $product->stock_zero_90 }}</td>
+                                            <td>{{ $product->sell_180 }}</td>
                                             <td>{{ $product->stock_zero_180 }}</td>
+                                            <td>{{ $product->sell_365 }}</td>
                                             <td>{{ $product->stock_zero_365 }}</td>
                                         </tr>
                                     @endforeach
