@@ -16,7 +16,7 @@
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
 
-                        <div class="col-2">
+                        <div class="col-1">
                             <div class="input-group input-group-sm deleted-stock-totals">
                                 <input type="number" class="form-control">
 
@@ -49,18 +49,18 @@
                                         <th>3</th>
                                         <th>5</th>
                                         <th>7</th>
-                                        <th>15 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 15 дней"></i></th>
-                                        <th>15</th>
-                                        <th>30 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 30 дней"></i></th>
-                                        <th>30</th>
-                                        <th>60 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 60 дней"></i></th>
-                                        <th>60</th>
-                                        <th>90 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 90 дней"></i></th>
-                                        <th>90</th>
-                                        <th>180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
-                                        <th>180</th>
-                                        <th>365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
-                                        <th>365</th>
+                                        <th class="days-15">15 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 15 дней"></i></th>
+                                        <th class="days-15">15</th>
+                                        <th class="days-30">30 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 30 дней"></i></th>
+                                        <th class="days-30">30</th>
+                                        <th class="days-60">60 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 60 дней"></i></th>
+                                        <th class="days-60">60</th>
+                                        <th class="days-90">90 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 90 дней"></i></th>
+                                        <th class="days-90">90</th>
+                                        <th class="days-180">180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
+                                        <th class="days-180">180</th>
+                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
+                                        <th class="days-365">365</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,18 +82,18 @@
                                             <td>{{ $product->stock_zero_3 }}</td>
                                             <td>{{ $product->stock_zero_5 }}</td>
                                             <td>{{ $product->stock_zero_7 }}</td>
-                                            <td>{{ $product->sell_15 }}</td>
-                                            <td>{{ $product->stock_zero_15 }}</td>
-                                            <td>{{ $product->sell_30 }}</td>
-                                            <td>{{ $product->stock_zero_30 }}</td>
-                                            <td>{{ $product->sell_60 }}</td>
-                                            <td>{{ $product->stock_zero_60 }}</td>
-                                            <td>{{ $product->sell_90 }}</td>
-                                            <td>{{ $product->stock_zero_90 }}</td>
-                                            <td>{{ $product->sell_180 }}</td>
-                                            <td>{{ $product->stock_zero_180 }}</td>
-                                            <td>{{ $product->sell_365 }}</td>
-                                            <td>{{ $product->stock_zero_365 }}</td>
+                                            <td class="days-15">{{ $product->sell_15 }}</td>
+                                            <td class="days-15">{{ $product->stock_zero_15 }}</td>
+                                            <td class="days-30">{{ $product->sell_30 }}</td>
+                                            <td class="days-30">{{ $product->stock_zero_30 }}</td>
+                                            <td class="days-60">{{ $product->sell_60 }}</td>
+                                            <td class="days-60">{{ $product->stock_zero_60 }}</td>
+                                            <td class="days-90">{{ $product->sell_90 }}</td>
+                                            <td class="days-90">{{ $product->stock_zero_90 }}</td>
+                                            <td class="days-180">{{ $product->sell_180 }}</td>
+                                            <td class="days-180">{{ $product->stock_zero_180 }}</td>
+                                            <td class="days-365">{{ $product->sell_365 }}</td>
+                                            <td class="days-365">{{ $product->stock_zero_365 }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -114,6 +114,28 @@
         <style>
             .highlight {
                 background-color: #ffe79d!important;
+            }
+            th {
+                white-space: nowrap;
+            }
+
+            .days-15 {
+                background-color: rgba(12, 132, 255, 0.05);
+            }
+            .days-30 {
+                background-color: rgba(13, 255, 146, 0.05);
+            }
+            .days-60 {
+                background-color: rgba(223, 14, 255, 0.05);
+            }
+            .days-90 {
+                background-color: rgba(255, 199, 15, 0.05);
+            }
+            .days-180 {
+                background-color: rgba(16, 255, 191, 0.05);
+            }
+            .days-365 {
+                background-color: rgba(255, 17, 17, 0.05);
             }
         </style>
     @endpush
@@ -195,6 +217,7 @@
                 ],
                 initComplete: function () {
                     let api = this.api();
+                    const resetColumn = 10;
 
                     api.buttons().container().appendTo('#control-buttons');
 
@@ -205,7 +228,7 @@
                         let end = moment();
 
                         api.rows().data().toArray().forEach((el, i) => {
-                            let target = moment(el[10], 'YYYY-MM-DD HH:mm:ss');
+                            let target = moment(el[resetColumn], 'YYYY-MM-DD HH:mm:ss');
 
                             $(api.row("#" + el.DT_RowId).node()).removeClass('highlight');
 
