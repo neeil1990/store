@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 overflow-auto">
+                        <div class="col-12">
                             <table id="products-zero" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -111,6 +111,7 @@
         <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/datatables-select/css/select.bootstrap4.css') }}">
+
         <style>
             .highlight {
                 background-color: #ffe79d!important;
@@ -137,6 +138,18 @@
             .days-365 {
                 background-color: rgba(255, 17, 17, 0.05);
             }
+            tr.even td.dtfc-fixed-left {
+                background-color: #ffffff;
+            }
+            tr.odd td.dtfc-fixed-left {
+                background-color: #f9f9f9;
+            }
+            thead th {
+                background-color: white;
+            }
+            th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
+                z-index: 1;
+            }
         </style>
     @endpush
 
@@ -152,6 +165,8 @@
         <script src="{{ asset('plugins/datatables-select/js/dataTables.select.js') }}"></script>
         <script src="{{ asset('plugins/datatables-select/js/select.bootstrap4.js') }}"></script>
         <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
 
         <script>
         let table = $('#products-zero').DataTable({
@@ -166,6 +181,10 @@
                 },
                 lengthMenu: [100, 150, 200, 250, 300],
                 order: [[1, 'asc']],
+                scrollX: true,
+                fixedColumns: {
+                    left: 3
+                },
                 buttons: [
                     {
                         extend: 'excelHtml5',
