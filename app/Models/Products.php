@@ -205,6 +205,10 @@ class Products extends ProductsScopes
             $query->orderBy('created_at', 'desc')->take(2);
         }], 'sell');
 
+        if ($this->unavailable_days_count >= 30) {
+            dd($this);
+        }
+
         // Средний спрос
         $middleSupply = round($this->last_sell_sum / (30 - $this->unavailable_days_count), 2);
 
