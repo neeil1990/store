@@ -46,8 +46,10 @@ class ProductsController extends Controller
         }]);
 
         // Продажи за 30 дней
-        $product->loadSum('lastSell as last_sell_sum', 'sell');
-
+        $product->loadSum(['sell as last_sell_sum' => function ($query) {
+            $query->orderBy('created_at', 'desc')->take(2);
+        }], 'sell');
+        
         // Средний спрос
         $middleSupply = round($product->last_sell_sum / (30 - $product->unavailable_days_count), 2);
 
