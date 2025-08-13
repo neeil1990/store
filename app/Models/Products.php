@@ -140,6 +140,11 @@ class Products extends ProductsScopes
         return $this->hasMany(Sell::class, 'product_id');
     }
 
+    public function lastSell()
+    {
+        return $this->hasOne(Sell::class, 'product_id')->latestOfMany();
+    }
+
     protected function userWhoDeletedStockTotal(): Attribute
     {
         return Attribute::make(

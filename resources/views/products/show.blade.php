@@ -21,6 +21,7 @@
             @include('products.partials.barcodes-detail-card')
             @include('products.partials.access-detail-card')
             @include('products.partials.attributes-detail-card')
+            @include('products.partials.sales-formula')
         </div>
     </div>
 
