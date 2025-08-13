@@ -205,12 +205,13 @@ class Products extends ProductsScopes
             $query->orderBy('created_at', 'desc')->take(2);
         }], 'sell');
 
-        if ($this->unavailable_days_count >= 30) {
-            dd($this);
-        }
-
         // Средний спрос
-        $middleSupply = round($this->last_sell_sum / (30 - $this->unavailable_days_count), 2);
+        $days = 30 - $this->unavailable_days_count;
+        if ($days > 0) {
+            $middleSupply = round($this->last_sell_sum / $days, 2);
+        } else {
+            $middleSupply = 0;
+        }
 
         // Базовый запас для редких товаров
         $baseStock = ($this->last_sell_sum <= 1) ? floatval(Setting::query()->where('key', 'baseStock')->value('value') ?? 2) : 0;
