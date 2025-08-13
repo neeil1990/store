@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Lib\Sale\ProductsTable;
 use App\Models\Products;
+use App\Models\Setting;
 use App\Models\Store;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -37,36 +38,7 @@ class ProductsController extends Controller
             'transits' => $stores->pluck('transits')->flatten()->sum('quantity'),
         ];
 
-        // Коэффициент пополнения
-        $replenishmentCoefficient = 1.5;
-
-        // Дней отсутствия за 30 дней
-        $product->loadCount(['stockTotal as unavailable_days_count' => function ($query) {
-            $query->where('created_at', '>=', Carbon::now()->subDays(30));
-        }]);
-
-        // Продажи за 30 дней
-        $product->loadSum(['sell as last_sell_sum' => function ($query) {
-            $query->orderBy('created_at', 'desc')->take(2);
-        }], 'sell');
-        
-        // Средний спрос
-        $middleSupply = round($product->last_sell_sum / (30 - $product->unavailable_days_count), 2);
-
-        // Базовый запас для редких товаров
-        $baseStock = ($product->last_sell_sum <= 1) ? 2 : 0;
-
-        // Неснижаемый остаток
-        $minimumBalance = ($product->last_sell_sum * $replenishmentCoefficient) + ($product->unavailable_days_count * $middleSupply) + $baseStock;
-
-        $salesFormula = [
-            'replenishmentCoefficient' => $replenishmentCoefficient, // Коэффициент пополнения
-            'unavailable_days_count' => $product->unavailable_days_count, // Дней отсутствия за 30 дней
-            'last_sell_sum' => $product->last_sell_sum, // Продажи за 30 дней
-            'middleSupply' => $middleSupply, // Средний спрос
-            'baseStock' => $baseStock, // Базовый запас для редких товаров
-            'minimumBalance' => $minimumBalance // Неснижаемый остаток
-        ];
+        $salesFormula = $product->sales_formula;
 
         return view('products.show', compact('product', 'stores', 'total', 'stocks', 'salesFormula'));
     }
@@ -123,6 +95,24 @@ class ProductsController extends Controller
                 ]);
             }
         }
+    }
+
+    public function storeOutOfStockSettings(Request $request)
+    {
+        $values = [
+            'value' => $request->input('value', 0)
+        ];
+
+        if (!$values['value']) {
+            $values['value'] = 0;
+        }
+
+        Setting::query()->updateOrCreate(['key' => $request->input('key')], $values);
+    }
+
+    public function getOutOfStockSettings(string $key)
+    {
+        return Setting::query()->where('key', $key)->value('value');
     }
 
 }

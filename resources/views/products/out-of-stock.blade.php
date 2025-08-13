@@ -11,7 +11,7 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-4" id="control-buttons">
+                        <div class="col-5" id="control-buttons">
                             <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
@@ -43,6 +43,7 @@
                                         <th>{{ __('Код') }}</th>
                                         <th>{{ __('Закупочная цена') }}</th>
                                         <th>{{ __('Неснижаемый остаток') }}</th>
+                                        <th>{{ __('Предлагаемый нес.ост.') }}</th>
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
@@ -76,6 +77,7 @@
                                             <td>{{ $product->code }}</td>
                                             <td>{{ $product->buyPrice }}</td>
                                             <td>{{ $product->minimumBalance }}</td>
+                                            <td>{{ $product->sales_formula['minimumBalance'] }}</td>
                                             <td>{{ $product->minimumBalanceLager }}</td>
                                             <td>{{ $product->stocks_sum_quantity }}</td>
                                             <td>{{ $product->deleted_stock_total_at }}</td>
@@ -222,6 +224,47 @@
                             }
                         }
                     },
+                    {
+                        text: 'Настройки',
+                        className: 'btn btn-secondary btn-default btn-sm ',
+                        action: function (e, dt, node, config, cb) {
+                            e.stopPropagation();
+
+                            let popover = $('<div />');
+
+                            let coefficient = getFormGroupElement('Коэффициент пополнения', 'replenishmentCoefficient');
+
+                            let baseStock = getFormGroupElement('Базовый запас для редких товаров', 'baseStock');
+
+                            popover.append([coefficient, baseStock]);
+
+                            popover.find('input').each(function (i, el) {
+                                let self = $(el);
+                                axios.get('/products/out-of-stock/settings/' + self.attr('name')).then(function (response) {
+                                    self.val(response.data);
+                                });
+                            });
+
+                            this.popover(popover, {
+                                collectionLayout: 'fixed',
+                                closeButton: false,
+                                popoverTitle: 'Настройка формулы нес.остатка',
+                            });
+
+                            popover.find('input').keyup(function () {
+                                let self = $(this);
+                                let key = self.attr('name');
+                                let val = self.val();
+
+                                axios.post('{{ route('products.storeOutOfStockSettings') }}', {
+                                    key: key,
+                                    value: val
+                                }).then(function (response) {
+                                    console.log(response);
+                                });
+                            });
+                        },
+                    },
                 ],
                 select: {
                     style: 'os',
@@ -236,7 +279,7 @@
                 ],
                 initComplete: function () {
                     let api = this.api();
-                    const resetColumn = 10;
+                    const resetColumn = 11;
 
                     api.buttons().container().appendTo('#control-buttons');
 
@@ -258,6 +301,16 @@
                     });
                 },
             });
+
+            function getFormGroupElement(title, key)
+            {
+                return $('<div />', {
+                    class: 'form-group'
+                }).append([
+                    $('<label />').text(title),
+                    $('<input />', { class: 'form-control form-control-sm', name: key })
+                ]);
+            }
         </script>
     @endpush
 

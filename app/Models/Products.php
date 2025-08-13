@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\LocalScopes\ProductsScopes;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -32,7 +33,7 @@ class Products extends ProductsScopes
 
     protected function paymentItemType(): Attribute
     {
-        return Attribute::make(function($value){
+        return Attribute::make(function ($value) {
             switch ($value) {
                 case "GOOD":
                     return __('Товар');
@@ -54,7 +55,7 @@ class Products extends ProductsScopes
 
     protected function trackingType(): Attribute
     {
-        return Attribute::make(function($value){
+        return Attribute::make(function ($value) {
             $types = [
                 "BEER_ALCOHOL" => "Пиво и слабоалкогольная продукция",
                 "ELECTRONICS" => "Фотокамеры и лампы-вспышки",
@@ -73,7 +74,7 @@ class Products extends ProductsScopes
                 "WATER" => "Упакованная вода",
             ];
 
-            if(array_key_exists($value, $types))
+            if (array_key_exists($value, $types))
                 return $types[$value];
             else
                 return "";
@@ -166,26 +167,65 @@ class Products extends ProductsScopes
             ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
             ->whereJsonContains('attributes', ['name' => 'Перестали сотрудничать / Не производится (дет.в комментах)', 'value' => false])
             ->withCount([
-                'stockTotal as stock_zero_3' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(3)),
-                'stockTotal as stock_zero_5' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(5)),
-                'stockTotal as stock_zero_7' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(7)),
-                'stockTotal as stock_zero_15' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
-                'stockTotal as stock_zero_30' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
-                'stockTotal as stock_zero_60' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
-                'stockTotal as stock_zero_90' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
-                'stockTotal as stock_zero_180' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
-                'stockTotal as stock_zero_365' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
+                'stockTotal as stock_zero_3' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(3)),
+                'stockTotal as stock_zero_5' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(5)),
+                'stockTotal as stock_zero_7' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(7)),
+                'stockTotal as stock_zero_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
+                'stockTotal as stock_zero_30' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
+                'stockTotal as stock_zero_60' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
+                'stockTotal as stock_zero_90' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
+                'stockTotal as stock_zero_180' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
+                'stockTotal as stock_zero_365' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
             ])
-            ->when($isZero, fn ($q) => $q->doesntHave('stocks'))
+            ->when($isZero, fn($q) => $q->doesntHave('stocks'))
             ->withSum('stocks', 'quantity')
             ->withSum([
-                'sell as sell_15' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
-                'sell as sell_30' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
-                'sell as sell_60' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
-                'sell as sell_90' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
-                'sell as sell_180' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
-                'sell as sell_365' => fn ($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
+                'sell as sell_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
+                'sell as sell_30' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
+                'sell as sell_60' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
+                'sell as sell_90' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
+                'sell as sell_180' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
+                'sell as sell_365' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
             ], 'sell')
             ->get();
+    }
+
+    public function getSalesFormula(): array
+    {
+        // Коэффициент пополнения
+        $replenishmentCoefficient = floatval(Setting::query()->where('key', 'replenishmentCoefficient')->value('value') ?? 1.5);
+
+        // Дней отсутствия за 30 дней
+        $this->loadCount(['stockTotal as unavailable_days_count' => function ($query) {
+            $query->where('created_at', '>=', Carbon::now()->subDays(30));
+        }]);
+
+        // Продажи за 30 дней
+        $this->loadSum(['sell as last_sell_sum' => function ($query) {
+            $query->orderBy('created_at', 'desc')->take(2);
+        }], 'sell');
+
+        // Средний спрос
+        $middleSupply = round($this->last_sell_sum / (30 - $this->unavailable_days_count), 2);
+
+        // Базовый запас для редких товаров
+        $baseStock = ($this->last_sell_sum <= 1) ? floatval(Setting::query()->where('key', 'baseStock')->value('value') ?? 2) : 0;
+
+        // Неснижаемый остаток
+        $minimumBalance = ($this->last_sell_sum * $replenishmentCoefficient) + ($this->unavailable_days_count * $middleSupply) + $baseStock;
+
+        return [
+            'replenishmentCoefficient' => $replenishmentCoefficient, // Коэффициент пополнения
+            'unavailable_days_count' => $this->unavailable_days_count, // Дней отсутствия за 30 дней
+            'last_sell_sum' => $this->last_sell_sum, // Продажи за 30 дней
+            'middleSupply' => $middleSupply, // Средний спрос
+            'baseStock' => $baseStock, // Базовый запас для редких товаров
+            'minimumBalance' => round($minimumBalance) // Неснижаемый остаток
+        ];
+    }
+
+    public function salesFormula(): Attribute
+    {
+        return Attribute::get(fn () => $this->getSalesFormula());
     }
 }
