@@ -11,12 +11,12 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
-                        <div class="col-5" id="control-buttons">
+                        <div class="col-6" id="control-buttons">
                             <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
                             <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
                         </div>
 
-                        <div class="col-1">
+                        <div class="col-2">
                             <div class="input-group input-group-sm deleted-stock-totals">
                                 <input type="number" class="form-control">
 
@@ -43,6 +43,7 @@
                                         <th>{{ __('Код') }}</th>
                                         <th>{{ __('Закупочная цена') }}</th>
                                         <th>{{ __('Неснижаемый остаток') }}</th>
+                                        <th>{{ __('Автоматизация цены') }}</th>
                                         <th>{{ __('Предлагаемый нес.ост.') }}</th>
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
                                         <th>{{ __('Остаток') }}</th>
@@ -77,6 +78,7 @@
                                             <td>{{ $product->code }}</td>
                                             <td>{{ $product->buyPrice }}</td>
                                             <td>{{ $product->minimumBalance }}</td>
+                                            <td>{{ $product->priceAuto }}</td>
                                             <td>{{ $product->sales_formula['minimumBalance'] }}</td>
                                             <td>{{ $product->minimumBalanceLager }}</td>
                                             <td>{{ $product->stocks_sum_quantity }}</td>
@@ -164,6 +166,7 @@
         <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
         <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
         <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-select/js/dataTables.select.js') }}"></script>
         <script src="{{ asset('plugins/datatables-select/js/select.bootstrap4.js') }}"></script>
         <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
@@ -184,12 +187,16 @@
                 lengthMenu: [100, 150, 200, 250, 300],
                 order: [[1, 'asc']],
                 scrollX: true,
+                stateSave: true,
                 fixedColumns: {
                     left: 3
                 },
                 buttons: [
                     {
                         extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
                         title: 'Товары с упущенной выгодой - ' + moment().format('DD-MM-YYYY'),
                         className: 'btn btn-secondary btn-default btn-sm ',
                     },
@@ -236,7 +243,11 @@
 
                             let baseStock = getFormGroupElement('Базовый запас для редких товаров', 'baseStock');
 
-                            popover.append([coefficient, baseStock]);
+                            let baseStockPrice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Цена)', 'baseStockPrice');
+
+                            let baseStockOverprice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Значение)', 'baseStockOverprice');
+
+                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice]);
 
                             popover.find('input').each(function (i, el) {
                                 let self = $(el);
@@ -265,6 +276,11 @@
                             });
                         },
                     },
+                    {
+                        extend: 'colvis',
+                        text: 'Видимость',
+                        className: 'btn btn-default btn-sm',
+                    }
                 ],
                 select: {
                     style: 'os',
@@ -279,7 +295,7 @@
                 ],
                 initComplete: function () {
                     let api = this.api();
-                    const resetColumn = 11;
+                    const resetColumn = 12;
 
                     api.buttons().container().appendTo('#control-buttons');
 

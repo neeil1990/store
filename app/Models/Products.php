@@ -216,21 +216,49 @@ class Products extends ProductsScopes
         // Базовый запас для редких товаров
         $baseStock = ($this->last_sell_sum <= 1) ? floatval(Setting::query()->where('key', 'baseStock')->value('value') ?? 2) : 0;
 
+        // Базовый запас для редких товаров стоимостью выше 50 000
+        $baseStockPrice = intval(Setting::query()->where('key', 'baseStockPrice')->value('value') ?? 50000);
+
+        $baseStockOverprice = intval(Setting::query()->where('key', 'baseStockOverprice')->value('value') ?? 1);
+
+        if ($this->salePrices > $baseStockPrice) {
+            $baseStock = $baseStockOverprice;
+        }
+
         // Неснижаемый остаток
         $minimumBalance = ($this->last_sell_sum * $replenishmentCoefficient) + ($this->unavailable_days_count * $middleSupply) + $baseStock;
 
+        // Значение кол-ва в упаковке для товаров которые принимают поштучно
+        $sizePackIndex = collect($this['attributes'])->search(fn ($item) => $item['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно');
+
+        $minimumBalanceInPack = 0;
+
+        if ($sizePackIndex) {
+            $minimumBalanceInPack = $minimumBalance * $this['attributes'][$sizePackIndex]['value'];
+        }
+
         return [
+            'baseStockPrice' => $baseStockPrice, // Базовый запас для редких товаров стоимостью выше 50 000 (Цена)
+            'baseStockOverprice' => $baseStockOverprice, // Базовый запас для редких товаров стоимостью выше 50 000 (Значение)
             'replenishmentCoefficient' => $replenishmentCoefficient, // Коэффициент пополнения
             'unavailable_days_count' => $this->unavailable_days_count, // Дней отсутствия за 30 дней
             'last_sell_sum' => $this->last_sell_sum, // Продажи за 30 дней
             'middleSupply' => $middleSupply, // Средний спрос
             'baseStock' => $baseStock, // Базовый запас для редких товаров
-            'minimumBalance' => round($minimumBalance) // Неснижаемый остаток
+            'minimumBalance' => round($minimumBalance), // Неснижаемый остаток
+            'minimumBalanceInPack' => $minimumBalanceInPack // Значение кол-ва в упаковке
         ];
     }
 
     public function salesFormula(): Attribute
     {
         return Attribute::get(fn () => $this->getSalesFormula());
+    }
+
+    public function priceAuto(): Attribute
+    {
+        $priceAutoIndex = collect($this['attributes'])->search(fn ($item) => $item['name'] == 'Автоматизация цены');
+
+        return Attribute::get(fn () => ($priceAutoIndex) ? $this['attributes'][$priceAutoIndex]['value'] : " - ");
     }
 }
