@@ -221,7 +221,7 @@ class Products extends ProductsScopes
 
         $baseStockOverprice = intval(Setting::query()->where('key', 'baseStockOverprice')->value('value') ?? 1);
 
-        if ($this->salePrices > $baseStockPrice) {
+        if ($this->prices->where('name', 'Цена Маркеты с теста')->value('value') > $baseStockPrice) {
             $baseStock = $baseStockOverprice;
         }
 
