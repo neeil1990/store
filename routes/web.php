@@ -47,9 +47,10 @@ Route::get('/get-sales/{id}', function ($id, Request $request) {
 
     $sales = [];
     $dates = '';
+    $result = 0;
 
     if ($subDay) {
-        $sales = new ProductProfitService();
+        $sale = new ProductProfitService();
 
         $uuids = Arr::pluck($bundles, 'uuid');
 
@@ -57,7 +58,9 @@ Route::get('/get-sales/{id}', function ($id, Request $request) {
 
         $start = Carbon::now()->subDays($subDay);
 
-        $sales = $sales->getProfitByProduct($uuids, $start);
+        $sales = $sale->getProfitByProduct($uuids, $start);
+
+        $result = $sale->getTotalSell($uuid, $start);
 
         $dates .= $start . ' - ' . Carbon::now();
     }
@@ -67,8 +70,9 @@ Route::get('/get-sales/{id}', function ($id, Request $request) {
         'bundles' => $bundles,
         'sales' => $sales,
         'dates' => $dates,
+        'result' => $result,
     ]);
-});
+})->name('get-sales-test');
 
 Route::get('info', function () {
     phpinfo();
