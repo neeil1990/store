@@ -12,6 +12,7 @@ use App\Models\Products;
 use App\Models\StockTotal;
 use App\Models\User;
 use App\Services\BundleService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Artisan;
@@ -34,6 +35,41 @@ use App\Models\Sell;
 |
 */
 
+Route::get('/get-sales/{id}', function ($id, Request $request) {
+
+    $subDay = $request->get('sub_day');
+
+    $product = Products::find($id);
+
+    $uuid = $product->uuid;
+
+    $bundles = (new BundleService())->getBundleByProduct($uuid);
+
+    $sales = [];
+    $dates = '';
+
+    if ($subDay) {
+        $sales = new ProductProfitService();
+
+        $uuids = Arr::pluck($bundles, 'uuid');
+
+        $uuids[] = $uuid;
+
+        $start = Carbon::now()->subDays($subDay);
+
+        $sales = $sales->getProfitByProduct($uuids, $start);
+
+        $dates .= $start . ' - ' . Carbon::now();
+    }
+
+    return view('test.sales', [
+        'product' => $product,
+        'bundles' => $bundles,
+        'sales' => $sales,
+        'dates' => $dates,
+    ]);
+});
+
 Route::get('info', function () {
     phpinfo();
 });
@@ -51,15 +87,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    require __DIR__.'/uri/profile.php';
-    require __DIR__.'/uri/users.php';
-    require __DIR__.'/uri/settings.php';
-    require __DIR__.'/uri/token.php';
-    require __DIR__.'/uri/products.php';
-    require __DIR__.'/uri/employee.php';
-    require __DIR__.'/uri/suppliers.php';
-    require __DIR__.'/uri/filters.php';
-    require __DIR__.'/uri/shipper.php';
+    require __DIR__ . '/uri/profile.php';
+    require __DIR__ . '/uri/users.php';
+    require __DIR__ . '/uri/settings.php';
+    require __DIR__ . '/uri/token.php';
+    require __DIR__ . '/uri/products.php';
+    require __DIR__ . '/uri/employee.php';
+    require __DIR__ . '/uri/suppliers.php';
+    require __DIR__ . '/uri/filters.php';
+    require __DIR__ . '/uri/shipper.php';
 });
 
-require __DIR__.'/uri/auth.php';
+require __DIR__ . '/uri/auth.php';
