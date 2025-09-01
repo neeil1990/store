@@ -45,20 +45,18 @@ Route::get('/get-sales/{id}', function ($id, Request $request) {
 
     $bundles = (new BundleService())->getBundleByProduct($uuid);
 
-    $sales = [];
+    $saleProducts = $saleBundles = [];
     $dates = '';
     $result = 0;
 
     if ($subDay) {
         $sale = new ProductProfitService();
 
-        $uuids = Arr::pluck($bundles, 'uuid');
-
-        $uuids[] = $uuid;
-
         $start = Carbon::now()->subDays($subDay);
 
-        $sales = $sale->getProfitByProduct($uuids, $start);
+        $saleProducts = $sale->getProfitByProduct([$uuid], $start);
+
+        $saleBundles = $sale->getProfitByProduct(Arr::pluck($bundles, 'uuid'), $start);
 
         $result = $sale->getTotalSell($uuid, $start);
 
@@ -68,7 +66,8 @@ Route::get('/get-sales/{id}', function ($id, Request $request) {
     return view('test.sales', [
         'product' => $product,
         'bundles' => $bundles,
-        'sales' => $sales,
+        'saleProducts' => $saleProducts,
+        'saleBundles' => $saleBundles,
         'dates' => $dates,
         'result' => $result,
     ]);
