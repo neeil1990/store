@@ -25,14 +25,46 @@ class ProductProfitService
         return $api->getRows();
     }
 
-    public function getTotalSell(string $uuid, string $dateFrom)
+    public function getTotalSell(string $uuid, string $dateFrom): int
     {
+        return $this->productSellQuantity($uuid, $dateFrom) + $this->bundleSellQuantity($uuid, $dateFrom);
+    }
+
+    private function bundleSellQuantity(string $uuid, string $dateFrom): int
+    {
+        $sales = [];
+
         $bundles = (new BundleService())->getBundleByProduct($uuid);
 
-        $uuids = Arr::pluck($bundles, 'uuid');
+        foreach ($bundles as $bundle) {
 
-        $uuids[] = $uuid;
+            $component = $this->findBundleComponent($uuid, $bundle);
 
-        return array_sum(Arr::pluck($this->getProfitByProduct($uuids, $dateFrom), 'sellQuantity'));
+            $quantity = 1;
+
+            if (checkMeasureAttr($component['assortment']['attributes'])) {
+                $quantity = $component['quantity'];
+            }
+
+            if ($profit = $this->getProfitByProduct([$bundle['uuid']], $dateFrom)) {
+                $sellQuantity = $profit[0]['sellQuantity'];
+
+                $sales[] = $sellQuantity * $quantity;
+            }
+        }
+
+        return array_sum($sales);
+    }
+
+    private function productSellQuantity(string $uuid, string $dateFrom): int
+    {
+        return array_sum(Arr::pluck($this->getProfitByProduct([$uuid], $dateFrom), 'sellQuantity'));
+    }
+
+    private function findBundleComponent(string $uuid, array $bundle): array
+    {
+        $components = $bundle['components']['rows'];
+
+        return Arr::first($components, fn ($val) => $val['assortment']['id'] === $uuid);
     }
 }

@@ -23,7 +23,6 @@
         <th>UUID</th>
         <th>Название товара или комплекта</th>
         <th>Артикул</th>
-        <th>ед. измерения</th>
     </tr>
 
     @foreach ($bundles as $bundle)
@@ -31,7 +30,6 @@
             <td>{{ $bundle['uuid'] }}</td>
             <td>{{ $bundle['name'] }}</td>
             <td>{{ $bundle['article'] }}</td>
-            <td>Неизвестно</td>
         </tr>
     @endforeach
 
@@ -129,8 +127,7 @@
 
 </table>
 
-<h1>Данные которые будут сохранены.</h1>
-<h2>{{ $result }}</h2>
+<h1>Данные которые будут сохранены: {{ $result }}</h1>
 
 
 

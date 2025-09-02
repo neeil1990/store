@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Products;
+use Illuminate\Support\Arr;
 
 if (!function_exists('money')) {
     function money(float $amount): string
@@ -37,6 +38,17 @@ if (!function_exists('stockZeros')) {
             'count' => $product->stockTotal()->where('created_at', '>', $carbon)->count(),
             'dateFrom' => $carbon->format('d.m.Y H:i:s')
         ];
+    }
+}
+
+if (!function_exists('checkMeasureAttr')) {
+    function checkMeasureAttr(array $attributes): bool
+    {
+        if (Arr::first($attributes, fn ($value) => $value['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно')) {
+            return true;
+        }
+
+        return false;
     }
 }
 
