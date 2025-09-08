@@ -15,6 +15,11 @@
             <li>Неснижаемый остаток - {{ $salesFormula['minimumBalance'] }}</li>
             <li>Значение кол-ва в упаковке - {{ $salesFormula['minimumBalanceInPack'] }}</li>
         </ul>
+
+        <label>Неснижаемый остаток</label><br>
+        <pre>(Продажи за 30 дней * Коэффициент пополнения) + (Дней отсутствия за 30 дней * Средний спрос) + Базовый запас для редких товаров = Неснижаемый остаток</pre>
+        <pre>({{ $salesFormula['last_sell_sum'] }} * {{ $salesFormula['replenishmentCoefficient'] }}) + ({{ $salesFormula['unavailable_days_count'] }} * {{ $salesFormula['middleSupply'] }}) + {{ $salesFormula['baseStock'] }} = {{ $salesFormula['minimumBalance'] }}</pre>
+
     </div>
     <!-- /.card-body -->
 </div>

@@ -216,9 +216,10 @@ class Products extends ProductsScopes
         // Базовый запас для редких товаров
         $baseStock = ($this->last_sell_sum <= 1) ? floatval(Setting::query()->where('key', 'baseStock')->value('value') ?? 2) : 0;
 
-        // Базовый запас для редких товаров стоимостью выше 50 000
+        // Базовый запас для редких товаров стоимостью выше 50 000 (Цена)
         $baseStockPrice = intval(Setting::query()->where('key', 'baseStockPrice')->value('value') ?? 50000);
 
+        // Базовый запас для редких товаров стоимостью выше 50 000 (Значение)
         $baseStockOverprice = intval(Setting::query()->where('key', 'baseStockOverprice')->value('value') ?? 1);
 
         if ($this->prices->where('name', 'Цена Маркеты с теста')->value('value') > $baseStockPrice) {
