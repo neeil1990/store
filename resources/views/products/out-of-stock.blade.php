@@ -243,7 +243,7 @@
 
                             let baseStock = getFormGroupElement('Базовый запас для редких товаров', 'baseStock');
 
-                            let baseStockPrice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Цена)', 'baseStockPrice');
+                            let baseStockPrice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Цена для маркетов)', 'baseStockPrice');
 
                             let baseStockOverprice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Значение)', 'baseStockOverprice');
 
