@@ -18,6 +18,12 @@
 
         <label for="">Средний спрос</label>
         <pre>Берем 30 дней и вычитаем "Дней отсутствия за 30 дней" если больше 0 тогда "Продажи за 30 дней" / "На полученную разность дней" иначе 0</pre>
+        <pre>(30 - {{ $salesFormula['unavailable_days_count'] }}) = {{ 30 - $salesFormula['unavailable_days_count'] }}</pre>
+        @if (30 - $salesFormula['unavailable_days_count'] > 0)
+            <pre>{{$salesFormula['last_sell_sum']}} / {{30 - $salesFormula['unavailable_days_count']}} = {{round($salesFormula['last_sell_sum'] / (30 - $salesFormula['unavailable_days_count']), 2)}}</pre>
+        @else
+            <pre>0</pre>
+        @endif
 
         <label for="">Базовый запас для редких товаров</label>
         <pre>Если "Продажи за 30 дней" меньше или равны 1 тогда будет значение из настройки "Базовый запас для редких товаров". Если значения нет, тогда будет 2. Иначе будет 0</pre>
