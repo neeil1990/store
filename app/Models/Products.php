@@ -229,6 +229,13 @@ class Products extends ProductsScopes
         // Неснижаемый остаток
         $minimumBalance = round(($this->last_sell_sum * $replenishmentCoefficient) + ($this->unavailable_days_count * $middleSupply) + $baseStock);
 
+        // Коэффициент максимального изменения предлагаемого остатка
+        $maxMinimumBalance = Setting::query()->where('key', 'maxMinimumBalance')->value('value');
+
+        if ($maxMinimumBalance) {
+            $minimumBalance = min($this->minimumBalance * $maxMinimumBalance, $minimumBalance);
+        }
+
         // Значение кол-ва в упаковке для товаров которые принимают поштучно
         $sizePackIndex = collect($this['attributes'])->search(fn ($item) => $item['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно');
 
@@ -247,7 +254,8 @@ class Products extends ProductsScopes
             'middleSupply' => $middleSupply, // Средний спрос
             'baseStock' => $baseStock, // Базовый запас для редких товаров
             'minimumBalance' => $minimumBalance, // Неснижаемый остаток
-            'minimumBalanceInPack' => $minimumBalanceInPack // Значение кол-ва в упаковке
+            'minimumBalanceInPack' => $minimumBalanceInPack, // Значение кол-ва в упаковке
+            'maxMinimumBalance' => $maxMinimumBalance, // Коэффициент максимального изменения предлагаемого остатка
         ];
     }
 

@@ -247,7 +247,9 @@
 
                             let baseStockOverprice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Значение)', 'baseStockOverprice');
 
-                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice]);
+                            let maxMinimumBalance = getFormGroupElement('Коэффициент максимального изменения предлагаемого остатка', 'maxMinimumBalance');
+
+                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice, maxMinimumBalance]);
 
                             popover.find('input').each(function (i, el) {
                                 let self = $(el);

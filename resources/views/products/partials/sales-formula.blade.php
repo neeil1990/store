@@ -14,6 +14,7 @@
             <li>Базовый запас для редких товаров - {{ $salesFormula['baseStock'] }}</li>
             <li>Неснижаемый остаток - {{ $salesFormula['minimumBalance'] }}</li>
             <li>Значение кол-ва в упаковке - {{ $salesFormula['minimumBalanceInPack'] }}</li>
+            <li>Коэффициент максимального изменения предлагаемого остатка - {{ $salesFormula['maxMinimumBalance'] }}</li>
         </ul>
 
         <label for="">Средний спрос</label>
@@ -52,6 +53,10 @@
         <label>Неснижаемый остаток - ({{ $salesFormula['last_sell_sum'] }} * {{ $salesFormula['replenishmentCoefficient'] }}) + ({{ $salesFormula['unavailable_days_count'] }} * {{ $salesFormula['middleSupply'] }}) + {{ $salesFormula['baseStock'] }} = {{ $salesFormula['minimumBalance'] }}</label>
         <pre>(Продажи за 30 дней * Коэффициент пополнения) + (Дней отсутствия за 30 дней * Средний спрос) + Базовый запас для редких товаров = Неснижаемый остаток</pre>
 
+        @if ($salesFormula['maxMinimumBalance'])
+            <label>Коэффициент максимального изменения предлагаемого остатка</label>
+            <pre>{{$product->minimumBalance}} * {{$salesFormula['maxMinimumBalance']}} = {{ $product->minimumBalance * $salesFormula['maxMinimumBalance'] }}</pre>
+        @endif
     </div>
     <!-- /.card-body -->
 </div>
