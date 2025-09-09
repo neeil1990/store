@@ -108,7 +108,7 @@
 
     @foreach ($saleBundles as $sale)
         <tr>
-            <td>{{ $sale['assortment']['name'] }}, {{ $sale['assortment']['article'] }}</td>
+            <td>{{ $sale['assortment']['name'] }}</td>
             <td style="background-color: rgba(14,91,68,0.57)">{{ $sale['sellQuantity'] }}</td>
             <td>{{ $sale['sellPrice'] }}</td>
             <td>{{ $sale['sellCost'] }}</td>
