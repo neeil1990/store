@@ -9,6 +9,10 @@ class ProductProfitService
 {
     public function getProfitByProduct(array $uuids, string $date): array
     {
+        if (empty($uuids)) {
+            return [];
+        }
+
         $api = new \App\Lib\Moysklad\MojSkladJsonApi;
 
         $endpoint = 'https://api.moysklad.ru/api/remap/1.2/report/profit/byproduct';
