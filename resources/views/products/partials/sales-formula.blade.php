@@ -50,7 +50,7 @@
         <label for="">Базовый запас для редких товаров стоимостью выше 50 000 (Значение)</label>
         <pre>Если есть настройка "Базовый запас для редких товаров стоимостью выше 50 000 (Значение)" тогда будет ее значение, иначе 1</pre>
 
-        <label>Неснижаемый остаток - ({{ $salesFormula['last_sell_sum'] }} * {{ $salesFormula['replenishmentCoefficient'] }}) + ({{ $salesFormula['unavailable_days_count'] }} * {{ $salesFormula['middleSupply'] }}) + {{ $salesFormula['baseStock'] }} = {{ $salesFormula['minimumBalance'] }}</label>
+        <label>Неснижаемый остаток - ({{ $salesFormula['last_sell_sum'] }} * {{ $salesFormula['replenishmentCoefficient'] }}) + ({{ $salesFormula['unavailable_days_count'] }} * {{ $salesFormula['middleSupply'] }}) + {{ $salesFormula['baseStock'] }} = {{ round(($salesFormula['last_sell_sum'] * $salesFormula['replenishmentCoefficient']) + ($salesFormula['unavailable_days_count'] * $salesFormula['middleSupply']) + $salesFormula['baseStock']) }}</label>
         <pre>(Продажи за 30 дней * Коэффициент пополнения) + (Дней отсутствия за 30 дней * Средний спрос) + Базовый запас для редких товаров = Неснижаемый остаток</pre>
 
         @if ($salesFormula['maxMinimumBalance'])
