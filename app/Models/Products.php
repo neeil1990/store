@@ -236,6 +236,21 @@ class Products extends ProductsScopes
             $minimumBalance = min($this->minimumBalance * $maxMinimumBalance, $minimumBalance);
         }
 
+        // Кратность товара
+        if ($this->multiplicityProduct) {
+            if ($minimumBalance < $this->multiplicityProduct) {
+                $minimumBalance = $this->multiplicityProduct;
+            } else {
+                $sizePackPercent = ($minimumBalance % $this->multiplicityProduct) / $this->multiplicityProduct * 100;
+
+                if ($sizePackPercent > 80) {
+                    $minimumBalance = $this->multiplicityProduct * ceil($minimumBalance / $this->multiplicityProduct);
+                } else {
+                    $minimumBalance = $this->multiplicityProduct * floor($minimumBalance / $this->multiplicityProduct);
+                }
+            }
+        }
+
         // Значение кол-ва в упаковке для товаров которые принимают поштучно
         $sizePackIndex = collect($this['attributes'])->search(fn ($item) => $item['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно');
 
@@ -256,6 +271,7 @@ class Products extends ProductsScopes
             'minimumBalance' => $minimumBalance, // Неснижаемый остаток
             'minimumBalanceInPack' => $minimumBalanceInPack, // Значение кол-ва в упаковке
             'maxMinimumBalance' => $maxMinimumBalance, // Коэффициент максимального изменения предлагаемого остатка
+            'multiplicity' => $this->multiplicityProduct, // Кратность товара
         ];
     }
 
