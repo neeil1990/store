@@ -61,7 +61,7 @@
         @if ($salesFormula['multiplicity'])
             <label>Кратность товара - {{ $salesFormula['multiplicity'] }}</label>
             @if (empty($salesFormula['sizePackPercent']))
-                <pre>"Неснижаемый остаток" ({{ $salesFormula['minimumBalance'] }}) < "Кратность товара" ({{ $salesFormula['multiplicity'] }})</pre>
+                <pre>"Неснижаемый остаток" < "Кратность товара"</pre>
                 <pre>"Неснижаемый остаток" = "Кратность товара" ({{ $salesFormula['multiplicity'] }})</pre>
             @else
                 <pre>Процент от упаковки {{ $salesFormula['sizePackPercent'] }}</pre>
