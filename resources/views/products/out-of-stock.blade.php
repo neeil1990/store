@@ -46,6 +46,7 @@
                                         <th>{{ __('Автоматизация цены') }}</th>
                                         <th>{{ __('Предлагаемый нес.ост.') }}</th>
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
+                                        <th>{{ __('Кратность товара') }}</th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
                                         <th>3</th>
@@ -80,7 +81,8 @@
                                             <td>{{ $product->minimumBalance }}</td>
                                             <td>{{ $product->priceAuto }}</td>
                                             <td>{{ $product->sales_formula['minimumBalance'] }}</td>
-                                            <td>{{ $product->minimumBalanceLager }}</td>
+                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minimumBalanceLager, 'action' => route('products.minimum-balance-lager-store')]) }}</td>
+                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->multiplicityProduct, 'action' => route('products.multiplicity-store')]) }}</td>
                                             <td>{{ $product->stocks_sum_quantity }}</td>
                                             <td>{{ $product->deleted_stock_total_at }}</td>
                                             <td>{{ $product->stock_zero_3 }}</td>
@@ -297,7 +299,7 @@
                 ],
                 initComplete: function () {
                     let api = this.api();
-                    const resetColumn = 12;
+                    const resetColumn = 14;
 
                     api.buttons().container().appendTo('#control-buttons');
 
@@ -318,6 +320,24 @@
                         });
                     });
                 },
+            });
+
+            $("#products-zero").on("click", ".input-column", function () {
+                let $form = $(this).closest('.input-group');
+                let $input = $form.find('input');
+                let id = $form.data('id');
+                let action = $form.data('action');
+
+                if ($input.val().length > 0 && id) {
+                    axios.post(action, {
+                        id: id,
+                        val: $input.val(),
+                    }).then(function (response) {
+                        toastr.success('Успешно сохранено!');
+                    });
+                }
+
+                return true;
             });
 
             function getFormGroupElement(title, key)
