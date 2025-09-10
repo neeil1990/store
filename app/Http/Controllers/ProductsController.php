@@ -76,6 +76,15 @@ class ProductsController extends Controller
         return $product->save();
     }
 
+    public function multiplicityStore(Request $request)
+    {
+        $product = Products::find($request['id']);
+
+        $product->multiplicityProduct = $request['val'];
+
+        return $product->save();
+    }
+
     public function outOfStock(Request $request)
     {
         $products = Products::getOutOfStock($request->input('isZero'));

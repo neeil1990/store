@@ -42,7 +42,17 @@ class ProductsTable extends DataTableRequest
         $data = $pagination->items();
 
         foreach ($data as $i) {
-            $i->minimumBalanceLager = DataTableViewService::minimumBalanceLagerView($i->minimumBalanceLager, $i->id, true);
+            $i->minimumBalanceLager = DataTableViewService::columnInputView([
+                'id' => $i->id,
+                'value' => $i->minimumBalanceLager,
+                'action' => route('products.minimum-balance-lager-store')
+            ], true);
+
+            $i->multiplicityProduct = DataTableViewService::columnInputView([
+                'id' => $i->id,
+                'value' => $i->multiplicityProduct,
+                'action' => route('products.multiplicity-store')
+            ], true);
         }
 
         $this->setData($data);

@@ -12,6 +12,7 @@
             @include('products.partials.mark-detail-card')
             @include('products.partials.minimum-balance-detail-card')
             @include('products.partials.minimum-balance-lager-detail-card')
+            @include('products.partials.multiplicity')
             @include('products.partials.stocks-detail-card')
             @include('products.partials.stocks-total-detail-card')
             @include('products.partials.sales-detail-card')

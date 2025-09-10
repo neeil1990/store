@@ -58,7 +58,18 @@ class SuppliersDataTable
     {
         return $this->get()
             ->editColumn('minimumBalanceLager', function (Products $products) {
-                return DataTableViewService::minimumBalanceLagerView($products->minimumBalanceLager, $products->id);
+                return DataTableViewService::columnInputView([
+                    'id' => $products->id,
+                    'value' => $products->minimumBalanceLager,
+                    'action' => route('products.minimum-balance-lager-store')
+                ]);
+            })
+            ->editColumn('multiplicityProduct', function (Products $products) {
+                return DataTableViewService::columnInputView([
+                    'id' => $products->id,
+                    'value' => $products->multiplicityProduct,
+                    'action' => route('products.multiplicity-store')
+                ]);
             })
             ->toJson();
     }

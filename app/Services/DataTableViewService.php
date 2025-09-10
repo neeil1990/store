@@ -6,9 +6,9 @@ namespace App\Services;
 
 class DataTableViewService
 {
-    public static function minimumBalanceLagerView(?string $value, int $id = null, bool $string = false)
+    public static function columnInputView(array $data, bool $string = false)
     {
-        $view = view('columns.minimum-balance-lager', compact('value', 'id'));
+        $view = view('columns.input-column', $data);
 
         if ($string) {
             return $view->render();

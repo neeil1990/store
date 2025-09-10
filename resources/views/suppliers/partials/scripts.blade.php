@@ -35,13 +35,14 @@
             },
         });
 
-        $("#products-table").on("click", ".minimum-balance-lager", function () {
+        $("#products-table").on("click", ".input-column", function () {
             let $form = $(this).closest('.input-group');
             let $input = $form.find('input');
             let id = $form.data('id');
+            let action = $form.data('action');
 
             if ($input.val().length > 0 && id) {
-                axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+                axios.post(action, {
                     id: id,
                     val: $input.val(),
                 }).then(function (response) {
