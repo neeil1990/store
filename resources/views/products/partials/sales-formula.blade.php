@@ -60,16 +60,16 @@
 
         @if ($salesFormula['multiplicity'])
             <label>Кратность товара - {{ $salesFormula['multiplicity'] }}</label>
-            @if ($product->minimumBalance < $salesFormula['multiplicity'])
-                <pre>"Неснижаемый остаток" ({{$product->minimumBalance}}) < "Кратность товара" ({{ $salesFormula['multiplicity'] }})</pre>
+            @if ($salesFormula['minimumBalance'] < $salesFormula['multiplicity'])
+                <pre>"Неснижаемый остаток" ({{ $salesFormula['minimumBalance'] }}) < "Кратность товара" ({{ $salesFormula['multiplicity'] }})</pre>
                 <pre>"Неснижаемый остаток" = "Кратность товара" ({{ $salesFormula['multiplicity'] }})</pre>
             @else
-                <pre>Остаток "Неснижаемый остаток" % "Кратность товара" = {{ $product->minimumBalance % $salesFormula['multiplicity'] }}</pre>
-                <pre>Процент от упаковки {{ ($product->minimumBalance % $salesFormula['multiplicity']) / $salesFormula['multiplicity'] * 100 }}</pre>
-                @if (($product->minimumBalance % $salesFormula['multiplicity']) / $salesFormula['multiplicity'] * 100 > 80)
-                    <pre>больше 80, округляем в большую сторону - {{ $salesFormula['multiplicity'] * ceil($product->minimumBalance / $salesFormula['multiplicity']) }}</pre>
+                <pre>Процент от упаковки {{ $salesFormula['sizePackPercent'] }}</pre>
+
+                @if ($salesFormula['sizePackPercent'] > 80)
+                    <pre>больше 80, округляем в большую сторону - {{ $salesFormula['minimumBalance'] }}</pre>
                 @else
-                    <pre>меньше 80, округляем в меньшею сторону - {{ $salesFormula['multiplicity'] * floor($product->minimumBalance / $salesFormula['multiplicity']) }}</pre>
+                    <pre>меньше 80, округляем в меньшею сторону - {{ $salesFormula['minimumBalance'] }}</pre>
                 @endif
             @endif
         @endif

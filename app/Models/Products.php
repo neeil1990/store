@@ -237,6 +237,8 @@ class Products extends ProductsScopes
         }
 
         // Кратность товара
+        $sizePackPercent = 0;
+
         if ($this->multiplicityProduct) {
             if ($minimumBalance < $this->multiplicityProduct) {
                 $minimumBalance = $this->multiplicityProduct;
@@ -272,6 +274,7 @@ class Products extends ProductsScopes
             'minimumBalanceInPack' => $minimumBalanceInPack, // Значение кол-ва в упаковке
             'maxMinimumBalance' => $maxMinimumBalance, // Коэффициент максимального изменения предлагаемого остатка
             'multiplicity' => $this->multiplicityProduct, // Кратность товара
+            'sizePackPercent' => $sizePackPercent, // Кратность товара процент
         ];
     }
 
