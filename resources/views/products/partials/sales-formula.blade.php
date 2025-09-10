@@ -68,11 +68,16 @@
                 <pre>Процент от упаковки {{ $salesFormula['sizePackPercent'] }}</pre>
 
                 @if ($salesFormula['sizePackPercent'] > 80)
-                    <pre>больше 80, округляем в большую сторону - {{ $salesFormula['minimumBalance'] }}</pre>
+                    <pre>больше 80, округляем в большую сторону - {{ $salesFormula['minimumBalanceBeforeBalanceLager'] }}</pre>
                 @else
-                    <pre>меньше 80, округляем в меньшею сторону - {{ $salesFormula['minimumBalance'] }}</pre>
+                    <pre>меньше 80, округляем в меньшею сторону - {{ $salesFormula['minimumBalanceBeforeBalanceLager'] }}</pre>
                 @endif
             @endif
+        @endif
+
+        @if ($salesFormula['minimumBalanceLager'])
+            <label>Неснижаемый остаток lager</label>
+            <pre>"Предлагаемый нес.ост" равен большему "Неснижаемый остаток lager" ({{ $salesFormula['minimumBalanceLager'] }}), "Неснижаемый остаток" ({{ $salesFormula['minimumBalanceBeforeBalanceLager'] }})</pre>
         @endif
     </div>
     <!-- /.card-body -->

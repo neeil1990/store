@@ -255,6 +255,13 @@ class Products extends ProductsScopes
             }
         }
 
+        $minimumBalanceBeforeBalanceLager = $minimumBalance;
+
+        // Неснижаемый остаток lager
+        if ($this->minimumBalanceLager) {
+            $minimumBalance = max($minimumBalance, $this->minimumBalanceLager);
+        }
+
         // Значение кол-ва в упаковке для товаров которые принимают поштучно
         $sizePackIndex = collect($this['attributes'])->search(fn ($item) => $item['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно');
 
@@ -278,6 +285,8 @@ class Products extends ProductsScopes
             'minimumBalanceBeforeMultiplicity' => $minimumBalanceBeforeMultiplicity, // Кратность товара
             'multiplicity' => $this->multiplicityProduct, // Кратность товара
             'sizePackPercent' => $sizePackPercent, // Кратность товара процент
+            'minimumBalanceLager' => $this->minimumBalanceLager, // Неснижаемый остаток lager
+            'minimumBalanceBeforeBalanceLager' => $minimumBalanceBeforeBalanceLager, // Неснижаемый остаток до lager
         ];
     }
 
