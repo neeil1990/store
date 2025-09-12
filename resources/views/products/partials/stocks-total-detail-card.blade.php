@@ -48,6 +48,12 @@
 
     <script>
         $('#zero-balances-in-warehouses').DataTable({
+            language: {
+                paginate: {
+                    previous: '<',
+                    next: '>',
+                },
+            },
             info: false,
             ordering: false,
             searching: false,
