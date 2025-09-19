@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
 
-        $schedule->command('app:calculate-shipper-fields')->hourly();
+        $schedule->command('app:calculate-shipper-fields')->everyMinute();
     }
 
     /**
