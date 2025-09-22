@@ -75,15 +75,4 @@ class ShipperController extends Controller
         return redirect()->route('shipper.index');
     }
 
-    public function calculateFields(): JsonResponse
-    {
-        $calculate = new CalculateFieldsAction();
-
-        $calculate->execute();
-
-        return response()->json([
-            'message' => $calculate->getMessage(),
-        ]);
-    }
-
 }

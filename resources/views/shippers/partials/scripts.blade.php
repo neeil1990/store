@@ -185,22 +185,6 @@
                     }
                 },
                 {
-                    className: 'btn btn-default btn-sm',
-                    text: 'Обновить вычисляемые поля',
-                    action: function (e, dt, node, config, cb) {
-                        this.disable();
-                        this.processing(true);
-
-                        axios.get('{{ route('shipper.calculate-fields') }}').then((response) => {
-                            this.enable();
-                            this.processing(false);
-                            this.draw(true);
-
-                            this.buttons.info('Вычисляемые поля', response.data.message, 4000);
-                        });
-                    }
-                },
-                {
                     extend: 'colvis',
                     text: 'Видимость столбцов',
                     className: 'btn btn-default btn-sm',
