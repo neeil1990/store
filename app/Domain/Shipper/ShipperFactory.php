@@ -24,6 +24,8 @@ class ShipperFactory
             $supplier->shipper_filter_id,
             $supplier->shipper_calc_occupancy_percent_all ?? 0,
             $supplier->shipper_calc_occupancy_percent_selected ?? 0,
+            $supplier->shipper_warehouse_info_all ?? null,
+            $supplier->shipper_warehouse_info_selected ?? null,
             $supplier->shipper_calc_quantity ?? 0,
             $supplier->shipper_calc_to_purchase ?? 0,
             $supplier->shipper_calc_purchase_total ?? 0,

@@ -41,6 +41,8 @@ class Supplier extends Model
                 'shippers.filter_id as shipper_filter_id',
                 'shippers.calc_occupancy_percent_all as shipper_calc_occupancy_percent_all',
                 'shippers.calc_occupancy_percent_selected as shipper_calc_occupancy_percent_selected',
+                'shippers.warehouse_info_all as shipper_warehouse_info_all',
+                'shippers.warehouse_info_selected as shipper_warehouse_info_selected',
                 'shippers.calc_quantity as shipper_calc_quantity',
                 'shippers.calc_to_purchase as shipper_calc_to_purchase',
                 'shippers.calc_purchase_total as shipper_calc_purchase_total'

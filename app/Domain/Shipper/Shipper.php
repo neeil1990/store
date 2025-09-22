@@ -34,6 +34,8 @@ class Shipper
         public ?int $filter_id,
         public int $calc_occupancy_percent_all,
         public int $calc_occupancy_percent_selected,
+        public ?string $warehouse_info_all,
+        public ?string $warehouse_info_selected,
         public int $calc_quantity,
         public int $calc_to_purchase,
         public float $calc_purchase_total,

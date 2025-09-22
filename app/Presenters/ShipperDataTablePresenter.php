@@ -25,6 +25,8 @@ class ShipperDataTablePresenter extends ShipperPresenter
             'fill_storage' => $shipper->fill_storage,
             'calc_occupancy_percent_all' => $this->warehouseOccupancyPercentAll(),
             'calc_occupancy_percent_selected' => $this->warehouseOccupancyPercentSelected(),
+            'warehouse_info_all' => $shipper->warehouse_info_all,
+            'warehouse_info_selected' => $shipper->warehouse_info_selected,
             'calc_quantity' => $shipper->getCalcQuantityProducts(),
             'calc_to_purchase' => amount($shipper->getCalcToPurchase()),
             'calc_purchase_total' => money($shipper->getCalcPurchaseTotal()),

@@ -115,8 +115,8 @@
             drawCallback: function (settings) {
                 let api = this.api();
 
-                api.rows().ids().each(function (supplier_id) {
-                    loadWarehouseOccupancyTooltip(supplier_id);
+                api.data().each(function (data) {
+                    createTooltip(data);
                 });
             },
             buttons: [
@@ -208,21 +208,21 @@
             ]
         });
 
-        function loadWarehouseOccupancyTooltip(supplier_id)
+        function createTooltip(data)
         {
             try {
-                let row = table.row(`#${supplier_id}`).node();
+                let row = table.row(`#${data.id}`).node();
 
                 let $all = $(table.cell(row, '.calc_occupancy_percent_all').node()).find('span');
                 let $selected = $(table.cell(row, '.calc_occupancy_percent_selected').node()).find('span');
 
-                axios.get('/shipper/warehouse-stock-all/' + supplier_id).then((response) => {
-                    tooltip($all.addClass('bg-success'), response.data);
-                });
+                if (data.warehouse_info_all) {
+                    tooltip($all.addClass('bg-success'), data.warehouse_info_all);
+                }
 
-                axios.get('/shipper/warehouse-stock-selected/' + supplier_id).then((response) => {
-                    tooltip($selected.addClass('bg-success'), response.data);
-                });
+                if (data.warehouse_info_selected) {
+                    tooltip($selected.addClass('bg-success'), data.warehouse_info_selected);
+                }
             } catch (error) {
                 console.error(error);
             }

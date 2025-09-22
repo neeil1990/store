@@ -8,8 +8,6 @@ Route::patch('/shipper/{field}', [ShipperController::class, 'bulkUpdate'])->name
 
 Route::get('/shipper/json', [ShipperController::class, 'json'])->name('shipper.json');
 Route::get('/shipper/calculate-fields', [ShipperController::class, 'calculateFields'])->name('shipper.calculate-fields');
-Route::get('/shipper/warehouse-stock-all/{supplier_id}', [ShipperController::class, 'warehouseStockAll'])->name('shipper.warehouse-stock-all');
-Route::get('/shipper/warehouse-stock-selected/{supplier_id}', [ShipperController::class, 'warehouseStockSelected'])->name('shipper.warehouse-stock-selected');
 
 Route::resource('shipper', ShipperController::class)->only([
     'index', 'edit', 'update'

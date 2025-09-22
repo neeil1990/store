@@ -32,9 +32,17 @@ class UpdateOccupancyShipperAction extends UpdateShipperMain
 
         $occupancyPercentSelected = $shipper->getWarehouseOccupancyPercentSelected();
 
+        $balance = $shipperFacade->getMinimumBalance();
+
+        $stock = $shipperFacade->getWarehouseStockAll();
+
+        $warehouses = $shipper->getStockByStorages();
+
         return [
             'calc_occupancy_percent_all' => $occupancyPercentAll,
             'calc_occupancy_percent_selected' => $occupancyPercentSelected,
+            'warehouse_info_all' => view('shippers.partials.warehouse-occupancy-all-tooltip', compact('balance', 'stock'))->render(),
+            'warehouse_info_selected' => view('shippers.partials.warehouse-occupancy-selected-tooltip', compact('balance', 'stock', 'warehouses'))->render()
         ];
     }
 
