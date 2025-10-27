@@ -196,14 +196,10 @@ class Products extends ProductsScopes
         $replenishmentCoefficient = floatval(Setting::query()->where('key', 'replenishmentCoefficient')->value('value') ?? 1.5);
 
         // Дней отсутствия за 30 дней
-        $this->loadCount(['stockTotal as unavailable_days_count' => function ($query) {
-            $query->where('created_at', '>=', Carbon::now()->subDays(30));
-        }]);
-
+		$this->unavailable_days_count = $this->stockTotal->where('created_at', '>=', Carbon::now()->subDays(30))->count();
+		
         // Продажи за 30 дней
-        $this->loadSum(['sell as last_sell_sum' => function ($query) {
-            $query->orderBy('created_at', 'desc')->take(2);
-        }], 'sell');
+		$this->last_sell_sum = $this->sell->sortByDesc("created_at")->take(2)->sum("sell");
 
         // Средний спрос
         $days = 30 - $this->unavailable_days_count;
