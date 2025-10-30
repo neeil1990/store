@@ -78,7 +78,22 @@ Route::get('info', function () {
 });
 
 Route::get('dev', function () {
-    //
+	$stocks = (new MyStoreStockTotal())->getRows();
+	
+	$assortmentId = "7f9afe5e-e1c2-11ec-0a80-0e0f002a2e76";
+	
+	dump("https://api.moysklad.ru/api/remap/1.2/report/stock/all/current?include=zeroLines");
+	dump("assortmentId - $assortmentId");
+	
+	
+	foreach ($stocks as $stock) {
+		if ($assortmentId == $stock["assortmentId"]) {
+			
+			dump($stock["assortmentId"] . " stock - " . $stock["stock"]);
+		}
+	}
+	
+    dd("done");
 });
 
 Route::get('/', function () {
