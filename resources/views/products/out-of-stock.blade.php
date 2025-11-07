@@ -11,9 +11,13 @@
 
                 <div class="card-body">
                     <div class="row mb-2">
+
                         <div class="col-6" id="control-buttons">
-                            <a href="{{ route('products.outOfStock', ['isZero' => 1]) }}" class="btn btn-secondary btn-default btn-sm @if(request('isZero')) active @endif">{{ __('Показать нулевые') }}</a>
-                            <a href="{{ route('products.outOfStock') }}" class="btn btn-secondary btn-default btn-sm @if(!request('isZero')) active @endif">{{ __('Показать все') }}</a>
+                            <select class="form-control form-control-sm btn-group" style="width: auto;" onchange="if(this.value) window.location.href='{{ route('products.outOfStock') }}?filter=' + this.value; else window.location.href='{{ route('products.outOfStock') }}'">
+                                <option value="">{{ __('Не выбрано') }}</option>
+                                <option value="zero" @if(request('filter') === 'zero') selected @endif>Показать нулевые</option>
+                                <option value="multiplicity" @if(request('filter') === 'multiplicity') selected @endif>Без кратности товара</option>
+                            </select>
                         </div>
 
                         <div class="col-2">
@@ -176,6 +180,14 @@
         <script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
 
         <script>
+        const INPUT_COLUMN = [10, 11];
+
+        $.fn.dataTable.ext.order['dom-input'] = function (settings, col) {
+            return this.api().column(col, {order:'index'}).nodes().map(function (td, i) {
+                return $('input', td).val();
+            });
+        };
+
         let table = $('#products-zero').DataTable({
                 language: {
                     lengthMenu: '_MENU_',
@@ -295,6 +307,11 @@
                         orderable: false,
                         className: 'select-checkbox',
                         targets: 0
+                    },
+                    {
+                        orderDataType: 'dom-input',
+                        type: 'num',
+                        targets: INPUT_COLUMN
                     }
                 ],
                 initComplete: function () {

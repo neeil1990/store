@@ -161,7 +161,7 @@ class Products extends ProductsScopes
         );
     }
 
-    public static function getOutOfStock($isZero = null)
+    public static function getOutOfStock($filter)
     {
         return Products::with(['suppliers', 'stocks'])
             ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
@@ -177,7 +177,15 @@ class Products extends ProductsScopes
                 'stockTotal as stock_zero_180' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
                 'stockTotal as stock_zero_365' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
             ])
-            ->when($isZero, fn($q) => $q->doesntHave('stocks'))
+            ->when($filter, function ($query) use ($filter) {
+                if ($filter == "zero") {
+                    $query->doesntHave('stocks');
+                }
+
+                if ($filter == "multiplicity") {
+                    $query->whereNull('multiplicityProduct');
+                }
+            })
             ->withSum('stocks', 'quantity')
             ->withSum([
                 'sell as sell_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
@@ -197,7 +205,7 @@ class Products extends ProductsScopes
 
         // Дней отсутствия за 30 дней
 		$this->unavailable_days_count = $this->stockTotal->where('created_at', '>=', Carbon::now()->subDays(30))->count();
-		
+
         // Продажи за 30 дней
 		$this->last_sell_sum = $this->sell->sortByDesc("created_at")->take(2)->sum("sell");
 

@@ -87,7 +87,8 @@ class ProductsController extends Controller
 
     public function outOfStock(Request $request)
     {
-        $products = Products::getOutOfStock($request->input('isZero'));
+        $filter = $request->input('filter');
+        $products = Products::getOutOfStock($filter);
 
         return view('products.out-of-stock', compact('products'));
     }
