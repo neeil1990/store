@@ -161,7 +161,7 @@ class Products extends ProductsScopes
         );
     }
 
-    public static function getOutOfStock($filter)
+    public static function getOutOfStock($filter = null)
     {
         return Products::with(['suppliers', 'stocks'])
             ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
