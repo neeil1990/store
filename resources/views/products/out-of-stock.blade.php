@@ -216,7 +216,7 @@
                                     if ($('input', node).length) {
                                         return $('input', node).val();
                                     } else {
-                                        return data;
+                                        return $('<div/>').html(data).text();
                                     }
                                 }
                             }
