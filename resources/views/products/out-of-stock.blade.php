@@ -213,7 +213,7 @@
                             orthogonal: 'export',
                             format: {
                                 body: function (data, row, column, node) {
-                                    return $('input', node).val() || data;
+                                    return $('input', node).val();
                                 }
                             }
                         },
