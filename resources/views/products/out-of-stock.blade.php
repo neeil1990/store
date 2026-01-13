@@ -209,7 +209,13 @@
                     {
                         extend: 'excelHtml5',
                         exportOptions: {
-                            columns: ':visible'
+                            columns: ':visible',
+                            orthogonal: 'export',
+                            format: {
+                                body: function (data, row, column, node) {
+                                    return $('input', node).val() || data;
+                                }
+                            }
                         },
                         title: 'Товары с упущенной выгодой - ' + moment().format('DD-MM-YYYY'),
                         className: 'btn btn-secondary btn-default btn-sm ',
