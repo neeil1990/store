@@ -11,6 +11,23 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('build/vendor/jquery.highlight.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
+
+<style>
+    tr.even td.dtfc-fixed-left {
+        background-color: #ffffff;
+    }
+    tr.odd td.dtfc-fixed-left {
+        background-color: #f9f9f9;
+    }
+    thead th {
+        background-color: white;
+    }
+    th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
+        z-index: 1;
+    }
+</style>
 
 <script>
     let table = $("#products-table").DataTable({
@@ -25,7 +42,10 @@
         },
         lengthMenu: [10, 50, 100, 300, 400, 500],
         responsive: false,
-        autoWidth: false,
+        scrollX: true,
+        fixedColumns: {
+            left: 2
+        },
         buttons: [
             { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
             { extend: 'csv', text: '{{ __('CSV') }}', className: 'btn-default' },
@@ -83,6 +103,8 @@
             { title: 'Неснижаемый остаток', data: 'minimumBalance'},
             { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: 'align-middle'},
             { title: 'Кратность товара', data: 'multiplicityProduct', className: 'align-middle'},
+            { data: 'stock', title: 'Остаток' },
+            { data: 'transit', title: 'Ожидание' },
             { data: 'salePrices', title: 'Цена продажи' },
             { data: 'minPrice', title: 'Минимальная цена' },
             { data: 'buyPrice', title: 'Закупочная цена' },

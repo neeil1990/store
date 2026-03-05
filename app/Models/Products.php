@@ -163,7 +163,7 @@ class Products extends ProductsScopes
 
     public static function getOutOfStock($filter = null)
     {
-        return Products::with(['suppliers', 'stocks'])
+        return Products::with(['suppliers', 'stocks', 'transits'])
             ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
             ->whereJsonContains('attributes', ['name' => 'Перестали сотрудничать / Не производится (дет.в комментах)', 'value' => false])
             ->withCount([
@@ -187,6 +187,7 @@ class Products extends ProductsScopes
                 }
             })
             ->withSum('stocks', 'quantity')
+            ->withSum('transits', 'quantity')
             ->withSum([
                 'sell as sell_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
                 'sell as sell_30' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
