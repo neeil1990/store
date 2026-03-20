@@ -95,9 +95,14 @@ class SyncMyStoreWithDataBase
     {
         $model = new Stock();
 
+        $stocks = (new MyStoreStock())->getRows();
+
+        if (empty($stocks)) {
+            return;
+        }
+
         $model->truncate();
 
-        $stocks = (new MyStoreStock())->getRows();
         (new StoreStockToDataBase($model))->create($stocks);
 
         if ((new StockTotal())->whereDate('created_at', Carbon::now())->doesntExist()) {
@@ -113,9 +118,14 @@ class SyncMyStoreWithDataBase
     {
         $model = new Reserve();
 
+        $reserve = (new MyStoreReserve())->getRows();
+
+        if (empty($reserve)) {
+            return;
+        }
+
         $model->truncate();
 
-        $reserve = (new MyStoreReserve())->getRows();
         (new StoreReserveToDataBase($model))->create($reserve);
     }
 
@@ -123,9 +133,14 @@ class SyncMyStoreWithDataBase
     {
         $model = new Transit();
 
+        $transit = (new MyStoreTransit())->getRows();
+
+        if (empty($transit)) {
+            return;
+        }
+
         $model->truncate();
 
-        $transit = (new MyStoreTransit())->getRows();
         (new StoreTransitToDataBase($model))->create($transit);
     }
 
