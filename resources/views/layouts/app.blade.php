@@ -80,7 +80,7 @@
             Anything you want
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2023 - {{ date('Y') }} <a href="/">Store</a></strong>
+        <strong>Copyright &copy; 2023 - {{ date('Y') }} <a href="/">LagerPlus</a></strong>
     </footer>
 </div>
 <!-- ./wrapper -->

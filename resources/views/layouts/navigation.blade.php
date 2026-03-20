@@ -5,7 +5,7 @@
     </div>
     <div class="info">
         <a href="{{ route('profile.edit') }}" class="d-block">
-            {{ Auth::user()->email }}
+            {{ Auth::user()->name }}
         </a>
     </div>
 </div>
