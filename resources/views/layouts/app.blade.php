@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $pageTitle ? $pageTitle . ' - ' : '' }}{{ config('app.name', 'LagerPlus') }} (Система оцифровки склада для роста продаж)</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -77,10 +77,21 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-            Anything you want
+            <a href="tel:+79601340303" class="text-muted" title="+7-960-134-03-03">
+                <span class="fa-stack">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-phone-alt fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
+            <a href="https://t.me/bziksv" target="_blank" class="text-muted" title="@bziksv">
+                <span class="fa-stack">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram-plane fa-stack-1x fa-inverse"></i>
+                </span>
+            </a>
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2023 - {{ date('Y') }} <a href="/">LagerPlus</a></strong>
+        <strong><a href="/">LagerPlus</a> &copy; 2025 - {{ date('Y') }} (Система оцифровки склада для роста продаж)</strong>
     </footer>
 </div>
 <!-- ./wrapper -->
@@ -98,7 +109,7 @@
 @stack('scripts')
 
 <script>
-    $('[data-widget="control-sidebar"]').on('click', function (e) {
+    $('[data-widget="control-sidebar"]').on('click', function () {
         if ($('body').hasClass('control-sidebar-slide-open') === false) {
              setTimeout(() => $('.control-sidebar').css('display', 'block'), 450);
         }

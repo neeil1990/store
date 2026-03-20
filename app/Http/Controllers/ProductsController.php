@@ -90,7 +90,18 @@ class ProductsController extends Controller
         $filter = $request->input('filter');
         $products = Products::getOutOfStock($filter);
 
-        return view('products.out-of-stock', compact('products'));
+        $filterLabels = [
+            'zero' => 'Показать нулевые',
+            'multiplicity' => 'Без кратности товара',
+        ];
+
+        $title = '';
+
+        if ($filter && isset($filterLabels[$filter])) {
+            $title = ' - ' . $filterLabels[$filter];
+        }
+
+        return view('products.out-of-stock', compact('products', 'title'));
     }
 
     public function destroyStockTotals(Request $request)

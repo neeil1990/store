@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'department',
         'password',
+        'is_archived',
     ];
 
     /**
@@ -44,6 +45,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_archived' => 'boolean',
     ];
 
     public function filters()

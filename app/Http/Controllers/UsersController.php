@@ -17,11 +17,12 @@ class UsersController extends Controller
         $this->middleware('can:delete user')->only('destroy');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $archived = $request->boolean('archived');
+        $users = User::where('is_archived', $archived)->get();
 
-        return view('users.index', compact('users'));
+        return view('users.index', compact('users', 'archived'));
     }
 
     public function edit(int $id)
@@ -43,7 +44,10 @@ class UsersController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
         ]);
 
-        $user->update($validator->validated());
+        $validated = $validator->validated();
+        $validated['is_archived'] = $request->boolean('is_archived');
+
+        $user->update($validated);
 
         $user->syncRoles($data['role']);
 

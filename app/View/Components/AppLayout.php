@@ -10,11 +10,9 @@ class AppLayout extends Component
 {
     protected $menu;
 
-    public function __construct()
+    public static function menuItems(): array
     {
-        $route = Route::currentRouteName();
-
-        $this->menu = [
+        return [
             'products.index' => ['text' => __('Товары'), 'icon' => 'fas fa-store', 'selected' => ''],
             'products.outOfStock' => ['text' => __('Товары по упущ.выгоде'), 'icon' => 'fas fa-wave-square', 'selected' => ''],
             'suppliers.index' => ['text' => __('Товары к закупке'), 'icon' => 'fas fa-parachute-box', 'selected' => ''],
@@ -23,6 +21,13 @@ class AppLayout extends Component
             'employee.index' => ['text' => __('Сотрудники (Мой Склад)'), 'icon' => 'fas fa-users', 'selected' => ''],
             'setting.index' => ['text' => __('Настройки'), 'icon' => 'fas fa-tools', 'selected' => ''],
         ];
+    }
+
+    public function __construct()
+    {
+        $route = Route::currentRouteName();
+
+        $this->menu = static::menuItems();
 
         if(isset($this->menu[$route]))
             $this->menu[$route]['selected'] = 'active';
