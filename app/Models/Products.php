@@ -163,20 +163,27 @@ class Products extends ProductsScopes
 
     public static function getOutOfStock($filter = null)
     {
+        $now = Carbon::now();
+
+        $stockZeroPeriods = [3, 5, 7, 15, 30, 60, 90, 180, 365];
+        $sellPeriods = [15, 30, 60, 90, 180, 365];
+
+        $stockZeroCounts = [];
+        foreach ($stockZeroPeriods as $days) {
+            $date = $now->copy()->subDays($days);
+            $stockZeroCounts["stockTotal as stock_zero_{$days}"] = fn($q) => $q->where('created_at', '>', $date);
+        }
+
+        $sellSums = [];
+        foreach ($sellPeriods as $days) {
+            $date = $now->copy()->subDays($days);
+            $sellSums["sell as sell_{$days}"] = fn($q) => $q->where('created_at', '>', $date);
+        }
+
         return Products::with(['suppliers', 'stocks', 'transits'])
             ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
             ->whereJsonContains('attributes', ['name' => 'Перестали сотрудничать / Не производится (дет.в комментах)', 'value' => false])
-            ->withCount([
-                'stockTotal as stock_zero_3' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(3)),
-                'stockTotal as stock_zero_5' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(5)),
-                'stockTotal as stock_zero_7' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(7)),
-                'stockTotal as stock_zero_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
-                'stockTotal as stock_zero_30' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
-                'stockTotal as stock_zero_60' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
-                'stockTotal as stock_zero_90' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
-                'stockTotal as stock_zero_180' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
-                'stockTotal as stock_zero_365' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
-            ])
+            ->withCount($stockZeroCounts)
             ->when($filter, function ($query) use ($filter) {
                 if ($filter == "zero") {
                     $query->doesntHave('stocks');
@@ -188,14 +195,7 @@ class Products extends ProductsScopes
             })
             ->withSum('stocks', 'quantity')
             ->withSum('transits', 'quantity')
-            ->withSum([
-                'sell as sell_15' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(15)),
-                'sell as sell_30' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(30)),
-                'sell as sell_60' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(60)),
-                'sell as sell_90' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(90)),
-                'sell as sell_180' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(180)),
-                'sell as sell_365' => fn($q) => $q->where('created_at', '>', \Carbon\Carbon::now()->subDays(365)),
-            ], 'sell')
+            ->withSum($sellSums, 'sell')
             ->get();
     }
 
