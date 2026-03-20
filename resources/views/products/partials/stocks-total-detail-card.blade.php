@@ -34,7 +34,7 @@
     <!-- /.card-body -->
 
     <div class="card-footer clearfix">
-        <a href="{{ route('get-sales-test', $product->id) }}" class="btn btn-default" target="_blank"><i class="fas fa-plus"></i> Тестовая среда</a>
+        <a href="{{ route('dev.sales', $product->id) }}" class="btn btn-default" target="_blank"><i class="fas fa-plus"></i> Тестовая среда</a>
     </div>
 </div>
 
