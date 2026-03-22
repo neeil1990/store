@@ -16,6 +16,7 @@
 <script>
     (function ($) {
 
+
         const employee = 2;
         const calc_occupancy_percent_all = 7;
         const calc_occupancy_percent_selected = 8;
@@ -23,6 +24,7 @@
 
         let table = $('#products-table').DataTable({
             language: {
+                processing: 'Обновляем данные, пожалуйста ожидайте',
                 lengthMenu: '_MENU_',
                 search: 'Поиск _INPUT_',
                 info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',

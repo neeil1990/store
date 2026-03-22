@@ -15,6 +15,7 @@ var ST = (function($){
 
         let config = {
             language: {
+                processing: 'Обновляем данные, пожалуйста ожидайте',
                 lengthMenu: '_MENU_',
                 search: 'Поиск _INPUT_',
                 info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
@@ -74,7 +75,7 @@ var ST = (function($){
                     className: 'btn-default'
                 }
             ],
-            order: [[1, 'asc']],
+            order: [[0, 'asc']],
             lengthMenu: [30, 50, 100],
             responsive: false,
             autoWidth: false,
@@ -134,15 +135,12 @@ var ST = (function($){
 
         return [
             {
-                className: "unsearchable",
-                searchable: false,
-                orderable: false,
-                data: 'id',
-                render: function(id) {
-                    return '<a href="/products/'+ id +'" class="btn btn-app m-0" target="_blank"><i class="fas fa-folder"></i>'+ id +'</a>';
-                },
+                title: 'Наименование',
+                data: 'name',
+                render: function(data, type, row) {
+                    return '<a href="/products/' + row.id + '" class="text-dark" target="_blank">' + data + '</a>';
+                }
             },
-            { title: 'Наименование', data: 'name' },
             { title: 'Поставщик', data: 'suppliers.name' },
             { title: 'Артикул', data: 'article' },
             { title: 'Код', data: 'code', render: that.code },

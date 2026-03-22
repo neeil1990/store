@@ -40,7 +40,6 @@
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th></th>
                                         <th>{{ __('Наименование') }}</th>
                                         <th>{{ __('Поставщик') }}</th>
                                         <th>{{ __('Артикул') }}</th>
@@ -76,9 +75,8 @@
                                         <tr id="{{ $product->id }}">
                                             <td></td>
                                             <td>
-                                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-app m-0" target="_blank"><i class="fas fa-folder"></i>{{ $product->id }}</a>
+                                                <a href="{{ route('products.show', $product->id) }}" class="text-dark" target="_blank">{{ $product->name }}</a>
                                             </td>
-                                            <td>{{ $product->name }}</td>
                                             <td>{{ $product->suppliers->name }}</td>
                                             <td>{{ $product->article }}</td>
                                             <td>{{ $product->code }}</td>
@@ -192,6 +190,7 @@
 
         let table = $('#products-zero').DataTable({
                 language: {
+                    processing: 'Обновляем данные, пожалуйста ожидайте',
                     lengthMenu: '_MENU_',
                     search: 'Поиск _INPUT_',
                     info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
@@ -203,9 +202,10 @@
                 lengthMenu: [100, 150, 200, 250, 300],
                 order: [[1, 'asc']],
                 scrollX: true,
+                processing: true,
                 stateSave: true,
                 fixedColumns: {
-                    left: 3
+                    left: 2
                 },
                 buttons: [
                     {

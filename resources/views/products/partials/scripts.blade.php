@@ -25,16 +25,18 @@
         background-color: white;
     }
     th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
-        z-index: 1;
+        z-index: 3;
     }
 </style>
 
 <script>
     let table = $("#products-table").DataTable({
         language: {
+            processing: 'Обновляем данные, пожалуйста ожидайте',
             lengthMenu: '_MENU_',
             search: 'Продвинутый поиск _INPUT_',
             info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
+            infoFiltered: '(отфильтровано из _MAX_ записей)',
             paginate: {
                 previous: '<',
                 next: '>',
@@ -42,9 +44,10 @@
         },
         lengthMenu: [10, 50, 100, 300, 400, 500],
         responsive: false,
+        processing: true,
         scrollX: true,
         fixedColumns: {
-            left: 2
+            left: 1
         },
         buttons: [
             { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
@@ -68,18 +71,16 @@
                 data.fbo = $('.fbo-filter:checked').val();
             }
         },
-        order: [[1, 'asc']],
+        order: [[0, 'asc']],
         columns: [
             {
-                className: "unsearchable",
-                searchable: false,
-                orderable: false,
-                data: 'id',
-                render: function(id) {
-                    return '<a href="/products/'+ id +'" class="btn btn-app m-0"><i class="fas fa-folder"></i>'+ id +'</a>';
-                },
+                data: 'name',
+                title: 'Наименование',
+                render: function(data, type, row) {
+                    return '<a href="/products/' + row.id + '" target="_blank" class="text-dark">' + data + '</a>';
+                }
             },
-            { data: 'name', title: 'Наименование' },
+            { data: 'suppliers.name', title: 'Поставщик', orderable: false },
             { data: 'owner', title: 'Сотрудник' },
             { data: 'article', title: 'Артикул' },
             {
@@ -185,7 +186,7 @@
 
     table.on( 'draw', function () {
         let body = $( table.table().body() ).find('tr');
-        body.find('td:nth-child(2)').highlight(table.search().split(" "));
+        body.find('td:nth-child(1)').highlight(table.search().split(" "));
     });
 
     $("#products-table").on("click", ".input-column", function () {
