@@ -180,7 +180,15 @@
         <script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
 
         <script>
-        const INPUT_COLUMN = [10, 11];
+        const INPUT_COLUMN = (function() {
+            let indices = [];
+            $('#products-zero tbody tr:first td').each(function(i) {
+                if ($(this).find('input').length) {
+                    indices.push(i);
+                }
+            });
+            return indices;
+        })();
 
         $.fn.dataTable.ext.order['dom-input'] = function (settings, col) {
             return this.api().column(col, {order:'index'}).nodes().map(function (td, i) {
