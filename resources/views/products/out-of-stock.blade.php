@@ -328,7 +328,7 @@
                 ],
                 initComplete: function () {
                     let api = this.api();
-                    const resetColumn = 14;
+                    const resetColumn = api.columns().header().toArray().findIndex(th => th.textContent.trim() === '{{ __('Обнулен') }}');
 
                     api.buttons().container().appendTo('#control-buttons');
 
