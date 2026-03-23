@@ -61,7 +61,7 @@ class ProductsScopes extends Model
 
     public function scopeIsWarehousePosition(Builder $query)
     {
-        $query->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true]);
+        $query->where('is_warehouse_item', true);
     }
 
     public function scopeAddSelectToBuy(Builder $query)

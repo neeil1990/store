@@ -181,8 +181,8 @@ class Products extends ProductsScopes
         }
 
         return Products::with(['suppliers', 'stocks', 'transits'])
-            ->whereJsonContains('attributes', ['name' => 'Складская позиция', 'value' => true])
-            ->whereJsonContains('attributes', ['name' => 'Перестали сотрудничать / Не производится (дет.в комментах)', 'value' => false])
+            ->where('is_warehouse_item', true)
+            ->where('is_discontinued', false)
             ->withCount($stockZeroCounts)
             ->when($filter, function ($query) use ($filter) {
                 if ($filter == "zero") {

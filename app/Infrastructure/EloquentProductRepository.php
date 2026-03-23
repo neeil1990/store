@@ -14,7 +14,7 @@ class EloquentProductRepository implements ProductRepository
     {
         $collection = Products::where('supplier', $shipper->uuid)
             ->with(['stocks', 'reserves', 'transits'])
-            ->whereJsonContains('attributes', Shipper::isAvailableShipper())
+            ->where('is_warehouse_item', true)
             ->get();
 
         $factory = new ProductFactory;

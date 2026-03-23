@@ -20,6 +20,15 @@ class StoreProductToDataBase extends StoreToDataBase
         $product['salePrices'] = (isset($product['salePrices'][0])) ? $this->pennyToRuble($product['salePrices'][0]['value']) : 0.0;
         $product['buyPrice'] = $this->pennyToRuble($product['buyPrice']['value']);
 
+        // Извлекаем атрибуты в отдельные колонки для быстрой фильтрации
+        $attributes = collect($product['attributes'] ?? []);
+
+        $warehouseItem = $attributes->firstWhere('name', 'Складская позиция');
+        $product['is_warehouse_item'] = $warehouseItem['value'] ?? false;
+
+        $discontinued = $attributes->firstWhere('name', 'Перестали сотрудничать / Не производится (дет.в комментах)');
+        $product['is_discontinued'] = $discontinued['value'] ?? false;
+
         return $product;
     }
 

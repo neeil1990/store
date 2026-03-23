@@ -24,7 +24,7 @@ class EloquentShipperRepository implements ShipperRepository
 
         $availableShippers = Products::select('supplier')
             ->whereNotNull('supplier')
-            ->whereJsonContains('attributes', Shipper::isAvailableShipper())
+            ->where('is_warehouse_item', true)
             ->groupBy('supplier');
 
         $items = Supplier::whereIn('uuid', $availableShippers)
