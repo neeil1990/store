@@ -109,7 +109,7 @@ class ProductsController extends Controller
         $products = Products::whereIn('id', $request->input('ids', []))->get();
 
         foreach ($products as $product) {
-            if ($product->stockTotal->toQuery()->delete()) {
+            if ($product->stockTotal->isNotEmpty() && $product->stockTotal->toQuery()->delete()) {
                 $product->update([
                     'user_who_deleted_stock_total' => Auth::id(),
                     'deleted_stock_total_at' => Carbon::now()
