@@ -2,6 +2,8 @@
 
 use App\Lib\Moysklad\Receive\MyStoreStock;
 use App\Lib\Moysklad\Receive\MyStoreStockTotal;
+use App\Lib\Sale\SyncMyStoreWithDataBase;
+use App\Models\Employee;
 use App\Models\Products;
 use App\Services\BundleService;
 use App\Services\ProductProfitService;
@@ -91,4 +93,29 @@ Route::prefix('dev')->group(function () {
             'result'       => $result,
         ]);
     })->name('dev.sales');
+
+    // Синхронизация сотрудников из МойСклад
+    Route::get('/employee-sync', function () {
+        $beforeCount = Employee::count();
+        $beforeArchived = Employee::where('archived', true)->count();
+
+        (new SyncMyStoreWithDataBase())->employeeSync();
+
+        $afterCount = Employee::count();
+        $afterArchived = Employee::where('archived', true)->count();
+
+        return response()->json([
+            'message'  => 'employeeSync выполнен',
+            'before'   => [
+                'total'    => $beforeCount,
+                'archived' => $beforeArchived,
+                'active'   => $beforeCount - $beforeArchived,
+            ],
+            'after'    => [
+                'total'    => $afterCount,
+                'archived' => $afterArchived,
+                'active'   => $afterCount - $afterArchived,
+            ],
+        ]);
+    })->name('dev.employee-sync');
 });

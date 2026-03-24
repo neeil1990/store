@@ -2,6 +2,16 @@
 
     <x-slot name="header"></x-slot>
 
+    <div class="row mb-2">
+        <div class="col-12">
+            @if($archived)
+                <a href="{{ route('employee.index') }}" class="btn bg-gradient-success">Активные сотрудники</a>
+            @else
+                <a href="{{ route('employee.index', ['archived' => 1]) }}" class="btn bg-gradient-secondary">Архив сотрудников</a>
+            @endif
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -17,6 +27,7 @@
                             <th>Имя</th>
                             <th>Email</th>
                             <th>ФИО</th>
+                            <th>Статус</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -26,6 +37,13 @@
                                 <td>{{ $user['name'] }}</td>
                                 <td>{{ $user['email'] }}</td>
                                 <td>{{ $user['fullName'] }}</td>
+                                <td>
+                                    @if($user->archived)
+                                        <span class="badge badge-secondary">В архиве</span>
+                                    @else
+                                        <span class="badge badge-success">Активен</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

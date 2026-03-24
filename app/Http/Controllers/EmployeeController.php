@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $employee = Employee::all();
+        $archived = $request->boolean('archived');
+        $employee = Employee::where('archived', $archived)->get();
 
-        return view('employee.index', compact('employee'));
+        return view('employee.index', compact('employee', 'archived'));
     }
 
     public function json()

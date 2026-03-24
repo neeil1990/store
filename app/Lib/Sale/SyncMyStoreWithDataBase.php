@@ -66,6 +66,11 @@ class SyncMyStoreWithDataBase
 
         (new StoreEmployeeToDataBase(new Employee()))
             ->updateOrCreate($employee);
+
+        $apiExternalCodes = array_column($employee, 'externalCode');
+
+        Employee::whereNotIn('externalCode', $apiExternalCodes)
+            ->update(['archived' => true]);
     }
 
     public function productSync()
