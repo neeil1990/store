@@ -251,6 +251,9 @@
                     {
                         text: 'Обнулить',
                         className: 'btn btn-secondary btn-default btn-sm ',
+                        available: function (dt, config) {
+                            return {{ auth()->user()->hasRole('administrator') ? 'true' : 'false' }};
+                        },
                         action: function () {
                             if (confirm("Вы точно уверены что хотите обнулить данные, это действие нельзя отменить?")) {
                                 let ids = table.rows({ selected: true }).ids();
@@ -268,6 +271,9 @@
                     {
                         text: 'Настройки',
                         className: 'btn btn-secondary btn-default btn-sm ',
+                        available: function (dt, config) {
+                            return {{ auth()->user()->hasRole('administrator') ? 'true' : 'false' }};
+                        },
                         action: function (e, dt, node, config, cb) {
                             e.stopPropagation();
 
