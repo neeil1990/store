@@ -283,7 +283,11 @@
 
                             let maxMinimumBalance = getFormGroupElement('Коэффициент максимального изменения предлагаемого остатка', 'maxMinimumBalance');
 
-                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice, maxMinimumBalance]);
+                            let salesFormulaDays = getFormGroupElement('Анализируем отсутствие товара за дней', 'salesFormulaDays');
+
+                            let salesFormulaDaysSell = getFormGroupElement('Анализируем продажи за дней (Диапазон продаж 15 дней. 1 = 15, 2 = 30... 3 * 15 дней)', 'salesFormulaDaysSell');
+
+                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice, maxMinimumBalance, salesFormulaDays, salesFormulaDaysSell]);
 
                             popover.find('input').each(function (i, el) {
                                 let self = $(el);

@@ -6,8 +6,8 @@
     <div class="card-body">
         <ul>
             <li>Коэффициент пополнения - {{ $salesFormula['replenishmentCoefficient'] }}</li>
-            <li>Дней отсутствия за 30 дней - {{ $salesFormula['unavailable_days_count'] }}</li>
-            <li>Продажи за 30 дней - {{ $salesFormula['last_sell_sum'] }}</li>
+            <li>Дней отсутствия за {{ $salesFormula['salesFormulaDays'] }} дней - {{ $salesFormula['unavailable_days_count'] }}</li>
+            <li>Продажи за ({{$salesFormula['salesFormulaDaysSell']}} * 15) = {{ $salesFormula['salesFormulaDaysSell'] * 15 }} дней - {{ $salesFormula['last_sell_sum'] }}</li>
             <li>Средний спрос - {{ $salesFormula['middleSupply'] }}</li>
             <li>Базовый запас для редких товаров - {{ $salesFormula['baseStock'] }}</li>
             <li>Базовый запас для редких товаров стоимостью выше 50 000 (Цена) - {{ $salesFormula['baseStockPrice'] }}</li>
@@ -18,16 +18,16 @@
         </ul>
 
         <label for="">Средний спрос</label>
-        <pre>Берем 30 дней и вычитаем "Дней отсутствия за 30 дней" если больше 0 тогда "Продажи за 30 дней" / "На полученную разность дней" иначе 0</pre>
-        <pre>(30 - {{ $salesFormula['unavailable_days_count'] }}) = {{ 30 - $salesFormula['unavailable_days_count'] }}</pre>
-        @if (30 - $salesFormula['unavailable_days_count'] > 0)
-            <pre>{{$salesFormula['last_sell_sum']}} / {{30 - $salesFormula['unavailable_days_count']}} = {{round($salesFormula['last_sell_sum'] / (30 - $salesFormula['unavailable_days_count']), 2)}}</pre>
+        <pre>Берем {{ $salesFormula['salesFormulaDays'] }} дней и вычитаем "Дней отсутствия за {{ $salesFormula['salesFormulaDays'] }} дней" если больше 0 тогда "Продажи за {{ $salesFormula['salesFormulaDaysSell'] * 15 }} дней" / "На полученную разность дней" иначе 0</pre>
+        <pre>({{ $salesFormula['salesFormulaDays'] }} - {{ $salesFormula['unavailable_days_count'] }}) = {{ $salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count'] }}</pre>
+        @if ($salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count'] > 0)
+            <pre>{{$salesFormula['last_sell_sum']}} / {{$salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count']}} = {{round($salesFormula['last_sell_sum'] / ($salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count']), 2)}}</pre>
         @else
             <pre>0</pre>
         @endif
 
         <label for="">Базовый запас для редких товаров</label>
-        <pre>Если "Продажи за 30 дней" меньше или равны 1 тогда будет значение из настройки "Базовый запас для редких товаров". Если значения нет, тогда будет 2. Иначе будет 0</pre>
+        <pre>Если "Продажи за {{ $salesFormula['salesFormulaDaysSell'] * 15 }} дней" меньше или равны 1 тогда будет значение из настройки "Базовый запас для редких товаров". Если значения нет, тогда будет 2. Иначе будет 0</pre>
         <pre>{{$salesFormula['last_sell_sum']}} <= 1 = ({{($salesFormula['last_sell_sum'] <= 1) ? "true" : "false"}})</pre>
         @if ($salesFormula['last_sell_sum'] <= 1)
             <pre>Базовый запас для редких товаров = {{ $salesFormula['baseStock'] ?? 2 }}</pre>
@@ -51,7 +51,7 @@
         <pre>Если есть настройка "Базовый запас для редких товаров стоимостью выше 50 000 (Значение)" тогда будет ее значение, иначе 1</pre>
 
         <label>Неснижаемый остаток - ({{ $salesFormula['last_sell_sum'] }} * {{ $salesFormula['replenishmentCoefficient'] }}) + ({{ $salesFormula['unavailable_days_count'] }} * {{ $salesFormula['middleSupply'] }}) + {{ $salesFormula['baseStock'] }} = {{ round(($salesFormula['last_sell_sum'] * $salesFormula['replenishmentCoefficient']) + ($salesFormula['unavailable_days_count'] * $salesFormula['middleSupply']) + $salesFormula['baseStock']) }}</label>
-        <pre>(Продажи за 30 дней * Коэффициент пополнения) + (Дней отсутствия за 30 дней * Средний спрос) + Базовый запас для редких товаров = Неснижаемый остаток</pre>
+        <pre>(Продажи за {{ $salesFormula['salesFormulaDaysSell'] * 15 }} дней * Коэффициент пополнения) + (Дней отсутствия за {{ $salesFormula['salesFormulaDays'] }} дней * Средний спрос) + Базовый запас для редких товаров = Неснижаемый остаток</pre>
 
         @if ($salesFormula['maxMinimumBalance'])
             <label>Коэффициент максимального изменения предлагаемого остатка</label>

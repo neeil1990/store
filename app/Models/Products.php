@@ -204,14 +204,20 @@ class Products extends ProductsScopes
         // Коэффициент пополнения
         $replenishmentCoefficient = floatval(Setting::query()->where('key', 'replenishmentCoefficient')->value('value') ?? 1.5);
 
-        // Дней отсутствия за 30 дней
-		$this->unavailable_days_count = $this->stockTotal->where('created_at', '>=', Carbon::now()->subDays(30))->count();
+        // Количество дней для расчёта отсутствия
+        $salesFormulaDays = intval(Setting::query()->where('key', 'salesFormulaDays')->value('value') ?? 30);
 
-        // Продажи за 30 дней
-		$this->last_sell_sum = $this->sell->sortByDesc("created_at")->take(2)->sum("sell");
+        // Дней отсутствия за $salesFormulaDays дней
+		$this->unavailable_days_count = $this->stockTotal->where('created_at', '>=', Carbon::now()->subDays($salesFormulaDays))->count();
+
+        // Количество дней для расчёта продаж
+        $salesFormulaDaysSell = intval(Setting::query()->where('key', 'salesFormulaDaysSell')->value('value') ?? 2);
+
+        // Продажи за $salesFormulaDaysSell дней где $salesFormulaDaysSell * 15
+		$this->last_sell_sum = $this->sell->sortByDesc("created_at")->take($salesFormulaDaysSell)->sum("sell");
 
         // Средний спрос
-        $days = 30 - $this->unavailable_days_count;
+        $days = $salesFormulaDays - $this->unavailable_days_count;
         if ($days > 0) {
             $middleSupply = round($this->last_sell_sum / $days, 2);
         } else {
@@ -277,6 +283,8 @@ class Products extends ProductsScopes
         }
 
         return [
+            'salesFormulaDaysSell' => $salesFormulaDaysSell, // Количество дней для расчёта продаж
+            'salesFormulaDays' => $salesFormulaDays, // Количество дней для расчёта отсутствия
             'baseStockPrice' => $baseStockPrice, // Базовый запас для редких товаров стоимостью выше 50 000 (Цена)
             'baseStockOverprice' => $baseStockOverprice, // Базовый запас для редких товаров стоимостью выше 50 000 (Значение)
             'replenishmentCoefficient' => $replenishmentCoefficient, // Коэффициент пополнения
