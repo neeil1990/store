@@ -277,23 +277,19 @@
                         action: function (e, dt, node, config, cb) {
                             e.stopPropagation();
 
+                            let settingsConfig = @json($settings);
+
                             let popover = $('<div />');
 
-                            let coefficient = getFormGroupElement('Коэффициент пополнения', 'replenishmentCoefficient');
+                            settingsConfig.forEach(s => {
+                                popover.append(getFormGroupElement(s.title, s.key, s.hint || ''));
+                            });
 
-                            let baseStock = getFormGroupElement('Базовый запас для редких товаров', 'baseStock');
-
-                            let baseStockPrice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Цена для маркетов)', 'baseStockPrice');
-
-                            let baseStockOverprice = getFormGroupElement('Базовый запас для редких товаров стоимостью выше 50 000 (Значение)', 'baseStockOverprice');
-
-                            let maxMinimumBalance = getFormGroupElement('Коэффициент максимального изменения предлагаемого остатка', 'maxMinimumBalance');
-
-                            let salesFormulaDays = getFormGroupElement('Анализируем отсутствие товара за дней', 'salesFormulaDays');
-
-                            let salesFormulaDaysSell = getFormGroupElement('Анализируем продажи за дней (Диапазон продаж 15 дней. 1 = 15, 2 = 30... 3 * 15 дней)', 'salesFormulaDaysSell');
-
-                            popover.append([coefficient, baseStock, baseStockPrice, baseStockOverprice, maxMinimumBalance, salesFormulaDays, salesFormulaDaysSell]);
+                            popover.find('[data-toggle="popover"]').popover({
+                                container: 'body',
+                                html: true,
+                                trigger: 'hover'
+                            });
 
                             popover.find('input').each(function (i, el) {
                                 let self = $(el);
@@ -387,12 +383,18 @@
                 return true;
             });
 
-            function getFormGroupElement(title, key)
+            function getFormGroupElement(title, key, hint = '')
             {
                 return $('<div />', {
                     class: 'form-group'
                 }).append([
                     $('<label />').text(title),
+                    // Иконка-подсказка внутри окна настроек: используем popover (открывается по клику)
+                    $('<i />', {
+                        class: 'far fa-question-circle ml-1',
+                        'data-toggle': 'popover',
+                        'data-content': hint || ''
+                    }),
                     $('<input />', { class: 'form-control form-control-sm', name: key })
                 ]);
             }

@@ -101,7 +101,28 @@ class ProductsController extends Controller
             $title = ' - ' . $filterLabels[$filter];
         }
 
-        return view('products.out-of-stock', compact('products', 'title'));
+        $settings = $this->outOfStockSettings();
+
+        return view('products.out-of-stock', compact('products', 'title', 'settings'));
+    }
+
+    private function outOfStockSettings(): array
+    {
+        $settings = [
+            ['key' => 'replenishmentCoefficient', 'title' => 'Коэффициент пополнения', 'hint' => ''],
+            ['key' => 'baseStock', 'title' => 'Базовый запас для редких товаров', 'hint' => ''],
+            ['key' => 'baseStockPrice', 'title' => 'Базовый запас для редких товаров стоимостью выше 50 000 (Цена для маркетов)', 'hint' => ''],
+            ['key' => 'baseStockOverprice', 'title' => 'Базовый запас для редких товаров стоимостью выше 50 000 (Значение)', 'hint' => ''],
+            ['key' => 'maxMinimumBalance', 'title' => 'Коэффициент максимального изменения предлагаемого остатка', 'hint' => ''],
+            ['key' => 'salesFormulaDays', 'title' => 'Анализируем отсутствие товара за дней', 'hint' => ''],
+            ['key' => 'salesFormulaDaysSell', 'title' => 'Анализируем продажи за дней (Диапазон продаж 15 дней. 1 = 15, 2 = 30... 3 * 15 дней)', 'hint' => ''],
+        ];
+
+        foreach ($settings as &$setting) {
+            $setting['hint'] = \App\Models\Description::getByKey($setting['title'], '');
+        }
+
+        return $settings;
     }
 
     public function destroyStockTotals(Request $request)

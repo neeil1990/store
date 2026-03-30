@@ -5,6 +5,11 @@
         </h2>
     </x-slot>
 
+    <!-- Добавлена ссылка на раздел описаний -->
+    <div class="mb-4">
+        <a href="{{ route('descriptions.index') }}" class="btn btn-primary">Настройка описании</a>
+    </div>
+
     <div class="row">
         <div class="col-6">
             @include('setting.partials.store-token-form')

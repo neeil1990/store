@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__ . '/uri/suppliers.php';
     require __DIR__ . '/uri/filters.php';
     require __DIR__ . '/uri/shipper.php';
+    require __DIR__ . '/uri/descriptions.php';
 });
 
 require __DIR__ . '/uri/auth.php';

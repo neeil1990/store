@@ -3,6 +3,12 @@ table.dataTable span.highlight {
     background-color: #FFFF88;
 }
 
+.tooltip, .popover {
+    z-index: 2070;
+    max-width: 400px;
+}
+
 .tooltip-inner {
     text-align: start;
 }
+
