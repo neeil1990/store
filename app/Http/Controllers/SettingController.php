@@ -14,20 +14,30 @@ class SettingController extends Controller
     public function index()
     {
         $token = (new StoreToken())->getToken();
+        $warehouseItemParam = Setting::where('key', 'warehouse_item_param')->value('value');
+        $measureItemParam = Setting::where('key', 'measure_item_param')->value('value');
 
-        return view('setting.index', compact('token'));
+        return view('setting.index', compact('token', 'warehouseItemParam', 'measureItemParam'));
     }
 
     public function store(SettingStoreRequest $request)
     {
         $valid = $request->validated();
 
+        $status = 'setting-store';
+
+        if ($valid['key'] === 'warehouse_item_param') {
+            $status = 'setting-warehouse-item-param';
+        } elseif ($valid['key'] === 'measure_item_param') {
+            $status = 'setting-measure-item-param';
+        }
+
         Setting::updateOrCreate(
             ['key' => $valid['key']],
             ['value' => $valid['value']]
         );
 
-        return redirect()->route('setting.index')->with('status', 'setting-store');
+        return redirect()->route('setting.index')->with('status', $status);
     }
 
     public function import(Request $request)

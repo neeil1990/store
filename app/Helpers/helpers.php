@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Products;
+use App\Models\Setting;
 use Illuminate\Support\Arr;
 
 if (!function_exists('money')) {
@@ -44,7 +45,9 @@ if (!function_exists('stockZeros')) {
 if (!function_exists('checkMeasureAttr')) {
     function checkMeasureAttr(array $attributes): bool
     {
-        if (Arr::first($attributes, fn ($value) => $value['name'] == 'Значение кол-ва в упаковке для товаров которые принимают поштучно')) {
+        $measureItemParam = Setting::where('key', 'measure_item_param')->value('value');
+
+        if (Arr::first($attributes, fn ($value) => $value['name'] == $measureItemParam)) {
             return true;
         }
 

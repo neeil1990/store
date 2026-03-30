@@ -4,6 +4,7 @@
 namespace App\Lib\Sale\Store;
 
 use App\Models\Price;
+use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 
 class StoreProductToDataBase extends StoreToDataBase
@@ -23,7 +24,9 @@ class StoreProductToDataBase extends StoreToDataBase
         // Извлекаем атрибуты в отдельные колонки для быстрой фильтрации
         $attributes = collect($product['attributes'] ?? []);
 
-        $warehouseItem = $attributes->firstWhere('name', 'Складская позиция');
+        $warehouse_item_param = Setting::where('key', 'warehouse_item_param')->value('value') ?? 'Складская позиция';
+
+        $warehouseItem = $attributes->firstWhere('name', $warehouse_item_param);
         $product['is_warehouse_item'] = $warehouseItem['value'] ?? false;
 
         $discontinued = $attributes->firstWhere('name', 'Перестали сотрудничать / Не производится (дет.в комментах)');

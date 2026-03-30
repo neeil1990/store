@@ -9,9 +9,11 @@
         <div class="col-6">
             @include('setting.partials.store-token-form')
             @include('setting.partials.minimum-balance-import')
+            @include('setting.partials.warehouse-item-param-form')
         </div>
         <div class="col-6">
             @include('setting.partials.create-token-form')
+            @include('setting.partials.measure-item-param-form')
         </div>
     </div>
 
