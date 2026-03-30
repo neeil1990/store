@@ -32,6 +32,7 @@
                                 <th>Должность/отдел</th>
                                 <th>Статус</th>
                                 <th>Зарегистрирован</th>
+                                <th>Телефон</th>
                                 @canany(['edit user', 'delete user'])
                                     <th></th>
                                 @endcanany
@@ -59,6 +60,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $user['created_at']->diffForHumans() }}</td>
+                                <td>{{ $user['phone'] }}</td>
                                 @canany(['edit user', 'delete user'])
                                 <td>
                                     @can('edit user')

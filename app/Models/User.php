@@ -25,6 +25,7 @@ class User extends Authenticatable
         'department',
         'password',
         'is_archived',
+        'phone',
     ];
 
     /**

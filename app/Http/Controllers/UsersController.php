@@ -42,6 +42,7 @@ class UsersController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'department' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['nullable', 'string', 'max:30'],
         ]);
 
         $validated = $validator->validated();

@@ -23,6 +23,12 @@
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
+                    <!-- Phone -->
+                    <div class="form-group mb-3">
+                        <x-text-input-icon :placeholder="$user->phone ?? 'Телефон'" id="phone" type="text" name="phone" :value="old('phone', $user->phone)" autocomplete="tel" />
+                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                    </div>
+
                     <p class="mb-1"><b>В вашей компании:</b></p>
 
                     <div class="form-group mb-3">
