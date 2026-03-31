@@ -287,9 +287,9 @@
 
                             popover.find('[data-toggle="popover"]').popover({
                                 container: 'body',
+                                boundary: 'window',
                                 html: true,
                                 trigger: 'hover',
-                                placement: 'bottom',
                             });
 
                             popover.find('input').each(function (i, el) {
