@@ -288,7 +288,8 @@
                             popover.find('[data-toggle="popover"]').popover({
                                 container: 'body',
                                 html: true,
-                                trigger: 'hover'
+                                trigger: 'hover',
+                                placement: 'bottom',
                             });
 
                             popover.find('input').each(function (i, el) {
@@ -391,7 +392,7 @@
                     $('<label />').text(title),
                     // Иконка-подсказка внутри окна настроек: используем popover (открывается по клику)
                     $('<i />', {
-                        class: 'far fa-question-circle ml-1',
+                        class: 'far fa-question-circle ml-1' + (hint ? '' : ' d-none'),
                         'data-toggle': 'popover',
                         'data-content': hint || ''
                     }),
