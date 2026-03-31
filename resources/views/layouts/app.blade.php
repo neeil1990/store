@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.css') }}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
 
     @stack('styles')
     <!-- Theme style -->
@@ -104,6 +106,8 @@
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
+<!-- Summernote -->
+<script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- AdminLTE App -->
 @vite(['resources/js/app.js'])
 @stack('scripts')
@@ -113,6 +117,11 @@
         if ($('body').hasClass('control-sidebar-slide-open') === false) {
              setTimeout(() => $('.control-sidebar').css('display', 'block'), 450);
         }
+    });
+
+    $(function () {
+        // Summernote
+        $('#summernote-content').summernote();
     });
 </script>
 

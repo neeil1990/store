@@ -8,9 +8,10 @@
 
 <div class="form-group">
     <label for="content">Содержание</label>
-    <textarea name="content" id="content" class="form-control" rows="6">{{ old('content', $description->content ?? '') }}</textarea>
+    <textarea name="content" id="summernote-content" class="form-control" rows="6">{{ old('content', $description->content ?? '') }}</textarea>
     @error('content')<div class="text-danger">{{ $message }}</div>@enderror
 </div>
 
 <button type="submit" class="btn btn-primary">Сохранить</button>
 <a href="{{ route('descriptions.index') }}" class="btn btn-secondary">Отмена</a>
+
