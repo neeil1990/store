@@ -220,7 +220,7 @@ class Products extends ProductsScopes
         $days = $salesFormulaDays - $this->unavailable_days_count;
 
         if ($days > 0) {
-            $middleSupply = round($this->last_sell_sum / $salesFormulaDaysSell * 15, 2);
+            $middleSupply = round($this->last_sell_sum / ($salesFormulaDaysSell * 15), 2);
         } else {
             $middleSupply = 0;
         }
