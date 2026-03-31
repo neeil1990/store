@@ -21,7 +21,7 @@
         <pre>Берем {{ $salesFormula['salesFormulaDays'] }} дней и вычитаем "Дней отсутствия за {{ $salesFormula['salesFormulaDays'] }} дней" если больше 0 тогда "Продажи за {{ $salesFormula['salesFormulaDaysSell'] * 15 }} дней" / "На полученную разность дней" иначе 0</pre>
         <pre>({{ $salesFormula['salesFormulaDays'] }} - {{ $salesFormula['unavailable_days_count'] }}) = {{ $salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count'] }}</pre>
         @if ($salesFormula['salesFormulaDays'] - $salesFormula['unavailable_days_count'] > 0)
-            <pre>{{$salesFormula['last_sell_sum']}} / {{$salesFormulaDaysSell * 15}} = {{round($salesFormula['last_sell_sum'] / ($salesFormulaDaysSell * 15), 2)}}</pre>
+            <pre>{{$salesFormula['last_sell_sum']}} / {{$salesFormula['salesFormulaDaysSell'] * 15}} = {{round($salesFormula['last_sell_sum'] / ($salesFormula['salesFormulaDaysSell'] * 15), 2)}}</pre>
         @else
             <pre>0</pre>
         @endif
