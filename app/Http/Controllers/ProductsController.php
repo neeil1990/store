@@ -69,20 +69,20 @@ class ProductsController extends Controller
         return $stores;
     }
 
-    public function minimumBalanceLagerStore(Request $request)
+    public function updateProductField(Request $request)
     {
-        $product = Products::find($request['id']);
-        $product->minimumBalanceLager = $request['val'];
-        return $product->save();
-    }
-
-    public function multiplicityStore(Request $request)
-    {
-        $product = Products::find($request['id']);
-
-        $product->multiplicityProduct = $request['val'];
-
-        return $product->save();
+        $allowedFields = ['minimumBalanceLager', 'multiplicityProduct', 'minBalanceCountedAs'];
+        $field = $request->input('field');
+        if (!in_array($field, $allowedFields)) {
+            return response()->json(['error' => 'Недопустимое поле'], 400);
+        }
+        $product = Products::find($request->input('id'));
+        if (!$product) {
+            return response()->json(['error' => 'Товар не найден'], 404);
+        }
+        $product->$field = $request->input('val');
+        $result = $product->save();
+        return response()->json(['success' => $result]);
     }
 
     public function outOfStock(Request $request)

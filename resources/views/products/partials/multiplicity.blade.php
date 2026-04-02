@@ -20,9 +20,10 @@
             let group = $(this).closest(".input-group");
             let input = group.find(".form-control");
 
-            axios.post('{{ route('products.multiplicity-store') }}', {
+            axios.post('{{ route('products.update-field') }}', {
                 id: input.data('id'),
                 val: input.val(),
+                field: 'multiplicityProduct',
             }).then(function (response) {
                 toastr.success('Успешно сохранено!');
             });

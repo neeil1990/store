@@ -50,6 +50,7 @@
                                         <th>{{ __('Предлагаемый нес.ост.') }}</th>
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
                                         <th>{{ __('Кратность товара') }}</th>
+                                        <th>{{ __('Мин.Остаток сч.как 0') }}</th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Ожидание') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
@@ -84,8 +85,9 @@
                                             <td>{{ $product->minimumBalance }}</td>
                                             <td>{{ $product->priceAuto }}</td>
                                             <td>{{ $product->sales_formula['minimumBalance'] }}</td>
-                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minimumBalanceLager, 'action' => route('products.minimum-balance-lager-store')]) }}</td>
-                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->multiplicityProduct, 'action' => route('products.multiplicity-store')]) }}</td>
+                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minimumBalanceLager, 'action' => 'minimumBalanceLager']) }}</td>
+                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->multiplicityProduct, 'action' => 'multiplicityProduct']) }}</td>
+                                            <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minBalanceCountedAs, 'action' => 'minBalanceCountedAs']) }}</td>
                                             <td>{{ $product->stocks_sum_quantity }}</td>
                                             <td>{{ $product->transits_sum_quantity }}</td>
                                             <td>{{ $product->deleted_stock_total_at }}</td>
@@ -373,11 +375,16 @@
                 let action = $form.data('action');
 
                 if ($input.val().length > 0 && id) {
-                    axios.post(action, {
+                    axios.post('{{ route('products.update-field') }}', {
                         id: id,
                         val: $input.val(),
+                        field: action
                     }).then(function (response) {
-                        toastr.success('Успешно сохранено!');
+                        if (response.data.success) {
+                            toastr.success('Успешно сохранено!');
+                        } else {
+                            toastr.error(response.data.error);
+                        }
                     });
                 }
 

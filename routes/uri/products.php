@@ -10,8 +10,8 @@ Route::post('/products/out-of-stock', [ProductsController::class, 'storeOutOfSto
 
 Route::get('/products/json', [ProductsController::class, 'json'])->name('products.json');
 
-Route::post('/products/minimum-balance-lager-store', [ProductsController::class, 'minimumBalanceLagerStore'])->name('products.minimum-balance-lager-store');
-Route::post('/products/multiplicity-store', [ProductsController::class, 'multiplicityStore'])->name('products.multiplicity-store');
+// Универсальный маршрут для обновления полей товара
+Route::post('/products/update-field', [ProductsController::class, 'updateProductField'])->name('products.update-field');
 
 Route::resource('products', ProductsController::class)->only([
     'index', 'show'

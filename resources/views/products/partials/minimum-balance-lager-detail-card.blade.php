@@ -20,9 +20,10 @@
             let group = $(this).closest(".input-group");
             let input = group.find(".form-control");
 
-            axios.post('{{ route('products.minimum-balance-lager-store') }}', {
+            axios.post('{{ route('products.update-field') }}', {
                 id: input.data('id'),
                 val: input.val(),
+                field: 'minimumBalanceLager',
             }).then(function (response) {
                 toastr.success('Успешно сохранено!');
             });
