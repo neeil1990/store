@@ -45,15 +45,13 @@ class ProductsTable extends DataTableRequest
             $i->minimumBalanceLager = DataTableViewService::columnInputView([
                 'id' => $i->id,
                 'value' => $i->minimumBalanceLager,
-                'action' => route('products.update-field'),
-                'field' => 'minimumBalanceLager',
+                'action' => 'minimumBalanceLager',
             ], true);
 
             $i->multiplicityProduct = DataTableViewService::columnInputView([
                 'id' => $i->id,
                 'value' => $i->multiplicityProduct,
-                'action' => route('products.update-field'),
-                'field' => 'multiplicityProduct',
+                'action' => 'multiplicityProduct',
             ], true);
         }
 
