@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $pageTitle ? $pageTitle . ' - ' : '' }}{{ config('app.name', 'LagerPlus') }} (Система оцифровки склада для роста продаж)</title>
+    <title>{{ $pageTitle ? $pageTitle . ' - ' : '' }} {{ $siteTitle }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -31,7 +31,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <x-application-logo />
+        <x-application-logo :siteName="$siteName ?? 'LagerPlus'" />
 
         <!-- Sidebar -->
         <div class="sidebar">
@@ -79,21 +79,25 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-            <a href="tel:+79601340303" class="text-muted" title="+7-960-134-03-03">
+            @if($showFooterPhone)
+            <a href="tel:{{ $footerPhone ?? '+79601340303' }}" class="text-muted" title="{{ $footerPhone ?? '+7-960-134-03-03' }}">
                 <span class="fa-stack">
                     <i class="fas fa-circle fa-stack-2x"></i>
                     <i class="fas fa-phone-alt fa-stack-1x fa-inverse"></i>
                 </span>
             </a>
-            <a href="https://t.me/bziksv" target="_blank" class="text-muted" title="@bziksv">
+            @endif
+            @if($showFooterTelegram)
+            <a href="{{ $footerTelegram ?? 'https://t.me/bziksv' }}" target="_blank" class="text-muted" title="{{ $footerTelegram ?? '@bziksv' }}">
                 <span class="fa-stack">
                     <i class="fas fa-circle fa-stack-2x"></i>
                     <i class="fab fa-telegram-plane fa-stack-1x fa-inverse"></i>
                 </span>
             </a>
+            @endif
         </div>
         <!-- Default to the left -->
-        <strong><a href="/">LagerPlus</a> &copy; 2025 - {{ date('Y') }} (Система оцифровки склада для роста продаж)</strong>
+        <strong><a href="/">{{ $siteName ?? 'LagerPlus' }}</a> &copy; 2025 - {{ date('Y') }} (Система оцифровки склада для роста продаж)</strong>
     </footer>
 </div>
 <!-- ./wrapper -->

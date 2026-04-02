@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Route;
+use App\Models\Setting;
 
 class AppLayout extends Component
 {
@@ -38,6 +39,20 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.app', ['menu' => $this->menu]);
+        $siteTitle = Setting::where('key', 'site_title')->value('value');
+        $siteName = Setting::where('key', 'site_name')->value('value');
+        $footerPhone = Setting::where('key', 'footer_phone')->value('value');
+        $footerTelegram = Setting::where('key', 'footer_telegram')->value('value');
+        $showFooterPhone = Setting::where('key', 'show_footer_phone')->value('value') !== '0';
+        $showFooterTelegram = Setting::where('key', 'show_footer_telegram')->value('value') !== '0';
+        return view('layouts.app', [
+            'menu' => $this->menu,
+            'siteTitle' => $siteTitle,
+            'siteName' => $siteName,
+            'footerPhone' => $footerPhone,
+            'footerTelegram' => $footerTelegram,
+            'showFooterPhone' => $showFooterPhone,
+            'showFooterTelegram' => $showFooterTelegram,
+        ]);
     }
 }

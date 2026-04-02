@@ -16,8 +16,14 @@ class SettingController extends Controller
         $token = (new StoreToken())->getToken();
         $warehouseItemParam = Setting::where('key', 'warehouse_item_param')->value('value');
         $measureItemParam = Setting::where('key', 'measure_item_param')->value('value');
+        $siteTitle = Setting::where('key', 'site_title')->value('value');
+        $siteName = Setting::where('key', 'site_name')->value('value');
+        $footerPhone = Setting::where('key', 'footer_phone')->value('value');
+        $footerTelegram = Setting::where('key', 'footer_telegram')->value('value');
+        $showFooterPhone = Setting::where('key', 'show_footer_phone')->value('value') !== '0';
+        $showFooterTelegram = Setting::where('key', 'show_footer_telegram')->value('value') !== '0';
 
-        return view('setting.index', compact('token', 'warehouseItemParam', 'measureItemParam'));
+        return view('setting.index', compact('token', 'warehouseItemParam', 'measureItemParam', 'siteTitle', 'siteName', 'footerPhone', 'footerTelegram', 'showFooterPhone', 'showFooterTelegram'));
     }
 
     public function store(SettingStoreRequest $request)
@@ -25,12 +31,6 @@ class SettingController extends Controller
         $valid = $request->validated();
 
         $status = 'setting-store';
-
-        if ($valid['key'] === 'warehouse_item_param') {
-            $status = 'setting-warehouse-item-param';
-        } elseif ($valid['key'] === 'measure_item_param') {
-            $status = 'setting-measure-item-param';
-        }
 
         Setting::updateOrCreate(
             ['key' => $valid['key']],
@@ -45,5 +45,24 @@ class SettingController extends Controller
         Excel::import(new MinimumBalanceImport, $request->file('excel'));
 
         return redirect()->route('setting.index')->with('status', 'setting-import');
+    }
+
+    public function storeAll(Request $request)
+    {
+        $data = $request->only([
+            'site_title',
+            'site_name',
+            'token',
+            'warehouse_item_param',
+            'measure_item_param',
+            'footer_phone',
+            'footer_telegram',
+        ]);
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+        Setting::updateOrCreate(['key' => 'show_footer_phone'], ['value' => $request->has('show_footer_phone') ? '1' : '0']);
+        Setting::updateOrCreate(['key' => 'show_footer_telegram'], ['value' => $request->has('show_footer_telegram') ? '1' : '0']);
+        return redirect()->route('setting.index')->with('status', 'setting-store-all');
     }
 }
