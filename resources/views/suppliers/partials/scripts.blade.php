@@ -42,9 +42,10 @@
             let action = $form.data('action');
 
             if ($input.val().length > 0 && id) {
-                axios.post(action, {
+                axios.post('{{ route('products.update-field') }}', {
                     id: id,
                     val: $input.val(),
+                    field: action
                 }).then(function (response) {
                     toastr.success('Успешно сохранено!');
                 });

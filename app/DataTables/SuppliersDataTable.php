@@ -61,14 +61,14 @@ class SuppliersDataTable
                 return DataTableViewService::columnInputView([
                     'id' => $products->id,
                     'value' => $products->minimumBalanceLager,
-                    'action' => route('products.minimum-balance-lager-store')
+                    'action' => 'minimumBalanceLager'
                 ]);
             })
             ->editColumn('multiplicityProduct', function (Products $products) {
                 return DataTableViewService::columnInputView([
                     'id' => $products->id,
                     'value' => $products->multiplicityProduct,
-                    'action' => route('products.multiplicity-store')
+                    'action' => 'multiplicityProduct'
                 ]);
             })
             ->toJson();
