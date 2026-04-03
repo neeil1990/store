@@ -206,7 +206,7 @@ class Products extends ProductsScopes
                     $query->whereNotNull('pack_quantity')
                         ->where('pack_quantity', '>', 0)
                         ->havingRaw('stocks_sum_quantity IS NOT NULL')
-                        ->havingRaw('pack_percentage IS NOT NULL AND pack_percentage < ' . $pack_percentage);
+                        ->havingRaw('pack_percentage IS NOT NULL AND pack_percentage <= ' . $pack_percentage);
                 }
             })
             ->withSum('stocks', 'quantity')
