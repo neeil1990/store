@@ -17,6 +17,7 @@
                                 <option value="">{{ __('Не выбрано') }}</option>
                                 <option value="zero" @if(request('filter') === 'zero') selected @endif>Показать нулевые</option>
                                 <option value="multiplicity" @if(request('filter') === 'multiplicity') selected @endif>Без кратности товара</option>
+                                <option value="incomplete_pack" @if(request('filter') === 'incomplete_pack') selected @endif>Неполная упаковка</option>
                             </select>
                         </div>
 
@@ -51,6 +52,8 @@
                                         <th>{{ __('Неснижаемый остаток lager') }}</th>
                                         <th>{{ __('Кратность товара') }}</th>
                                         <th>{{ __('Мин.Остаток сч.как 0') }}</th>
+                                        <th>{{ __('Кол-во в упаковке') }}</th>
+                                        <th>{{ __('% ост. в уп.') }} <i class="far fa-question-circle" data-toggle="tooltip" title="Процент остатка последней упаковки"></i></th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Ожидание') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
@@ -88,6 +91,8 @@
                                             <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minimumBalanceLager, 'action' => 'minimumBalanceLager']) }}</td>
                                             <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->multiplicityProduct, 'action' => 'multiplicityProduct']) }}</td>
                                             <td>{{ \App\Services\DataTableViewService::columnInputView(['id' => $product->id, 'value' => $product->minBalanceCountedAs, 'action' => 'minBalanceCountedAs']) }}</td>
+                                            <td>{{ $product->pack_quantity }}</td>
+                                            <td>{{ $product->pack_percentage !== null ? $product->pack_percentage . '%' : '' }}</td>
                                             <td>{{ $product->stocks_sum_quantity }}</td>
                                             <td>{{ $product->transits_sum_quantity }}</td>
                                             <td>{{ $product->deleted_stock_total_at }}</td>

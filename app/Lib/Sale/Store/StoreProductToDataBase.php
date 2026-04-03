@@ -32,6 +32,9 @@ class StoreProductToDataBase extends StoreToDataBase
         $discontinued = $attributes->firstWhere('name', 'Перестали сотрудничать / Не производится (дет.в комментах)');
         $product['is_discontinued'] = $discontinued['value'] ?? false;
 
+        $packQuantityAttr = $attributes->firstWhere('name', 'Значение кол-ва в упаковке для товаров которые принимают поштучно');
+        $product['pack_quantity'] = isset($packQuantityAttr['value']) ? (int)$packQuantityAttr['value'] : null;
+
         return $product;
     }
 
