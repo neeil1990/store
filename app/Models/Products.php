@@ -201,7 +201,7 @@ class Products extends ProductsScopes
                 }
 
                 if ($filter == "incomplete_pack") {
-                    $pack_percentage = 10;
+                    $pack_percentage = intval(Setting::query()->where('key', 'incompletePackPercent')->value('value') ?? 0);
 
                     $query->whereNotNull('pack_quantity')
                         ->where('pack_quantity', '>', 0)

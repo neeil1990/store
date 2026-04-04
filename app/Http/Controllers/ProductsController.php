@@ -117,6 +117,7 @@ class ProductsController extends Controller
             ['key' => 'maxMinimumBalance', 'title' => 'Коэффициент максимального изменения предлагаемого остатка', 'hint' => ''],
             ['key' => 'salesFormulaDays', 'title' => 'Анализируем отсутствие товара за дней', 'hint' => ''],
             ['key' => 'salesFormulaDaysSell', 'title' => 'Анализируем продажи за дней (Диапазон продаж 15 дней. 1 = 15, 2 = 30... 3 * 15 дней)', 'hint' => ''],
+            ['key' => 'incompletePackPercent', 'title' => 'Процент неполной упаковки', 'hint' => ''],
         ];
 
         foreach ($settings as &$setting) {
