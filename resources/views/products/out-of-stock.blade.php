@@ -53,7 +53,7 @@
                                         <th>{{ __('Кратность товара') }}</th>
                                         <th>{{ __('Мин.Остаток сч.как 0') }}</th>
                                         <th>{{ __('Кол-во в упаковке') }}</th>
-                                        <th>{{ __('% ост. в уп.') }} <i class="far fa-question-circle" data-toggle="tooltip" title="Процент остатка последней упаковки."></i></th>
+                                        <th>{{ __('% ост. в уп.') }} <i class="far fa-question-circle" data-toggle="tooltip" title="Процент остатка последней упаковки"></i></th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Ожидание') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
@@ -70,7 +70,7 @@
                                         <th class="days-90">90</th>
                                         <th class="days-180">180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
                                         <th class="days-180">180</th>
-                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней."></i></th>
+                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
                                         <th class="days-365">365</th>
                                     </tr>
                                 </thead>
