@@ -70,7 +70,7 @@
                                         <th class="days-90">90</th>
                                         <th class="days-180">180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
                                         <th class="days-180">180</th>
-                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
+                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней."></i></th>
                                         <th class="days-365">365</th>
                                     </tr>
                                 </thead>
