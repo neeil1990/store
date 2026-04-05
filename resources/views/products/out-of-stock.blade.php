@@ -279,7 +279,7 @@
                         text: 'Настройки',
                         className: 'btn btn-secondary btn-default btn-sm ',
                         available: function (dt, config) {
-                            return {{ auth()->user()->hasRole('administrator') ? 'true' : 'false' }};
+                            return {{ auth()->user()->hasRole('administrator') ? 'true' : 'false' }}
                         },
                         action: function (e, dt, node, config, cb) {
                             e.stopPropagation();
