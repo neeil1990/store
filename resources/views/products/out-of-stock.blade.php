@@ -402,7 +402,7 @@
                     class: 'form-group'
                 }).append([
                     $('<label />').text(title),
-                    // Иконка-подсказка внутри окна настроек: используем popover (открывается по клику)
+                    // Иконка-подсказка внутри окна настроек: используем popover
                     $('<i />', {
                         class: 'far fa-question-circle ml-1' + (hint ? '' : ' d-none'),
                         'data-toggle': 'popover',
