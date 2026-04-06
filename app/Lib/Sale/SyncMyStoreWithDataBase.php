@@ -33,6 +33,7 @@ use App\Models\Group;
 use App\Models\Products;
 use App\Models\Reserve;
 use App\Models\Sell;
+use App\Models\Setting;
 use App\Models\Stock;
 use App\Models\Store;
 use App\Models\Transit;
@@ -106,14 +107,43 @@ class SyncMyStoreWithDataBase
             return;
         }
 
-        $model->truncate();
+        //$model->truncate();
 
-        (new StoreStockToDataBase($model))->create($stocks);
+        //(new StoreStockToDataBase($model))->create($stocks);
 
+        // получаем товары с нулевым остатком из МС, пишем в БД
         if ((new StockTotal())->whereDate('created_at', Carbon::now())->doesntExist()) {
             foreach ((new MyStoreStockTotal())->getRows() as $item) {
                 if ($item['stock'] === 0) {
                     (new StockTotal())->create($item);
+                }
+            }
+        }
+
+        // собираем остатки в один товар
+        $product_stocks = [];
+        foreach ($stocks as $stock) {
+            if (isset($product_stocks[$stock['assortmentId']])) {
+                $product_stocks[$stock['assortmentId']] += $stock['stock'];
+            } else {
+                $product_stocks[$stock['assortmentId']] = $stock['stock'];
+            }
+        }
+
+        // получаем значение настройки
+        $incompletePackPercent = intval(Setting::query()->where('key', 'incompletePackPercent')->value('value') ?? 0);
+        foreach ($product_stocks as $uuid => $stock) {
+
+            $stocks_sum_quantity = intval($stock);
+            $multiplicityProduct = intval(Products::where('uuid', $uuid)->value('multiplicityProduct'));
+
+            if ($multiplicityProduct > 0) {
+                $pack_percentage = min(100, ($stocks_sum_quantity / $multiplicityProduct) * 100);
+
+                if ($pack_percentage < $incompletePackPercent) {
+                    if ((new StockTotal())->where('assortmentId', $uuid)->whereDate('created_at', Carbon::now())->doesntExist()) {
+                        (new StockTotal())->create(['assortmentId' => $uuid, 'stock' => 0]);
+                    }
                 }
             }
         }

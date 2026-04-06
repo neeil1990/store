@@ -201,12 +201,10 @@ class Products extends ProductsScopes
                 }
 
                 if ($filter == "incomplete_pack") {
-                    $pack_percentage = intval(Setting::query()->where('key', 'incompletePackPercent')->value('value') ?? 0);
-
                     $query->whereNotNull('multiplicityProduct')
                         ->where('multiplicityProduct', '>', 0)
                         ->havingRaw('stocks_sum_quantity IS NOT NULL')
-                        ->havingRaw('pack_percentage IS NOT NULL AND pack_percentage <= ' . $pack_percentage);
+                        ->havingRaw('pack_percentage IS NOT NULL AND pack_percentage > 0');
                 }
             })
             ->withSum('stocks', 'quantity')
