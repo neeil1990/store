@@ -185,7 +185,7 @@ class Products extends ProductsScopes
                 products.*,
                 LEAST(100, ROUND(
                     (SELECT COALESCE(SUM(quantity), 0) FROM stocks WHERE assortmentId = products.uuid)
-                    / NULLIF(pack_quantity, 0) * 100
+                    / NULLIF(multiplicityProduct, 0) * 100
                 )) as pack_percentage
             ')
             ->where('is_warehouse_item', true)
@@ -203,8 +203,8 @@ class Products extends ProductsScopes
                 if ($filter == "incomplete_pack") {
                     $pack_percentage = intval(Setting::query()->where('key', 'incompletePackPercent')->value('value') ?? 0);
 
-                    $query->whereNotNull('pack_quantity')
-                        ->where('pack_quantity', '>', 0)
+                    $query->whereNotNull('multiplicityProduct')
+                        ->where('multiplicityProduct', '>', 0)
                         ->havingRaw('stocks_sum_quantity IS NOT NULL')
                         ->havingRaw('pack_percentage IS NOT NULL AND pack_percentage <= ' . $pack_percentage);
                 }
