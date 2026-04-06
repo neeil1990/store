@@ -140,7 +140,7 @@ class SyncMyStoreWithDataBase
             if ($multiplicityProduct > 0) {
                 $pack_percentage = min(100, ($stocks_sum_quantity / $multiplicityProduct) * 100);
 
-                if ($pack_percentage < $incompletePackPercent) {
+                if ($pack_percentage <= $incompletePackPercent) {
                     if ((new StockTotal())->where('assortmentId', $uuid)->whereDate('created_at', Carbon::now())->doesntExist()) {
                         (new StockTotal())->create(['assortmentId' => $uuid, 'stock' => 0]);
                     }
