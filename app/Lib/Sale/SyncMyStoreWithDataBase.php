@@ -107,9 +107,9 @@ class SyncMyStoreWithDataBase
             return;
         }
 
-        //$model->truncate();
+        $model->truncate();
 
-        //(new StoreStockToDataBase($model))->create($stocks);
+        (new StoreStockToDataBase($model))->create($stocks);
 
         // получаем товары с нулевым остатком из МС, пишем в БД
         if ((new StockTotal())->whereDate('created_at', Carbon::now())->doesntExist()) {
