@@ -8,6 +8,8 @@
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/suppliers/table.js') }}"></script>
 <script src="{{ asset('plugins/suppliers/saved-filters.js') }}"></script>
 
@@ -26,6 +28,7 @@
                     data.fbo = $('.fbo-filter:checked').val();
                 }
             },
+            fixedHeader: true,
         });
 
         $.suppliers.filters = new SavedFilters($(".wrapper"), {
@@ -34,6 +37,30 @@
                 delete: 'filters',
             },
         });
+
+        // Fix: пересчёт ширины колонок при возврате fixedHeader в исходное состояние
+        (function () {
+            let table = $.suppliers.$table;
+
+            let observer = new MutationObserver(function (mutations) {
+                for (let mutation of mutations) {
+                    for (let node of mutation.removedNodes) {
+                        if (node.nodeType === 1 && node.classList.contains('dtfh-floatingparenthead')) {
+                            requestAnimationFrame(function () {
+                                table.columns.adjust();
+                            });
+                            return;
+                        }
+                    }
+                }
+            });
+
+            observer.observe(document.body, { childList: true });
+
+            table.on('draw.dt', function () {
+                table.columns.adjust();
+            });
+        })();
 
         $("#products-table").on("click", ".input-column", function () {
             let $form = $(this).closest('.input-group');

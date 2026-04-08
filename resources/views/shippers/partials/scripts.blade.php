@@ -13,9 +13,14 @@
 <script src="{{ asset('plugins/datatables-searchbuilder/js/dataTables.searchBuilder.js') }}"></script>
 <script src="{{ asset('plugins/datatables-searchbuilder/js/searchBuilder.bootstrap4.js') }}"></script>
 
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
+
+<script src="{{ asset('plugins/datatables-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
+
 <script>
     (function ($) {
-
 
         const employee = 2;
         const calc_occupancy_percent_all = 7;
@@ -59,6 +64,11 @@
             processing: true,
             serverSide: true,
             stateSave: true,
+            scrollX: true,
+            fixedHeader: true,
+            fixedColumns: {
+                left: 2
+            },
             ajax: {
                 url: '{{ route('shipper.json') }}',
                 data: function (data) {
@@ -74,9 +84,9 @@
                 { data: 'comment', title: '{{ __('Комментарий') }}' },
                 { data: 'min_sum', title: '{{ __('Мин. сумма закупки') }}' },
                 { data: 'fill_storage', title: '{{ __('Наполняемость склада, %') }}' },
-                { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }}', className: 'calc_occupancy_percent_all' },
-                { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }}', className: 'calc_occupancy_percent_selected' },
-                { data: 'calc_quantity', title: '{{ __('Кол-во товаров всего') }}' },
+                { data: 'calc_occupancy_percent_all', title: '{{ __('Наполняемость, %') }} <i class="far fa-question-circle ml-1" data-toggle="tooltip" title="{{ __('По всем складам') }}"></i>', className: 'calc_occupancy_percent_all' },
+                { data: 'calc_occupancy_percent_selected', title: '{{ __('Наполняемость по складам, %') }} <i class="far fa-question-circle ml-1" data-toggle="tooltip" title="{{ __('Именно по выбранным складам') }}"></i>', className: 'calc_occupancy_percent_selected' },
+                { data: 'calc_quantity', title: '{{ __('Кол-во товаров всего') }} <i class="far fa-question-circle ml-1" data-toggle="tooltip" title="{{ __('Сумма товаров с указанным неснижаемым остатком') }}"></i>' },
                 { data: 'calc_to_purchase', title: '{{ __('К закупке') }}' },
                 { data: 'calc_purchase_total', title: '{{ __('Общая сумма закупки по поставщику') }}' },
                 { data: 'sender', title: '{{ __('Авто рассылка') }}' },
@@ -103,12 +113,6 @@
             ],
             initComplete: function () {
                 let api = this.api();
-
-                hintHeader(calc_quantity, '{{ __('Сумма товаров с указанным неснижаемым остатком') }}');
-
-                hintHeader(calc_occupancy_percent_selected, '{{ __('Именно по выбранным складам') }}');
-
-                hintHeader(calc_occupancy_percent_all, '{{ __('По всем складам') }}');
 
                 tooltip();
 
@@ -194,6 +198,31 @@
             ]
         });
 
+        // Fix: пересчёт ширины колонок при возврате fixedHeader в исходное состояние.
+        // Плагин FixedHeader при переходе в режим 'in-place' удаляет из body
+        // элемент <div class="dtfh-floatingparent dtfh-floatingparenthead">,
+        // а внутри него находится таблица с классом fixedHeader-floating.
+        (function () {
+            let observer = new MutationObserver(function (mutations) {
+                for (let mutation of mutations) {
+                    for (let node of mutation.removedNodes) {
+                        if (node.nodeType === 1 && node.classList.contains('dtfh-floatingparenthead')) {
+                            requestAnimationFrame(function () {
+                                table.columns.adjust();
+                            });
+                            return;
+                        }
+                    }
+                }
+            });
+
+            observer.observe(document.body, { childList: true });
+
+            table.on('draw.dt', function () {
+                table.columns.adjust();
+            });
+        })();
+
         function createTooltip(data)
         {
             try {
@@ -216,15 +245,4 @@
 
     })(jQuery);
 
-    function hintHeader(index, text)
-    {
-        let column = $('#products-table thead').find('th').get(index);
-
-        if (column) {
-            $(column).attr({
-                'data-toggle': 'tooltip',
-                title: text
-            }).append($('<i />', {'class': 'far fa-question-circle ml-1'}));
-        }
-    }
 </script>

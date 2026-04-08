@@ -13,21 +13,8 @@
 <script src="{{ asset('build/vendor/jquery.highlight.js') }}"></script>
 <script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
 <script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
-
-<style>
-    tr.even td.dtfc-fixed-left {
-        background-color: #ffffff;
-    }
-    tr.odd td.dtfc-fixed-left {
-        background-color: #f9f9f9;
-    }
-    thead th {
-        background-color: white;
-    }
-    th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
-        z-index: 3;
-    }
-</style>
+<script src="{{ asset('plugins/datatables-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
 
 <script>
     let table = $("#products-table").DataTable({
@@ -46,6 +33,7 @@
         responsive: false,
         processing: true,
         scrollX: true,
+        fixedHeader: true,
         fixedColumns: {
             left: 1
         },
@@ -183,6 +171,28 @@
             });
         }
     });
+
+    // Fix: пересчёт ширины колонок при возврате fixedHeader в исходное состояние
+    (function () {
+        let observer = new MutationObserver(function (mutations) {
+            for (let mutation of mutations) {
+                for (let node of mutation.removedNodes) {
+                    if (node.nodeType === 1 && node.classList.contains('dtfh-floatingparenthead')) {
+                        requestAnimationFrame(function () {
+                            table.columns.adjust();
+                        });
+                        return;
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.body, { childList: true });
+
+        table.on('draw.dt', function () {
+            table.columns.adjust();
+        });
+    })();
 
     table.on( 'draw', function () {
         let body = $( table.table().body() ).find('tr');

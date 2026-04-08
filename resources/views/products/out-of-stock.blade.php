@@ -128,6 +128,7 @@
         <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/datatables-select/css/select.bootstrap4.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/datatables-fixedheader/css/fixedHeader.bootstrap4.min.css') }}">
 
         <style>
             .highlight {
@@ -155,18 +156,6 @@
             .days-365 {
                 background-color: rgba(255, 17, 17, 0.05);
             }
-            tr.even td.dtfc-fixed-left {
-                background-color: #ffffff;
-            }
-            tr.odd td.dtfc-fixed-left {
-                background-color: #f9f9f9;
-            }
-            thead th {
-                background-color: white;
-            }
-            th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
-                z-index: 1;
-            }
         </style>
     @endpush
 
@@ -185,6 +174,8 @@
         <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
         <script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+        <script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
 
         <script>
         const INPUT_COLUMN = (function() {
@@ -219,6 +210,7 @@
                 scrollX: true,
                 processing: true,
                 stateSave: true,
+                fixedHeader: true,
                 fixedColumns: {
                     left: 2
                 },
@@ -372,6 +364,28 @@
                     });
                 },
             });
+
+            // Fix: пересчёт ширины колонок при возврате fixedHeader в исходное состояние
+            (function () {
+                let observer = new MutationObserver(function (mutations) {
+                    for (let mutation of mutations) {
+                        for (let node of mutation.removedNodes) {
+                            if (node.nodeType === 1 && node.classList.contains('dtfh-floatingparenthead')) {
+                                requestAnimationFrame(function () {
+                                    table.columns.adjust();
+                                });
+                                return;
+                            }
+                        }
+                    }
+                });
+
+                observer.observe(document.body, { childList: true });
+
+                table.on('draw.dt', function () {
+                    table.columns.adjust();
+                });
+            })();
 
             $("#products-zero").on("click", ".input-column", function () {
                 let $form = $(this).closest('.input-group');

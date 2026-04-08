@@ -12,3 +12,18 @@ table.dataTable span.highlight {
     text-align: start;
 }
 
+thead th {
+    background-color: white;
+}
+
+tr.even td.dtfc-fixed-left {
+    background-color: #ffffff;
+}
+
+tr.odd td.dtfc-fixed-left {
+    background-color: #f9f9f9;
+}
+
+th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
+    z-index: 1;
+}
