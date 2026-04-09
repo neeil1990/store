@@ -37,7 +37,7 @@
 
         <label for="">Базовый запас для редких товаров, дополнительное условие</label>
         <pre>Если "Цена Маркеты с теста" больше "Базовый запас для редких товаров стоимостью выше 50 000 (Цена)" тогда "Базовый запас для редких товаров" будет равен "Базовый запас для редких товаров стоимостью выше 50 000 (Значение)"</pre>
-        <pre>{{$product->prices->where('name', 'Цена Маркеты с теста')->value('value')}} > {{$salesFormula['baseStockPrice']}} = ({{($salesFormula['baseStockPrice'] > $product->prices->where('name', 'Цена Маркеты с теста')->value('value')) ? "true" : "false"}})</pre>
+        <pre>{{$product->prices->where('name', 'Цена Маркеты с теста')->value('value')}} > {{$salesFormula['baseStockPrice']}} = ({{($product->prices->where('name', 'Цена Маркеты с теста')->value('value') > $salesFormula['baseStockPrice']) ? "true" : "false"}})</pre>
         @if ($salesFormula['baseStockPrice'] > $product->prices->where('name', 'Цена Маркеты с теста')->value('value'))
             <pre>Базовый запас для редких товаров = {{ $salesFormula['baseStockOverprice'] }}</pre>
         @else

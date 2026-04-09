@@ -16,6 +16,7 @@
                             <select class="form-control form-control-sm btn-group" style="width: auto;" onchange="if(this.value) window.location.href='{{ route('products.outOfStock') }}?filter=' + this.value; else window.location.href='{{ route('products.outOfStock') }}'">
                                 <option value="">{{ __('Не выбрано') }}</option>
                                 <option value="zero" @if(request('filter') === 'zero') selected @endif>Показать нулевые</option>
+                                <option value="zero_no_transits" @if(request('filter') === 'zero_no_transits') selected @endif>Показать нулевые без ожидания</option>
                                 <option value="multiplicity" @if(request('filter') === 'multiplicity') selected @endif>Без кратности товара</option>
                                 <option value="incomplete_pack" @if(request('filter') === 'incomplete_pack') selected @endif>Неполная упаковка</option>
                             </select>

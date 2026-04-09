@@ -196,6 +196,10 @@ class Products extends ProductsScopes
                     $query->doesntHave('stocks');
                 }
 
+                if ($filter == "zero_no_transits") {
+                    $query->doesntHave('stocks')->doesntHave('transits');
+                }
+
                 if ($filter == "multiplicity") {
                     $query->whereNull('multiplicityProduct');
                 }

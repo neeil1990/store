@@ -92,6 +92,7 @@ class ProductsController extends Controller
 
         $filterLabels = [
             'zero' => 'Показать нулевые',
+            'zero_no_transits' => 'Показать нулевые без ожидания',
             'multiplicity' => 'Без кратности товара',
             'incomplete_pack' => 'Неполная упаковка',
         ];
