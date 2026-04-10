@@ -269,10 +269,12 @@ class Products extends ProductsScopes
         $economyModeAbsentDays = 0;
         $economyModeMaxAbsentDays = 0;
         $economyModeMinimumBalance = 0;
+        $economyModeDaysMultiplier = 30;
 
         if ($economyMode) {
             $economyModeDays = intval(Setting::query()->where('key', 'economyModeDays')->value('value') ?? 90);
             $economyModeMaxPercent = floatval(Setting::query()->where('key', 'economyModeMaxPercent')->value('value') ?? 5);
+            $economyModeDaysMultiplier = intval(Setting::query()->where('key', 'economyModeDaysMultiplier')->value('value') ?? 30);
 
             $economyModeMaxAbsentDays = floor($economyModeDays * $economyModeMaxPercent / 100);
             $economyModeAbsentDays = $this->stockTotal
@@ -281,7 +283,7 @@ class Products extends ProductsScopes
 
             if ($economyModeAbsentDays <= $economyModeMaxAbsentDays) {
                 $economyModeApplied = true;
-                $economyModeMinimumBalance = round($middleSupply * 30);
+                $economyModeMinimumBalance = round($middleSupply * $economyModeDaysMultiplier);
                 $minimumBalance = $economyModeMinimumBalance;
             }
         }
@@ -351,6 +353,7 @@ class Products extends ProductsScopes
             'economyModeAbsentDays' => $economyModeAbsentDays,
             'economyModeMaxAbsentDays' => $economyModeMaxAbsentDays,
             'economyModeMinimumBalance' => $economyModeMinimumBalance,
+            'economyModeDaysMultiplier' => $economyModeDaysMultiplier,
         ];
     }
 
