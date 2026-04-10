@@ -279,7 +279,7 @@
 
                             let settingsConfig = @json($settings);
 
-                            let popover = $('<div />');
+                            let popover = $('<div />', { css: { maxHeight: '70vh', overflowY: 'auto' } });
 
                             settingsConfig.forEach(s => {
                                 let type = s.type || 'input';
