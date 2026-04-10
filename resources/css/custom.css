@@ -24,7 +24,10 @@ tr.odd td.dtfc-fixed-left {
     background-color: #f9f9f9;
 }
 
-th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right,
-.input-group-prepend .btn, .input-group-append .btn {
+th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right {
     z-index: 2;
+}
+
+.input-group-prepend .btn, .input-group-append .btn {
+    z-index: 1;
 }
