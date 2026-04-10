@@ -261,6 +261,31 @@ class Products extends ProductsScopes
         // Неснижаемый остаток
         $minimumBalance = round(($this->last_sell_sum * $replenishmentCoefficient) + ($this->unavailable_days_count * $middleSupply) + $baseStock);
 
+        // Режим экономии
+        $economyMode = (bool) Setting::query()->where('key', 'economyMode')->value('value');
+        $economyModeApplied = false;
+        $economyModeDays = 0;
+        $economyModeMaxPercent = 0;
+        $economyModeAbsentDays = 0;
+        $economyModeMaxAbsentDays = 0;
+        $economyModeMinimumBalance = 0;
+
+        if ($economyMode) {
+            $economyModeDays = intval(Setting::query()->where('key', 'economyModeDays')->value('value') ?? 90);
+            $economyModeMaxPercent = floatval(Setting::query()->where('key', 'economyModeMaxPercent')->value('value') ?? 5);
+
+            $economyModeMaxAbsentDays = floor($economyModeDays * $economyModeMaxPercent / 100);
+            $economyModeAbsentDays = $this->stockTotal
+                ->where('created_at', '>=', Carbon::now()->subDays($economyModeDays))
+                ->count();
+
+            if ($economyModeAbsentDays <= $economyModeMaxAbsentDays) {
+                $economyModeApplied = true;
+                $economyModeMinimumBalance = round($middleSupply * 30);
+                $minimumBalance = $economyModeMinimumBalance;
+            }
+        }
+
         // Коэффициент максимального изменения предлагаемого остатка
         $maxMinimumBalance = Setting::query()->where('key', 'maxMinimumBalance')->value('value');
 
@@ -317,6 +342,15 @@ class Products extends ProductsScopes
             'sizePackPercent' => $sizePackPercent, // Кратность товара процент
             'minimumBalanceLager' => $this->minimumBalanceLager, // Неснижаемый остаток lager
             'minimumBalanceBeforeBalanceLager' => $minimumBalanceBeforeBalanceLager, // Неснижаемый остаток до lager
+
+            // Режим экономии
+            'economyMode' => $economyMode,
+            'economyModeApplied' => $economyModeApplied,
+            'economyModeDays' => $economyModeDays,
+            'economyModeMaxPercent' => $economyModeMaxPercent,
+            'economyModeAbsentDays' => $economyModeAbsentDays,
+            'economyModeMaxAbsentDays' => $economyModeMaxAbsentDays,
+            'economyModeMinimumBalance' => $economyModeMinimumBalance,
         ];
     }
 

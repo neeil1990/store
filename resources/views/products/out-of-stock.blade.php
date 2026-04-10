@@ -282,6 +282,19 @@
                             let popover = $('<div />');
 
                             settingsConfig.forEach(s => {
+                                let type = s.type || 'input';
+
+                                if (type === 'separator') {
+                                    popover.append($('<hr />'));
+                                    popover.append($('<h6 />', { class: 'font-weight-bold' }).text(s.title));
+                                    return;
+                                }
+
+                                if (type === 'checkbox') {
+                                    popover.append(getFormGroupCheckboxElement(s.title, s.key, s.hint || ''));
+                                    return;
+                                }
+
                                 popover.append(getFormGroupElement(s.title, s.key, s.hint || ''));
                             });
 
@@ -295,7 +308,11 @@
                             popover.find('input').each(function (i, el) {
                                 let self = $(el);
                                 axios.get('/products/out-of-stock/settings/' + self.attr('name')).then(function (response) {
-                                    self.val(response.data);
+                                    if (self.attr('type') === 'checkbox') {
+                                        self.prop('checked', !!parseInt(response.data));
+                                    } else {
+                                        self.val(response.data);
+                                    }
                                 });
                             });
 
@@ -305,10 +322,23 @@
                                 popoverTitle: 'Настройка формулы нес.остатка',
                             });
 
-                            popover.find('input').keyup(function () {
+                            popover.find('input:not([type="checkbox"])').keyup(function () {
                                 let self = $(this);
                                 let key = self.attr('name');
                                 let val = self.val();
+
+                                axios.post('{{ route('products.storeOutOfStockSettings') }}', {
+                                    key: key,
+                                    value: val
+                                }).then(function (response) {
+                                    console.log(response);
+                                });
+                            });
+
+                            popover.find('input[type="checkbox"]').change(function () {
+                                let self = $(this);
+                                let key = self.attr('name');
+                                let val = self.is(':checked') ? 1 : 0;
 
                                 axios.post('{{ route('products.storeOutOfStockSettings') }}', {
                                     key: key,
@@ -424,6 +454,31 @@
                         'data-content': hint || ''
                     }),
                     $('<input />', { class: 'form-control form-control-sm', name: key })
+                ]);
+            }
+
+            function getFormGroupCheckboxElement(title, key, hint = '')
+            {
+                return $('<div />', {
+                    class: 'form-group'
+                }).append([
+                    $('<div />', { class: 'custom-control custom-checkbox' }).append([
+                        $('<input />', {
+                            type: 'checkbox',
+                            class: 'custom-control-input',
+                            name: key,
+                            id: 'setting-' + key
+                        }),
+                        $('<label />', {
+                            class: 'custom-control-label',
+                            for: 'setting-' + key
+                        }).text(title),
+                        $('<i />', {
+                            class: 'far fa-question-circle ml-1' + (hint ? '' : ' d-none'),
+                            'data-toggle': 'popover',
+                            'data-content': hint || ''
+                        })
+                    ])
                 ]);
             }
         </script>

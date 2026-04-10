@@ -119,9 +119,19 @@ class ProductsController extends Controller
             ['key' => 'salesFormulaDays', 'title' => 'Анализируем отсутствие товара за дней', 'hint' => ''],
             ['key' => 'salesFormulaDaysSell', 'title' => 'Анализируем продажи за дней (Диапазон продаж 15 дней. 1 = 15, 2 = 30... 3 * 15 дней)', 'hint' => ''],
             ['key' => 'incompletePackPercent', 'title' => 'Процент неполной упаковки', 'hint' => ''],
+
+            // Разделитель — Режим экономии
+            ['key' => '_separator_economy', 'title' => 'Режим экономии', 'type' => 'separator'],
+
+            ['key' => 'economyMode', 'title' => 'Режим экономии', 'type' => 'checkbox', 'hint' => 'Позволяет не раздувать неснижаемые остатки и тем самым увеличивать оборачиваемость склада'],
+            ['key' => 'economyModeDays', 'title' => 'За какое кол-во дней анализируем отсутствие', 'hint' => 'Рекомендуется менять значение согласно накопленной статистике, брать данные от первых отчётов по продажам и увеличивать в сторону 1 года'],
+            ['key' => 'economyModeMaxPercent', 'title' => 'Макс. допустимый % дней отсутствия', 'hint' => 'Рекомендуется не более 5% от параметра «За какое кол-во дней анализируем отсутствие»'],
         ];
 
         foreach ($settings as &$setting) {
+            if (isset($setting['type']) && in_array($setting['type'], ['separator', 'checkbox'])) {
+                continue;
+            }
             $setting['hint'] = \App\Models\Description::getByKey($setting['title'], '');
         }
 

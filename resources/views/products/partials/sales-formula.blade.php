@@ -58,6 +58,18 @@
             <pre>{{$product->minimumBalance}} * {{$salesFormula['maxMinimumBalance']}} = {{ $product->minimumBalance * $salesFormula['maxMinimumBalance'] }}</pre>
         @endif
 
+        @if ($salesFormula['economyMode'])
+            <label>Режим экономии</label>
+            <pre>Анализ за {{ $salesFormula['economyModeDays'] }} дней, макс. допустимый % отсутствия: {{ $salesFormula['economyModeMaxPercent'] }}%</pre>
+            <pre>Дней отсутствия за период: {{ $salesFormula['economyModeAbsentDays'] }}, допустимо не более: {{ $salesFormula['economyModeMaxAbsentDays'] }}</pre>
+            @if ($salesFormula['economyModeApplied'])
+                <pre class="text-success">Режим экономии ПРИМЕНЁН: {{ $salesFormula['middleSupply'] }} * 30 = {{ $salesFormula['economyModeMinimumBalance'] }}</pre>
+                <pre>Неснижаемый остаток пересчитан как: средний спрос ({{ $salesFormula['middleSupply'] }}) × 30 дней</pre>
+            @else
+                <pre class="text-muted">Режим экономии НЕ применён (дней отсутствия {{ $salesFormula['economyModeAbsentDays'] }} > допустимых {{ $salesFormula['economyModeMaxAbsentDays'] }})</pre>
+            @endif
+        @endif
+
         @if ($salesFormula['multiplicity'])
             <label>Кратность товара - {{ $salesFormula['multiplicity'] }}</label>
             <pre>Предлагаемый нес.ост. - {{ $salesFormula['minimumBalanceBeforeMultiplicity'] }}</pre>
