@@ -1,3 +1,4 @@
+{{-- TODO: add a period at the end of every sentece in tooltip title--}}
 <x-app-layout>
     <x-slot name="header"></x-slot>
 
@@ -54,24 +55,24 @@
                                         <th>{{ __('Кратность товара') }}</th>
                                         <th>{{ __('Мин.Остаток сч.как 0') }}</th>
                                         <th>{{ __('Кол-во в упаковке') }}</th>
-                                        <th>{{ __('% ост. в уп.') }} <i class="far fa-question-circle" data-toggle="tooltip" title="Процент остатка последней упаковки"></i></th>
+                                        <th>{{ __('% ост. в уп.') }} <i class="far fa-question-circle" data-toggle="tooltip" title="Процент остатка последней упаковки."></i></th>
                                         <th>{{ __('Остаток') }}</th>
                                         <th>{{ __('Ожидание') }}</th>
                                         <th>{{ __('Обнулен') }}</th>
                                         <th>3</th>
                                         <th>5</th>
                                         <th>7</th>
-                                        <th class="days-15">15 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 15 дней"></i></th>
+                                        <th class="days-15">15 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 15 дней."></i></th>
                                         <th class="days-15">15</th>
-                                        <th class="days-30">30 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 30 дней"></i></th>
+                                        <th class="days-30">30 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 30 дней."></i></th>
                                         <th class="days-30">30</th>
-                                        <th class="days-60">60 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 60 дней"></i></th>
+                                        <th class="days-60">60 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 60 дней."></i></th>
                                         <th class="days-60">60</th>
-                                        <th class="days-90">90 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 90 дней"></i></th>
+                                        <th class="days-90">90 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 90 дней."></i></th>
                                         <th class="days-90">90</th>
-                                        <th class="days-180">180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней"></i></th>
+                                        <th class="days-180">180 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 180 дней."></i></th>
                                         <th class="days-180">180</th>
-                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней"></i></th>
+                                        <th class="days-365">365 <i class="far fa-question-circle" data-toggle="tooltip" title="Продажи за 365 дней."></i></th>
                                         <th class="days-365">365</th>
                                     </tr>
                                 </thead>
