@@ -1,4 +1,3 @@
-{{-- TODO: add a period at the end of every sentece in tooltip title--}}
 <x-app-layout>
     <x-slot name="header"></x-slot>
 
@@ -30,7 +29,7 @@
                                 <span class="input-group-append">
                                     <button type="submit" class="btn btn-info btn-flat">
                                         {{ __('Найти') }}
-                                        <i class="far fa-question-circle" data-toggle="tooltip" title="Укажите количество дней, если товар был обнулен в течении этого периода, данная позиция будет подсвечена. Дату и кто обнулял, Вы можете посмотреть в карточке товара"></i>
+                                        <i class="far fa-question-circle" data-toggle="tooltip" title="Укажите количество дней, если товар был обнулен в течении этого периода, данная позиция будет подсвечена. Дату и кто обнулял, Вы можете посмотреть в карточке товара."></i>
                                     </button>
                                 </span>
                             </div>
