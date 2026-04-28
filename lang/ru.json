@@ -1,4 +1,8 @@
 {
   "administrator": "Администратор",
-  "employee": "Сотрудник"
+  "employee": "Сотрудник",
+  "Users in System": "Пользователей в системе",
+  "Products in System": "Товаров в системе",
+  "Suppliers in System": "Поставщиков в системе",
+  "More info": "Подробнее"
 }

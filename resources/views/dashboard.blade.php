@@ -7,20 +7,36 @@
     </x-slot>
 
     <div class="row">
-        <div class="col-lg-6">
-            <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h5 class="m-0">Featured</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Special title treatment</h6>
-
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
+        <div class="col-lg-3 col-6">
+            <x-user-count-widget
+                :count="$usersCount"
+                color="bg-success"
+                icon="fas fa-users"
+                label="{{ __('Users in System') }}"
+                link="{{ route('users.index') }}"
+            />
         </div>
-        <!-- /.col-md-6 -->
+        <!-- /.col -->
+        <div class="col-lg-3 col-6">
+            <x-user-count-widget
+                :count="$productsCount"
+                color="bg-primary"
+                icon="fas fa-box"
+                label="{{ __('Products in System') }}"
+                link="{{ route('products.index') }}"
+            />
+        </div>
+        <!-- /.col -->
+        <div class="col-lg-3 col-6">
+            <x-user-count-widget
+                :count="$suppliersCount"
+                color="bg-warning"
+                icon="fas fa-store"
+                label="{{ __('Suppliers in System') }}"
+                link="{{ route('shipper.index') }}"
+            />
+        </div>
+        <!-- /.col -->
     </div>
 
 </x-app-layout>
