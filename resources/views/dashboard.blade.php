@@ -37,6 +37,16 @@
             />
         </div>
         <!-- /.col -->
+        <div class="col-lg-3 col-6">
+            <x-user-count-widget
+                :count="$outOfStockCount"
+                color="bg-danger"
+                icon="fas fa-box-open"
+                label="{{ __('Products Without Stock') }}"
+                link="{{ route('products.index') }}"
+            />
+        </div>
+        <!-- /.col -->
     </div>
 
 </x-app-layout>

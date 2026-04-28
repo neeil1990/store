@@ -25,6 +25,9 @@ class DashboardController extends Controller
 
         $suppliersCount = Supplier::whereIn('uuid', $availableShippersIds)->count();
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount'));
+        // Count products without stock
+        $outOfStockCount = Products::doesntHave('stocks')->count();
+
+        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount'));
     }
 }
