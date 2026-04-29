@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         $schedule->command('app:calculate-shipper-fields')->hourly();
+        $schedule->command('record:product-count')->dailyAt('00:00');
+
     }
 
     /**

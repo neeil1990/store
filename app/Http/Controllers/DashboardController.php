@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Products;
 use App\Models\Supplier;
+use App\Services\ProductCountHistoryService;
 
 class DashboardController extends Controller
 {
     /**
      * Display the dashboard.
      */
-    public function index()
+    public function index(ProductCountHistoryService $productCountHistoryService)
     {
         $usersCount = User::where('is_archived', false)->count();
         $productsCount = Products::count();
@@ -28,6 +29,9 @@ class DashboardController extends Controller
         // Count products without stock
         $outOfStockCount = Products::doesntHave('stocks')->count();
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount'));
+        // Get product count history for chart
+        $productDynamicsData = $productCountHistoryService->getChartData(30);
+
+        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'productDynamicsData'));
     }
 }

@@ -5,5 +5,9 @@
   "Products in System": "Товаров в системе",
   "Suppliers in System": "Поставщиков в системе",
   "Products Without Stock": "Товаров без остатка",
-  "More info": "Подробнее"
+  "More info": "Подробнее",
+  "Product Count Dynamics (Last 30 Days)": "Динамика количества товаров (последние 30 дней)",
+  "Product Count Dynamics": "Динамика количества товаров",
+  "Product Count": "Количество товаров",
+  "Products": "Товаров"
 }

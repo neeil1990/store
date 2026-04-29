@@ -49,4 +49,14 @@
         <!-- /.col -->
     </div>
 
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <x-product-dynamics-chart
+                :labels="$productDynamicsData['labels']"
+                :data="$productDynamicsData['data']"
+                title="{{ __('Product Count Dynamics (Last 30 Days)') }}"
+            />
+        </div>
+    </div>
+
 </x-app-layout>
