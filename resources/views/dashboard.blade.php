@@ -1,9 +1,7 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight"></h2>
     </x-slot>
 
     <div class="row">
@@ -57,7 +55,37 @@
             />
         </div>
         <!-- /.col -->
-    </div>
+         <div class="col-lg-3 col-6">
+             <x-user-count-widget
+                 :count="money($purchasePriceSum)"
+                 color="bg-secondary"
+                 icon="fas fa-ruble-sign"
+                 label="{{ __('Sum of Balances by Cost') }}"
+                 link="{{ route('products.index') }}"
+             />
+         </div>
+         <!-- /.col -->
+         <div class="col-lg-3 col-6">
+             <x-user-count-widget
+                 :count="money($salePriceSum)"
+                 color="bg-dark"
+                 icon="fas fa-tag"
+                 label="{{ __('Sum of Balances by Sale Price') }}"
+                 link="{{ route('products.index') }}"
+             />
+         </div>
+         <!-- /.col -->
+         <div class="col-lg-3 col-6">
+             <x-user-count-widget
+                 :count="money($minPriceSum)"
+                 color="bg-warning"
+                 icon="fas fa-dollar-sign"
+                 label="{{ __('Sum of Balances by Minimum Price') }}"
+                 link="{{ route('products.index') }}"
+             />
+         </div>
+         <!-- /.col -->
+     </div>
 
     <div class="row mt-4">
         <div class="col-lg-6">

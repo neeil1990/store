@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Models\Products;
 use App\Models\Supplier;
 use App\Services\ProductCountHistoryService;
+use App\Services\WarehouseProductsService;
 
 class DashboardController extends Controller
 {
     /**
      * Display the dashboard.
      */
-    public function index(ProductCountHistoryService $productCountHistoryService)
+    public function index(ProductCountHistoryService $productCountHistoryService, WarehouseProductsService $warehouseProductsService)
     {
         $usersCount = User::where('is_archived', false)->count();
         $productsCount = Products::count();
@@ -32,9 +33,18 @@ class DashboardController extends Controller
         // Count products in stock (warehouse items with stock)
         $warehouseProductsCount = Products::where('is_warehouse_item', true)->has('stocks')->count();
 
+        // Get sum of purchase prices for warehouse products with stocks
+        $purchasePriceSum = $warehouseProductsService->getTotalPurchasePrice();
+
+        // Get sum of sale prices for warehouse products with stocks
+        $salePriceSum = $warehouseProductsService->getTotalSalePrice();
+
+        // Get sum of minimum prices for warehouse products with stocks
+        $minPriceSum = $warehouseProductsService->getTotalMinPrice();
+
         // Get product count history for chart
         $productDynamicsData = $productCountHistoryService->getChartData(30);
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'productDynamicsData'));
+        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'purchasePriceSum', 'salePriceSum', 'minPriceSum', 'productDynamicsData'));
     }
 }
