@@ -47,6 +47,16 @@
             />
         </div>
         <!-- /.col -->
+        <div class="col-lg-3 col-6">
+            <x-user-count-widget
+                :count="$warehouseProductsCount"
+                color="bg-info"
+                icon="fas fa-warehouse"
+                label="{{ __('Products In Stock') }}"
+                link="{{ route('products.index') }}"
+            />
+        </div>
+        <!-- /.col -->
     </div>
 
     <div class="row mt-4">

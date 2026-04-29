@@ -29,9 +29,12 @@ class DashboardController extends Controller
         // Count products without stock
         $outOfStockCount = Products::doesntHave('stocks')->count();
 
+        // Count products in stock (warehouse items with stock)
+        $warehouseProductsCount = Products::where('is_warehouse_item', true)->has('stocks')->count();
+
         // Get product count history for chart
         $productDynamicsData = $productCountHistoryService->getChartData(30);
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'productDynamicsData'));
+        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'productDynamicsData'));
     }
 }
