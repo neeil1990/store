@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Products;
 use App\Models\Supplier;
+use App\Models\Shipper;
+use App\Models\Price;
 use App\Services\ProductCountHistoryService;
 use App\Services\WarehouseProductsService;
 
@@ -42,9 +44,46 @@ class DashboardController extends Controller
         // Get sum of minimum prices for warehouse products with stocks
         $minPriceSum = $warehouseProductsService->getTotalMinPrice();
 
+        // Get total purchase sum from all shippers
+        $totalPurchaseSum = Shipper::sum('calc_purchase_total');
+
         // Get product count history for chart
         $productDynamicsData = $productCountHistoryService->getChartData(30);
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'purchasePriceSum', 'salePriceSum', 'minPriceSum', 'productDynamicsData'));
+        // Get all available price names
+        $priceNames = $this->getPriceNames();
+
+        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'purchasePriceSum', 'salePriceSum', 'minPriceSum', 'totalPurchaseSum', 'productDynamicsData', 'priceNames'));
+    }
+
+    /**
+     * Get all available price names
+     */
+    private function getPriceNames()
+    {
+        return Price::select('name')
+            ->distinct()
+            ->orderBy('name')
+            ->pluck('name');
+    }
+
+    /**
+     * Get sum of prices by name for AJAX requests
+     */
+    public function getPriceSumByName(WarehouseProductsService $warehouseProductsService)
+    {
+        $priceName = request('price_name');
+
+        if (!$priceName) {
+            return response()->json(['error' => 'Price name is required'], 422);
+        }
+
+        $sum = $warehouseProductsService->getSumPriceByName($priceName);
+
+        return response()->json([
+            'sum' => $sum,
+            'formatted_sum' => money($sum),
+            'price_name' => $priceName
+        ]);
     }
 }

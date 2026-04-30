@@ -9,9 +9,11 @@
   "Sum of Balances by Cost": "Сумма остатков по себестоимости",
   "Sum of Balances by Sale Price": "Сумма остатков по цене продажи",
   "Sum of Balances by Minimum Price": "Сумма остатков по минимальной цене",
+  "Sum Purchase Necessary": "Сумма на закупку необходимая",
   "More info": "Подробнее",
   "Product Count Dynamics (Last 30 Days)": "Динамика количества товаров (последние 30 дней)",
   "Product Count Dynamics": "Динамика количества товаров",
   "Product Count": "Количество товаров",
-  "Products": "Товаров"
+  "Products": "Товаров",
+  "Choose price": "Выбрать цену"
 }

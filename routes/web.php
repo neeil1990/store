@@ -24,6 +24,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard/price-sum', [DashboardController::class, 'getPriceSumByName'])->name('dashboard.price-sum');
     require __DIR__ . '/uri/profile.php';
     require __DIR__ . '/uri/users.php';
     require __DIR__ . '/uri/settings.php';

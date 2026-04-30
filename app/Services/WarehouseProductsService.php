@@ -48,5 +48,19 @@ class WarehouseProductsService
     {
         return $this->getSumByField('minPrice');
     }
-}
 
+    /**
+     * Get sum of prices by name for warehouse products with stocks
+     *
+     * @param string $priceName The price name to sum
+     * @return float|int
+     */
+    public function getSumPriceByName(string $priceName): float|int
+    {
+        return Products::where('is_warehouse_item', true)
+            ->has('stocks')
+            ->join('prices', 'products.id', '=', 'prices.product_id')
+            ->where('prices.name', $priceName)
+            ->sum('prices.value');
+    }
+}

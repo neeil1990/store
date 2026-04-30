@@ -85,6 +85,24 @@
              />
          </div>
          <!-- /.col -->
+         <div class="col-lg-3 col-6">
+             <x-user-count-widget
+                 :count="money($totalPurchaseSum)"
+                 color="bg-info"
+                 icon="fas fa-shopping-cart"
+                 label="{{ __('Sum Purchase Necessary') }}"
+                 link="{{ route('shipper.index') }}"
+             />
+         </div>
+         <!-- /.col -->
+         <div class="col-lg-3 col-6">
+             <x-price-selector-widget
+                 :priceNames="$priceNames"
+                 color="bg-success"
+                 icon="fas fa-money-bill"
+             />
+         </div>
+         <!-- /.col -->
      </div>
 
     <div class="row mt-4">
