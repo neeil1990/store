@@ -9,30 +9,24 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center flex-wrap">
-                    <h3 class="card-title mb-0">{{ $pageTitle }}</h3>
+                    <h3 class="card-title mb-0">{{ $pageTitle }} — {{ __('Версия New') }}</h3>
                     <span class="ml-auto small">
-                        <a href="{{ route('shipper.listV2') }}" class="text-muted">{{ __('Версия New') }}</a>
+                        <a href="{{ route('shipper.index') }}" class="text-muted">{{ __('Классический вид') }}</a>
                     </span>
                 </div>
-                <!-- /.card-header -->
 
                 <div class="card-body">
-
                     <div class="row">
                         @if ($computedAt)
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-info"><i class="fas fa-calculator"></i></span>
-
                                 <div class="info-box-content">
                                     <span class="info-box-text">{{ __('Дата обновления вычисляемых полей') }}</span>
                                     <span class="info-box-number">{{ $computedAt }}</span>
                                 </div>
-                                <!-- /.info-box-content -->
                             </div>
-                            <!-- /.info-box -->
                         </div>
-                        <!-- /.col -->
                         @endif
                     </div>
 
@@ -46,9 +40,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
     </div>
 
@@ -65,5 +57,3 @@
     @endpush
 
 </x-app-layout>
-
-

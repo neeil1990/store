@@ -42,8 +42,8 @@ class ShipperDataTablePresenter extends ShipperPresenter
     {
         $collect = collect([
             'draw' => request('draw'),
-            'recordsTotal' => $dto->total,
-            'recordsFiltered' => $dto->total,
+            'recordsTotal' => $dto->recordsTotal,
+            'recordsFiltered' => $dto->recordsFiltered,
             'data' => array_map([$this, 'data'], $dto->shippers),
             'error' => '',
         ]);

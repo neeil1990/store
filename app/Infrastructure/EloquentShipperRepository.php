@@ -16,32 +16,61 @@ class EloquentShipperRepository implements ShipperRepository
 {
     public function getAvailableShippers(ShipperDataTableDTO $sdt): ShipperPaginationDTO
     {
-        $page = $this->getCurrentNumberPage($sdt->start, $sdt->length);
+        $length = max(1, (int) $sdt->length);
+        $page = (int) floor(((int) $sdt->start) / $length) + 1;
 
-        $order = $this->getColumnByIndex($sdt->columns, $sdt->orderBy);
+        $order = $this->getColumnByIndex($sdt->columns, (int) $sdt->orderBy) ?? 'id';
+        $dir = $sdt->dir ?? 'asc';
 
         $searchBuilder = $sdt->searchBuilder;
+        $hasSearchBuilder = is_array($searchBuilder) && ! empty($searchBuilder['criteria'] ?? []);
 
-        $availableShippers = Products::select('supplier')
+        /** Сортировка только по id/name не требует GROUP_CONCAT до подсчёта строк. */
+        $orderNeedsShipperJoin = $hasSearchBuilder || ! in_array((string) $order, ['id', 'name'], true);
+
+        $availableShippers = Products::query()
+            ->select('supplier')
             ->whereNotNull('supplier')
             ->where('is_warehouse_item', true)
             ->groupBy('supplier');
 
+        if (! $orderNeedsShipperJoin) {
+            $base = Supplier::query()
+                ->whereIn('uuid', $availableShippers)
+                ->when($sdt->search, function ($query, $search) {
+                    $query->where('suppliers.name', 'LIKE', '%'.$search.'%');
+                });
+
+            $recordsTotal = Supplier::query()->whereIn('uuid', $availableShippers)->count();
+            $recordsFiltered = (clone $base)->count();
+
+            $rows = (clone $base)
+                ->withShippers()
+                ->orderBy($order, $dir)
+                ->forPage($page, $length)
+                ->get();
+
+            $factory = new ShipperFactory;
+            $shippers = $rows->map(static fn ($item) => $factory->makeShipper($item))->all();
+
+            return new ShipperPaginationDTO($shippers, $recordsTotal, $recordsFiltered);
+        }
+
         $items = Supplier::whereIn('uuid', $availableShippers)
             ->withShippers()
             ->when($sdt->search, function ($query, $search) {
-                $query->where('suppliers.name', 'LIKE', '%'. $search .'%');
+                $query->where('suppliers.name', 'LIKE', '%'.$search.'%');
             })
             ->when($searchBuilder, function ($query, $search) {
 
                 $criteria = $search['criteria'];
 
-                if ($search['logic'] === "AND") {
-                    foreach ($criteria as  $value) {
-                        if ($value['condition'] === "between") {
+                if ($search['logic'] === 'AND') {
+                    foreach ($criteria as $value) {
+                        if ($value['condition'] === 'between') {
                             $query->whereBetween($value['origData'], $value['value']);
-                        } elseif ($value['condition'] === "starts") {
-                            $query->havingRaw($value['origData'] . ' LIKE ?', [$value['value1'] . '%']);
+                        } elseif ($value['condition'] === 'starts') {
+                            $query->havingRaw($value['origData'].' LIKE ?', [$value['value1'].'%']);
                         } else {
                             $query->where($value['origData'], $value['condition'], $value['value1']);
                         }
@@ -50,8 +79,8 @@ class EloquentShipperRepository implements ShipperRepository
                     //
                 }
             })
-            ->orderBy($order, $sdt->dir)
-            ->paginate($sdt->length, ['*'], 'page', $page);
+            ->orderBy($order, $dir)
+            ->paginate($length, ['*'], 'page', $page);
 
         $factory = new ShipperFactory;
 
@@ -59,7 +88,9 @@ class EloquentShipperRepository implements ShipperRepository
             return $factory->makeShipper($item);
         })->all();
 
-        return new ShipperPaginationDTO($shippers, $items->total(), $items->total());
+        $t = $items->total();
+
+        return new ShipperPaginationDTO($shippers, $t, $t);
     }
 
     /**
@@ -98,11 +129,6 @@ class EloquentShipperRepository implements ShipperRepository
         }
 
         return (new ShipperFactory)->makeShipper($supplier);
-    }
-
-    private function getCurrentNumberPage(int $offset, int $length): int
-    {
-        return ($offset / $length) + 1;
     }
 
     private function getColumnByIndex(array $columns, int $id): ?string

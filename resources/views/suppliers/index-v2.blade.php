@@ -9,12 +9,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center flex-wrap">
-                    <h3 class="card-title mb-0">{{ $pageTitle }}</h3>
+                    <h3 class="card-title mb-0">{{ $pageTitle }} — {{ __('Версия New') }}</h3>
                     <span class="ml-auto small">
-                        <a href="{{ route('suppliers.listV2') }}" class="text-muted">{{ __('Версия New') }}</a>
+                        <a href="{{ route('suppliers.index') }}" class="text-muted">{{ __('Классический вид') }}</a>
                     </span>
                 </div>
-                <!-- /.card-header -->
 
                 <div class="card-body">
                     <div class="row mb-3">
@@ -48,9 +47,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
     </div>
 
@@ -65,5 +62,3 @@
     @endpush
 
 </x-app-layout>
-
-

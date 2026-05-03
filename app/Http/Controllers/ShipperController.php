@@ -26,6 +26,13 @@ class ShipperController extends Controller
         return view('shippers.index', ['computedAt' => $calculate->computedAt()]);
     }
 
+    public function listV2(): View
+    {
+        $calculate = new CalculateFieldsAction();
+
+        return view('shippers.index-v2', ['computedAt' => $calculate->computedAt()]);
+    }
+
     public function json(Request $request, ShipperService $service): \Illuminate\Http\JsonResponse
     {
         $draw = (int) $request->input('draw', 0);
@@ -41,7 +48,7 @@ class ShipperController extends Controller
             ));
         }
 
-        $identity = DataOutputCache::identityFromDataTablesRequest($request->all());
+        $identity = DataOutputCache::identityFromShipperDataTablesRequest($request);
         $payload = DataOutputCache::remember(
             DataOutputCache::REVISION_SHIPPERS,
             DataOutputCache::SEGMENT_SHIPPERS_DATATABLE,

@@ -42,6 +42,17 @@ class SupplierController extends Controller
         return view('suppliers.index', compact('store', 'filters'));
     }
 
+    public function listV2()
+    {
+        $store = $this->storesForSupplierFilters();
+        $filters = Auth::user()->filters()
+            ->select(['id', 'name', 'active'])
+            ->orderBy('name')
+            ->get();
+
+        return view('suppliers.index-v2', compact('store', 'filters'));
+    }
+
     private function storesForSupplierFilters()
     {
         return Cache::remember(self::STORES_FOR_SUPPLIER_FILTERS_CACHE_KEY, 600, function () {
@@ -65,33 +76,17 @@ class SupplierController extends Controller
         }
 
         if (! DataOutputCache::enabled()) {
-            return $dataTable->getJson();
+            return $this->suppliersDataTableJsonResponse($stores);
         }
 
         $draw = (int) request('draw', 0);
-        $identity = DataOutputCache::identityFromDataTablesRequest(request()->all());
+        $identity = DataOutputCache::identityFromSuppliersPurchaseJsonRequest(request());
         $payload = DataOutputCache::remember(
             DataOutputCache::REVISION_INVENTORY,
             DataOutputCache::SEGMENT_SUPPLIERS_DATATABLE,
             $identity,
             null,
-            function () use ($dataTable) {
-                /** @var \Illuminate\Http\JsonResponse $response */
-                $response = $dataTable->getJson();
-                $decoded = json_decode($response->getContent(), true);
-
-                if (! is_array($decoded)) {
-                    return [
-                        'recordsTotal' => 0,
-                        'recordsFiltered' => 0,
-                        'data' => [],
-                        'error' => __('Ошибка загрузки таблицы.'),
-                    ];
-                }
-                unset($decoded['draw']);
-
-                return $decoded;
-            }
+            fn () => $this->suppliersDataTableJsonPayload($stores)
         );
 
         if (! is_array($payload)) {
@@ -104,6 +99,66 @@ class SupplierController extends Controller
         }
 
         return response()->json(DataOutputCache::withDraw($payload, $draw));
+    }
+
+    private function suppliersDataTableJsonResponse(array $stores): \Illuminate\Http\JsonResponse
+    {
+        $payload = $this->suppliersDataTableJsonPayload($stores);
+        $draw = (int) request('draw', 0);
+
+        return response()->json(DataOutputCache::withDraw($payload, $draw));
+    }
+
+    /**
+     * @return array{recordsTotal: int, recordsFiltered: int, data: mixed, error?: string}
+     */
+    private function suppliersDataTableJsonPayload(array $stores): array
+    {
+        $products = (new Products())->suppliersDataTable($stores)->isWarehousePosition();
+        $dataTable = new SuppliersDataTable($products);
+
+        $fastTotal = Products::query()->where('is_warehouse_item', true)->count();
+        $filteredOverride = $this->suppliersJsonHasActiveFilters() ? null : $fastTotal;
+
+        /** @var \Illuminate\Http\JsonResponse $response */
+        $response = $dataTable->getJson($fastTotal, $filteredOverride);
+        $decoded = json_decode($response->getContent(), true);
+
+        if (! is_array($decoded)) {
+            return [
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'error' => __('Ошибка загрузки таблицы.'),
+            ];
+        }
+        unset($decoded['draw']);
+
+        return $decoded;
+    }
+
+    private function suppliersJsonHasActiveFilters(): bool
+    {
+        $search = request('search');
+        if (is_array($search) && trim((string) ($search['value'] ?? '')) !== '') {
+            return true;
+        }
+        if (request('toBuy')) {
+            return true;
+        }
+        if (request('fbo')) {
+            return true;
+        }
+        foreach ((array) request('columns', []) as $col) {
+            if (! is_array($col)) {
+                continue;
+            }
+            if (trim((string) ($col['search']['value'] ?? '')) !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function export(ExportInterface $export)

@@ -37,20 +37,54 @@ class ProductsScopes extends Model
         $query->addSelect(['owner' => Employee::select('name')->whereColumn('uuid', 'products.owner')->limit(1)]);
     }
 
-    public function scopeSuppliersDataTable(Builder $query, array $stores = [])
+    /**
+     * @param  list<int>|null  $limitToProductIds  ограничить агрегаты stock/reserve/transit только этими товарами (после пагинации по id).
+     */
+    public function scopeSuppliersDataTable(Builder $query, array $stores = [], ?array $limitToProductIds = null)
     {
+        $uuids = null;
+        if ($limitToProductIds !== null && $limitToProductIds !== []) {
+            $uuids = static::query()
+                ->whereIn('id', $limitToProductIds)
+                ->pluck('uuid')
+                ->filter()
+                ->values()
+                ->all();
+        }
+
+        $stocksSub = Stock::query();
+        $stocksSub->sum($stores);
+        if ($uuids !== null && $uuids !== []) {
+            $stocksSub->whereIn('assortmentId', $uuids);
+        }
+
+        $reservesSub = Reserve::query();
+        $reservesSub->sum($stores);
+        if ($uuids !== null && $uuids !== []) {
+            $reservesSub->whereIn('assortmentId', $uuids);
+        }
+
+        $transitsSub = Transit::query();
+        $transitsSub->sum($stores);
+        if ($uuids !== null && $uuids !== []) {
+            $transitsSub->whereIn('assortmentId', $uuids);
+        }
+
         $query->with(['suppliers', 'uoms'])
             ->select('products.*', 'stocks.stock', 'reserves.reserve', 'transits.transit')
             ->addSelectToBuy()
             ->addStockPercent()
-            ->leftJoinSub((new Stock())->sum($stores), 'stocks', function ($join) {
+            ->leftJoinSub($stocksSub, 'stocks', function ($join) {
                 $join->on('products.uuid', '=', 'stocks.assortmentId');
             })
-            ->leftJoinSub((new Reserve())->sum($stores), 'reserves', function ($join) {
+            ->leftJoinSub($reservesSub, 'reserves', function ($join) {
                 $join->on('products.uuid', '=', 'reserves.assortmentId');
             })
-            ->leftJoinSub((new Transit())->sum($stores), 'transits', function ($join) {
+            ->leftJoinSub($transitsSub, 'transits', function ($join) {
                 $join->on('products.uuid', '=', 'transits.assortmentId');
+            })
+            ->when($limitToProductIds !== null && $limitToProductIds !== [], function (Builder $q) use ($limitToProductIds) {
+                $q->whereIn('products.id', $limitToProductIds);
             });
     }
 

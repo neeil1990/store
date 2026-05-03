@@ -18,8 +18,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $pageTitle }}</h3>
+                <div class="card-header d-flex align-items-center flex-wrap">
+                    <h3 class="card-title mb-0">{{ $pageTitle }}</h3>
+                    <span class="ml-auto small">
+                        <a href="{{ route('users.listV2', request()->only('archived')) }}" class="text-muted">{{ __('Версия New') }}</a>
+                    </span>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body p-0">

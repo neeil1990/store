@@ -30,6 +30,13 @@ final class DataOutputCache
 
     public const SEGMENT_SHIPPERS_DATATABLE = 'shippers.dt';
 
+    public const REVISION_USERS = 'users';
+
+    public const SEGMENT_USERS_DATATABLE = 'users.dt';
+
+    /** Server-side DataTables: сотрудники New. */
+    public const SEGMENT_EMPLOYEES_DATATABLE = 'employees.dt';
+
     /** Подсказки / описания по ключу (descriptions/json/...). */
     public const REVISION_DESCRIPTIONS = 'descriptions';
 
@@ -157,6 +164,127 @@ final class DataOutputCache
 
         $payload = [
             'filter' => $filter,
+            'start' => max(0, (int) $request->input('start', 0)),
+            'length' => $length,
+            'order_col' => (int) data_get($request->all(), 'order.0.column', 1),
+            'order_dir' => strtolower((string) data_get($request->all(), 'order.0.dir', 'asc')) === 'desc' ? 'desc' : 'asc',
+            'search' => trim((string) data_get($request->all(), 'search.value', '')),
+        ];
+
+        return self::normalizeForKey($payload);
+    }
+
+    /**
+     * Ключ кеша для GET /suppliers/json (без полного columns[] — только поиск по колонкам и фильтры складов).
+     */
+    public static function identityFromSuppliersPurchaseJsonRequest(Request $request): array
+    {
+        $stores = $request->input('stores', []);
+        if (! is_array($stores)) {
+            $stores = [];
+        }
+        $stores = array_values(array_unique(array_map('strval', $stores)));
+        sort($stores, SORT_STRING);
+
+        $length = (int) $request->input('length', 50);
+        if ($length <= 0 || $length > 500) {
+            $length = 50;
+        }
+
+        $columns = $request->input('columns', []);
+        $colSearch = [];
+        if (is_array($columns)) {
+            foreach ($columns as $i => $col) {
+                if (! is_array($col)) {
+                    continue;
+                }
+                $colSearch[(string) $i] = trim((string) data_get($col, 'search.value', ''));
+            }
+        }
+
+        $payload = [
+            'stores' => $stores,
+            'toBuy' => (string) $request->input('toBuy', ''),
+            'fbo' => (string) $request->input('fbo', ''),
+            'start' => max(0, (int) $request->input('start', 0)),
+            'length' => $length,
+            'order_col' => (int) data_get($request->all(), 'order.0.column', 0),
+            'order_dir' => strtolower((string) data_get($request->all(), 'order.0.dir', 'asc')) === 'desc' ? 'desc' : 'asc',
+            'search' => trim((string) data_get($request->all(), 'search.value', '')),
+            'col_search' => self::normalizeForKey($colSearch),
+        ];
+
+        return self::normalizeForKey($payload);
+    }
+
+    /**
+     * Ключ кеша для GET /shipper/json (без лишнего шума от DataTables).
+     */
+    public static function identityFromShipperDataTablesRequest(Request $request): array
+    {
+        $length = (int) $request->input('length', 30);
+        if ($length <= 0 || $length > 500) {
+            $length = 30;
+        }
+
+        $columns = $request->input('columns', []);
+        $colSearch = [];
+        if (is_array($columns)) {
+            foreach ($columns as $i => $col) {
+                if (! is_array($col)) {
+                    continue;
+                }
+                $colSearch[(string) $i] = trim((string) data_get($col, 'search.value', ''));
+            }
+        }
+
+        $payload = [
+            'start' => max(0, (int) $request->input('start', 0)),
+            'length' => $length,
+            'order_col' => $request->input('order.0.column', 0),
+            'order_dir' => strtolower((string) $request->input('order.0.dir', 'asc')) === 'desc' ? 'desc' : 'asc',
+            'search' => trim((string) $request->input('search.value', '')),
+            'col_search' => self::normalizeForKey($colSearch),
+            'search_builder' => $request->input('searchBuilder'),
+        ];
+
+        return self::normalizeForKey($payload);
+    }
+
+    /**
+     * Ключ кеша для GET /users/json (список пользователей New).
+     */
+    public static function identityFromUsersDataTablesRequest(Request $request): array
+    {
+        $length = (int) $request->input('length', 50);
+        if ($length <= 0 || $length > 500) {
+            $length = 50;
+        }
+
+        $payload = [
+            'archived' => $request->boolean('archived') ? 1 : 0,
+            'start' => max(0, (int) $request->input('start', 0)),
+            'length' => $length,
+            'order_col' => (int) data_get($request->all(), 'order.0.column', 0),
+            'order_dir' => strtolower((string) data_get($request->all(), 'order.0.dir', 'asc')) === 'desc' ? 'desc' : 'asc',
+            'search' => trim((string) data_get($request->all(), 'search.value', '')),
+        ];
+
+        return self::normalizeForKey($payload);
+    }
+
+    /**
+     * Ключ кеша для GET /employee/datatable-json.
+     */
+    public static function identityFromEmployeeDataTablesRequest(Request $request): array
+    {
+        $length = (int) $request->input('length', 50);
+        if ($length <= 0 || $length > 500) {
+            $length = 50;
+        }
+
+        $payload = [
+            'archived' => $request->boolean('archived') ? 1 : 0,
             'start' => max(0, (int) $request->input('start', 0)),
             'length' => $length,
             'order_col' => (int) data_get($request->all(), 'order.0.column', 1),

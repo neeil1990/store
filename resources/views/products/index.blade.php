@@ -8,8 +8,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $pageTitle }}</h3>
+                <div class="card-header d-flex align-items-center flex-wrap">
+                    <h3 class="card-title mb-0">{{ $pageTitle }}</h3>
+                    <span class="ml-auto small">
+                        <a href="{{ route('products.listV2') }}" class="text-muted">{{ __('Товары New') }}</a>
+                    </span>
                 </div>
                 <!-- /.card-header -->
 

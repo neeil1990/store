@@ -22,12 +22,17 @@ class SuppliersDataTable
 
     public function filter($query): void
     {
+        self::applyHttpFilters($query);
+    }
+
+    public static function applyHttpFilters(Builder $query): void
+    {
         $search = request('search');
         $toBuy = request('toBuy');
         $fbo = request('fbo');
 
-        if ($search['value']) {
-            $query->whereAny(['products.name', 'products.code'], 'LIKE', "%" . $search['value'] . "%");
+        if (! empty($search['value'])) {
+            $query->whereAny(['products.name', 'products.code'], 'LIKE', '%'.$search['value'].'%');
         }
 
         if ($toBuy) {
@@ -54,21 +59,29 @@ class SuppliersDataTable
         return $this->query;
     }
 
-    public function getJson()
+    public function getJson(?int $overrideRecordsTotal = null, ?int $overrideRecordsFiltered = null)
     {
-        return $this->get()
+        $engine = $this->get();
+        if ($overrideRecordsTotal !== null) {
+            $engine->setTotalRecords($overrideRecordsTotal);
+        }
+        if ($overrideRecordsFiltered !== null) {
+            $engine->setFilteredRecords($overrideRecordsFiltered);
+        }
+
+        return $engine
             ->editColumn('minimumBalanceLager', function (Products $products) {
                 return DataTableViewService::columnInputView([
                     'id' => $products->id,
                     'value' => $products->minimumBalanceLager,
-                    'action' => 'minimumBalanceLager'
+                    'action' => 'minimumBalanceLager',
                 ]);
             })
             ->editColumn('multiplicityProduct', function (Products $products) {
                 return DataTableViewService::columnInputView([
                     'id' => $products->id,
                     'value' => $products->multiplicityProduct,
-                    'action' => 'multiplicityProduct'
+                    'action' => 'multiplicityProduct',
                 ]);
             })
             ->toJson();

@@ -19,9 +19,13 @@ final class SidebarMenuRegistry
         'products.outOfStock',
         'products.outOfStockNew',
         'suppliers.index',
+        'suppliers.listV2',
         'shipper.index',
+        'shipper.listV2',
         'users.index',
+        'users.listV2',
         'employee.index',
+        'employee.listV2',
         'setting.index',
     ];
 
@@ -46,9 +50,13 @@ final class SidebarMenuRegistry
             'products.outOfStock' => ['label' => __('Товары по упущ.выгоде'), 'icon' => 'fas fa-wave-square'],
             'products.outOfStockNew' => ['label' => __('Товары по упущ.выгоде New'), 'icon' => 'fas fa-table', 'force_visible' => true],
             'suppliers.index' => ['label' => __('Товары к закупке'), 'icon' => 'fas fa-parachute-box'],
+            'suppliers.listV2' => ['label' => __('Товары к закупке New'), 'icon' => 'fas fa-table', 'force_visible' => true],
             'shipper.index' => ['label' => __('Поставщики'), 'icon' => 'fas fa-store-alt'],
+            'shipper.listV2' => ['label' => __('Поставщики New'), 'icon' => 'fas fa-table', 'force_visible' => true],
             'users.index' => ['label' => __('Пользователи'), 'icon' => 'fas fa-users'],
+            'users.listV2' => ['label' => __('Пользователи New'), 'icon' => 'fas fa-table', 'force_visible' => true],
             'employee.index' => ['label' => __('Сотрудники (Мой Склад)'), 'icon' => 'fas fa-users'],
+            'employee.listV2' => ['label' => __('Сотрудники New'), 'icon' => 'fas fa-table', 'force_visible' => true],
             'setting.index' => ['label' => __('Настройки'), 'icon' => 'fas fa-tools'],
         ];
     }
