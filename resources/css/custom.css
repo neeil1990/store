@@ -31,3 +31,83 @@ th.dtfc-fixed-left, th.dtfc-fixed-right, td.dtfc-fixed-left, td.dtfc-fixed-right
 .input-group-prepend .btn, .input-group-append .btn {
     z-index: 1;
 }
+
+/* Поиск по меню в сайдбаре: на развёрнутом сайдбаре поле + кнопка на всю ширину */
+.main-sidebar .lp-sidebar-menu-search {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.main-sidebar .lp-sidebar-menu-search .input-group {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    body.sidebar-mini:not(.sidebar-collapse) .lp-sidebar-menu-search .input-group {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+
+    body.sidebar-mini:not(.sidebar-collapse) .lp-sidebar-menu-search .form-control-sidebar {
+        display: block !important;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    body.sidebar-mini:not(.sidebar-collapse) .lp-sidebar-menu-search .form-control-sidebar ~ .input-group-append {
+        display: flex !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* Свёрнутый sidebar-mini: лупа по центру, поле скрыто (перебиваем AdminLTE .sidebar-collapse .form-control-sidebar ~ .input-group-append { display:none }) */
+@media (min-width: 992px) {
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover):not(.sidebar-focused) .lp-sidebar-menu-search .input-group {
+        width: 100%;
+        justify-content: center;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover):not(.sidebar-focused) .lp-sidebar-menu-search .form-control-sidebar {
+        display: none !important;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover):not(.sidebar-focused) .lp-sidebar-menu-search .form-control-sidebar ~ .input-group-append {
+        display: flex !important;
+        width: 100%;
+        margin-left: 0 !important;
+        justify-content: center;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(:hover):not(.sidebar-focused) .lp-sidebar-menu-search .btn.btn-sidebar {
+        border-radius: 0.25rem;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover .lp-sidebar-menu-search .input-group,
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused .lp-sidebar-menu-search .input-group {
+        display: flex !important;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover .lp-sidebar-menu-search .form-control-sidebar,
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused .lp-sidebar-menu-search .form-control-sidebar {
+        display: block !important;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover .lp-sidebar-menu-search .form-control-sidebar ~ .input-group-append,
+    body.sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand).sidebar-focused .lp-sidebar-menu-search .form-control-sidebar ~ .input-group-append {
+        display: flex !important;
+        margin-left: 0 !important;
+        width: auto;
+        justify-content: center;
+    }
+}
+
+/* Встроенный фильтр меню: скрытые пункты (без выпадающего списка AdminLTE) */
+.main-sidebar .nav-sidebar > li.nav-item.lp-menu-filter-hidden {
+    display: none !important;
+}

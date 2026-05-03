@@ -47,7 +47,11 @@
                                     {{ $user['name'] }}
                                     <br />
                                     <small>
-                                        {{ __($user->roles->value('name')) }}
+                                        @if($user->getRoleNames()->isEmpty())
+                                            —
+                                        @else
+                                            {{ $user->getRoleNames()->map(fn (string $name) => __($name))->implode(', ') }}
+                                        @endif
                                     </small>
                                 </td>
                                 <td>{{ $user['email'] }}</td>
@@ -80,6 +84,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="card-footer clearfix">
+                        {{ $users->links() }}
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

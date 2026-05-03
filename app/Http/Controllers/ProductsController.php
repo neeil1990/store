@@ -3,19 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Lib\Sale\ProductsTable;
+use App\Models\Employee;
 use App\Models\Products;
 use App\Models\Setting;
 use App\Models\Store;
+use App\Services\DataOutputCache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class ProductsController extends Controller
 {
     public function index()
     {
-        return view('products.index');
+        return view('products.index', [
+            'employees' => $this->employeesForProductFilters(),
+        ]);
+    }
+
+    public function listV2()
+    {
+        return view('products.index-v2', [
+            'employees' => $this->employeesForProductFilters(),
+        ]);
+    }
+
+    public const EMPLOYEES_FOR_PRODUCT_FILTERS_CACHE_KEY = 'layout.employees_for_product_filters';
+
+    /** Список сотрудников для фильтра колонки «Сотрудник» (кеш, сброс при изменении Employee). */
+    private function employeesForProductFilters()
+    {
+        return Cache::remember(self::EMPLOYEES_FOR_PRODUCT_FILTERS_CACHE_KEY, 600, function () {
+            return Employee::query()->orderBy('name')->get(['uuid', 'name']);
+        });
     }
 
     public function show(Products $product)
@@ -45,24 +66,87 @@ class ProductsController extends Controller
 
     public function json(Request $request)
     {
-        $products = new ProductsTable($request->all());
+        $draw = (int) $request->input('draw', 0);
 
-        return collect([
-            'draw' => $request->input('draw'),
+        try {
+            if (! DataOutputCache::enabled()) {
+                return response()->json(DataOutputCache::withDraw(
+                    $this->buildProductsJsonPayload($request),
+                    $draw
+                ));
+            }
+
+            $identity = DataOutputCache::identityFromDataTablesRequest($request->all());
+            $payload = DataOutputCache::remember(
+                DataOutputCache::REVISION_INVENTORY,
+                DataOutputCache::SEGMENT_PRODUCTS_DATATABLE,
+                $identity,
+                null,
+                fn () => $this->buildProductsJsonPayload($request)
+            );
+            if (! is_array($payload)) {
+                $payload = $this->productsJsonErrorPayload(__('Ошибка загрузки таблицы.'));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(DataOutputCache::withDraw(
+                $this->productsJsonErrorPayload(
+                    config('app.debug') ? $e->getMessage() : __('Ошибка загрузки таблицы.')
+                ),
+                $draw
+            ));
+        }
+
+        return response()->json(DataOutputCache::withDraw($payload, $draw));
+    }
+
+    /**
+     * @return array{recordsTotal: int, recordsFiltered: int, data: array<int, mixed>, error: string}
+     */
+    private function buildProductsJsonPayload(Request $request): array
+    {
+        $products = new ProductsTable($request->all());
+        $rows = collect($products->data())->map(function ($row) {
+            return $row instanceof \Illuminate\Database\Eloquent\Model
+                ? $row->toArray()
+                : (array) $row;
+        })->values()->all();
+
+        return [
             'recordsTotal' => $products->recordsTotal(),
             'recordsFiltered' => $products->recordsFiltered(),
-            'data' => $products->data(),
+            'data' => $rows,
             'error' => $products->error(),
-        ]);
+        ];
+    }
+
+    /**
+     * @return array{recordsTotal: int, recordsFiltered: int, data: array<int, mixed>, error: string}
+     */
+    private function productsJsonErrorPayload(string $message): array
+    {
+        return [
+            'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+            'data' => [],
+            'error' => $message,
+        ];
     }
 
     private function stores(Products $product)
     {
         $stores = Store::all()->load([
-            'stocks' => function ($query) use ($product) { return $query->product($product); },
-            'reserves' => function ($query) use ($product) { return $query->product($product); },
-            'transits' => function ($query) use ($product) { return $query->product($product); },
-        ])->filter(function($value) {
+            'stocks' => function ($query) use ($product) {
+                return $query->product($product);
+            },
+            'reserves' => function ($query) use ($product) {
+                return $query->product($product);
+            },
+            'transits' => function ($query) use ($product) {
+                return $query->product($product);
+            },
+        ])->filter(function ($value) {
             return $value['stocks']->isNotEmpty() || $value['reserves']->isNotEmpty() || $value['transits']->isNotEmpty();
         });
 
@@ -73,15 +157,16 @@ class ProductsController extends Controller
     {
         $allowedFields = ['minimumBalanceLager', 'multiplicityProduct', 'minBalanceCountedAs'];
         $field = $request->input('field');
-        if (!in_array($field, $allowedFields)) {
+        if (! in_array($field, $allowedFields)) {
             return response()->json(['error' => 'Недопустимое поле'], 400);
         }
         $product = Products::find($request->input('id'));
-        if (!$product) {
+        if (! $product) {
             return response()->json(['error' => 'Товар не найден'], 404);
         }
         $product->$field = $request->input('val');
         $result = $product->save();
+
         return response()->json(['success' => $result]);
     }
 
@@ -100,7 +185,7 @@ class ProductsController extends Controller
         $title = '';
 
         if ($filter && isset($filterLabels[$filter])) {
-            $title = ' - ' . $filterLabels[$filter];
+            $title = ' - '.$filterLabels[$filter];
         }
 
         $settings = $this->outOfStockSettings();
@@ -147,7 +232,7 @@ class ProductsController extends Controller
             if ($product->stockTotal->isNotEmpty() && $product->stockTotal->toQuery()->delete()) {
                 $product->update([
                     'user_who_deleted_stock_total' => Auth::id(),
-                    'deleted_stock_total_at' => Carbon::now()
+                    'deleted_stock_total_at' => Carbon::now(),
                 ]);
             }
         }
@@ -156,10 +241,10 @@ class ProductsController extends Controller
     public function storeOutOfStockSettings(Request $request)
     {
         $values = [
-            'value' => $request->input('value', 0)
+            'value' => $request->input('value', 0),
         ];
 
-        if (!$values['value']) {
+        if (! $values['value']) {
             $values['value'] = 0;
         }
 
@@ -170,5 +255,4 @@ class ProductsController extends Controller
     {
         return Setting::query()->where('key', $key)->value('value');
     }
-
 }

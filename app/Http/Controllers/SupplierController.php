@@ -9,16 +9,17 @@ use App\Exports\SuppliersExport;
 use App\Helpers\ProductHelper;
 use App\Models\Products;
 use App\Models\Store;
+use App\Services\DataOutputCache;
 use App\Services\PackingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
 
 class SupplierController extends Controller
 {
     const SUPPLIER_INDEX = 2;
 
     protected $excelFileName = null;
+
     protected $packingService;
 
     public function __construct(PackingService $packingService)
@@ -45,11 +46,50 @@ class SupplierController extends Controller
 
         if ($export == 'suppliers') {
             return $this->export(new SuppliersExport($dataTable->getCollection()));
-        } else if ($export == 'buyers') {
+        } elseif ($export == 'buyers') {
             return $this->export(new BuyersExport($dataTable->getCollection()));
         }
 
-        return $dataTable->getJson();
+        if (! DataOutputCache::enabled()) {
+            return $dataTable->getJson();
+        }
+
+        $draw = (int) request('draw', 0);
+        $identity = DataOutputCache::identityFromDataTablesRequest(request()->all());
+        $payload = DataOutputCache::remember(
+            DataOutputCache::REVISION_INVENTORY,
+            DataOutputCache::SEGMENT_SUPPLIERS_DATATABLE,
+            $identity,
+            null,
+            function () use ($dataTable) {
+                /** @var \Illuminate\Http\JsonResponse $response */
+                $response = $dataTable->getJson();
+                $decoded = json_decode($response->getContent(), true);
+
+                if (! is_array($decoded)) {
+                    return [
+                        'recordsTotal' => 0,
+                        'recordsFiltered' => 0,
+                        'data' => [],
+                        'error' => __('Ошибка загрузки таблицы.'),
+                    ];
+                }
+                unset($decoded['draw']);
+
+                return $decoded;
+            }
+        );
+
+        if (! is_array($payload)) {
+            $payload = [
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'error' => __('Ошибка загрузки таблицы.'),
+            ];
+        }
+
+        return response()->json(DataOutputCache::withDraw($payload, $draw));
     }
 
     private function export(ExportInterface $export)
@@ -57,13 +97,13 @@ class SupplierController extends Controller
         if ($this->hasSearchableValue(self::SUPPLIER_INDEX)) {
             $name = $export->getCollection()->value('suppliers.name');
 
-            $export->setFileName(implode(' - ', [$name, Carbon::now() . SuppliersExport::EXE]));
+            $export->setFileName(implode(' - ', [$name, Carbon::now().SuppliersExport::EXE]));
         }
 
         foreach ($export->getCollection() as $collect) {
             $size = ProductHelper::getPackSize($collect);
 
-            if ($size > 0 && $collect->uoms->name !== "уп") {
+            if ($size > 0 && $collect->uoms->name !== 'уп') {
                 $collect->toBuy = $this->packingService->calculatePackedQuantity($collect->toBuy, $size);
             }
         }

@@ -5,8 +5,6 @@
 <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
@@ -17,6 +15,8 @@
 <script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
 
 <script>
+    const __employeesForColumnFilter = @json($employees ?? []);
+
     let table = $("#products-table").DataTable({
         language: {
             processing: 'Обновляем данные, пожалуйста ожидайте',
@@ -32,6 +32,7 @@
         lengthMenu: [10, 50, 100, 300, 400, 500],
         responsive: false,
         processing: true,
+        deferRender: true,
         scrollX: true,
         fixedHeader: true,
         fixedColumns: {
@@ -41,7 +42,6 @@
             { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
             { extend: 'csv', text: '{{ __('CSV') }}', className: 'btn-default' },
             { extend: 'excel', text: '{{ __('EXCEL') }}', className: 'btn-default' },
-            { extend: 'pdf', text: '{{ __('PDF') }}', className: 'btn-default' },
             { extend: 'print', text: '{{ __('Печать') }}', className: 'btn-default' },
             {
                 extend: 'colvis',
@@ -129,12 +129,9 @@
 
                     group.append(label, select);
 
-                    axios.get('{{ route('employee.json') }}')
-                        .then(function (response) {
-                            $.each(response.data, function (i, el) {
-                                select.add(new Option(el.name, el.uuid));
-                            });
-                        });
+                    __employeesForColumnFilter.forEach(function (el) {
+                        select.add(new Option(el.name, el.uuid));
+                    });
 
                     select.addEventListener('change', function () {
                         column.search(select.value, {exact: true}).draw();

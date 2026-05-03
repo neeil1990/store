@@ -1,3 +1,14 @@
+/* Локальные шрифты (вместо Google Fonts Source Sans Pro — Source Sans 3, совместимые метрики) */
+@import '@fontsource/source-sans-3/300.css';
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/400-italic.css';
+@import '@fontsource/source-sans-3/700.css';
+
 @import 'admin-lte';
 @import './custom.css';
 
+/* AdminLTE по умолчанию ждёт «Source Sans Pro» */
+body,
+.layout-fixed .wrapper {
+    font-family: 'Source Sans 3', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

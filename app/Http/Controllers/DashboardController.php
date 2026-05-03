@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Products;
-use App\Models\Supplier;
-use App\Models\Shipper;
 use App\Models\Price;
+use App\Models\Products;
+use App\Models\Shipper;
+use App\Models\Supplier;
+use App\Models\User;
+use App\Services\DataOutputCache;
 use App\Services\ProductCountHistoryService;
 use App\Services\WarehouseProductsService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -17,10 +21,38 @@ class DashboardController extends Controller
      */
     public function index(ProductCountHistoryService $productCountHistoryService, WarehouseProductsService $warehouseProductsService)
     {
+        $chartDays = 30;
+
+        if (! DataOutputCache::enabled()) {
+            $stats = $this->buildDashboardIndexStats($productCountHistoryService, $warehouseProductsService, $chartDays);
+        } else {
+            $identity = DataOutputCache::normalizeForKey(['chart_days' => $chartDays]);
+            $stats = DataOutputCache::remember(
+                DataOutputCache::REVISION_DASHBOARD_SUMMARY,
+                DataOutputCache::SEGMENT_DASHBOARD_INDEX_STATS,
+                $identity,
+                null,
+                fn () => $this->buildDashboardIndexStats($productCountHistoryService, $warehouseProductsService, $chartDays)
+            );
+            if (! is_array($stats)) {
+                $stats = $this->buildDashboardIndexStats($productCountHistoryService, $warehouseProductsService, $chartDays);
+            }
+        }
+
+        return view('dashboard', $stats);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildDashboardIndexStats(
+        ProductCountHistoryService $productCountHistoryService,
+        WarehouseProductsService $warehouseProductsService,
+        int $chartDays
+    ): array {
         $usersCount = User::where('is_archived', false)->count();
         $productsCount = Products::count();
 
-        // Count suppliers with warehouse items (same filter as /shipper page)
         $availableShippersIds = Products::select('supplier')
             ->whereNotNull('supplier')
             ->where('is_warehouse_item', true)
@@ -29,31 +61,33 @@ class DashboardController extends Controller
 
         $suppliersCount = Supplier::whereIn('uuid', $availableShippersIds)->count();
 
-        // Count products without stock
         $outOfStockCount = Products::doesntHave('stocks')->count();
 
-        // Count products in stock (warehouse items with stock)
         $warehouseProductsCount = Products::where('is_warehouse_item', true)->has('stocks')->count();
 
-        // Get sum of purchase prices for warehouse products with stocks
         $purchasePriceSum = $warehouseProductsService->getTotalPurchasePrice();
-
-        // Get sum of sale prices for warehouse products with stocks
         $salePriceSum = $warehouseProductsService->getTotalSalePrice();
-
-        // Get sum of minimum prices for warehouse products with stocks
         $minPriceSum = $warehouseProductsService->getTotalMinPrice();
 
-        // Get total purchase sum from all shippers
         $totalPurchaseSum = Shipper::sum('calc_purchase_total');
 
-        // Get product count history for chart
-        $productDynamicsData = $productCountHistoryService->getChartData(30);
+        $productDynamicsData = $productCountHistoryService->getChartData($chartDays);
 
-        // Get all available price names
-        $priceNames = $this->getPriceNames();
+        $priceNames = $this->getPriceNames()->values()->all();
 
-        return view('dashboard', compact('usersCount', 'productsCount', 'suppliersCount', 'outOfStockCount', 'warehouseProductsCount', 'purchasePriceSum', 'salePriceSum', 'minPriceSum', 'totalPurchaseSum', 'productDynamicsData', 'priceNames'));
+        return compact(
+            'usersCount',
+            'productsCount',
+            'suppliersCount',
+            'outOfStockCount',
+            'warehouseProductsCount',
+            'purchasePriceSum',
+            'salePriceSum',
+            'minPriceSum',
+            'totalPurchaseSum',
+            'productDynamicsData',
+            'priceNames'
+        );
     }
 
     /**
@@ -70,20 +104,48 @@ class DashboardController extends Controller
     /**
      * Get sum of prices by name for AJAX requests
      */
-    public function getPriceSumByName(WarehouseProductsService $warehouseProductsService)
+    public function getPriceSumByName(Request $request, WarehouseProductsService $warehouseProductsService): JsonResponse
     {
-        $priceName = request('price_name');
+        $priceName = (string) $request->input('price_name', '');
 
-        if (!$priceName) {
+        if ($priceName === '') {
             return response()->json(['error' => 'Price name is required'], 422);
         }
 
+        if (! DataOutputCache::enabled()) {
+            return response()->json($this->buildPriceSumPayload($warehouseProductsService, $priceName));
+        }
+
+        $identity = DataOutputCache::normalizeForKey([
+            'price_name' => $priceName,
+            '_uid' => Auth::id(),
+        ]);
+        $payload = DataOutputCache::remember(
+            DataOutputCache::REVISION_INVENTORY,
+            DataOutputCache::SEGMENT_DASHBOARD_PRICE_SUM,
+            $identity,
+            null,
+            fn () => $this->buildPriceSumPayload($warehouseProductsService, $priceName)
+        );
+
+        return response()->json(is_array($payload) ? $payload : [
+            'sum' => 0,
+            'formatted_sum' => money(0),
+            'price_name' => $priceName,
+        ]);
+    }
+
+    /**
+     * @return array{sum: float|int, formatted_sum: string, price_name: string}
+     */
+    private function buildPriceSumPayload(WarehouseProductsService $warehouseProductsService, string $priceName): array
+    {
         $sum = $warehouseProductsService->getSumPriceByName($priceName);
 
-        return response()->json([
+        return [
             'sum' => $sum,
             'formatted_sum' => money($sum),
-            'price_name' => $priceName
-        ]);
+            'price_name' => $priceName,
+        ];
     }
 }

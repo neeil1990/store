@@ -13,13 +13,13 @@
 
                 <!-- Name -->
                     <div class="form-group mb-3">
-                        <x-text-input-icon :placeholder="$user->name" id="name" type="text" name="name" :value="old('name')" autofocus autocomplete="name" />
+                        <x-text-input-icon :placeholder="$user->name" id="name" type="text" name="name" :value="old('name', $user->name)" autofocus autocomplete="name" />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
                     <!-- Email Address -->
                     <div class="form-group mb-3">
-                        <x-text-input-icon :placeholder="$user->email" id="email" type="email" name="email" :value="old('email')" autocomplete="username" />
+                        <x-text-input-icon :placeholder="$user->email" id="email" type="email" name="email" :value="old('email', $user->email)" autocomplete="username" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
@@ -32,7 +32,7 @@
                     <p class="mb-1"><b>В вашей компании:</b></p>
 
                     <div class="form-group mb-3">
-                        <x-text-input-icon :placeholder="$user->department" id="department" type="text" name="department" :value="old('department')" autofocus autocomplete="name" />
+                        <x-text-input-icon :placeholder="$user->department" id="department" type="text" name="department" :value="old('department', $user->department)" autocomplete="organization-title" />
                         <x-input-error :messages="$errors->get('department')" class="mt-2" />
                     </div>
 
@@ -41,7 +41,7 @@
                     <div class="form-group mb-3">
                         <select name="role" id="" class="custom-select">
                             @foreach ($roles as $role)
-                                <option value="{{ $role }}" {{ $user->roles->value('name') == $role ? 'selected' : '' }}>{{ __($role) }}</option>
+                                <option value="{{ $role }}" {{ $user->getRoleNames()->first() === $role ? 'selected' : '' }}>{{ __($role) }}</option>
                             @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('role')" class="mt-2" />

@@ -1,0 +1,264 @@
+<script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('build/vendor/jquery.highlight.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/dataTables.fixedColumns.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedcolumns/js/fixedColumns.bootstrap4.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+<script src="{{ asset('plugins/datatables-fixedheader/js/fixedHeader.bootstrap4.min.js') }}"></script>
+
+<script>
+    const __employeesForColumnFilter = @json($employees ?? []);
+
+    let tableV2 = $("#products-table-v2").DataTable({
+        language: {
+            processing: 'Обновляем данные, пожалуйста ожидайте',
+            lengthMenu: '_MENU_',
+            search: 'Продвинутый поиск _INPUT_',
+            info: 'Показаны с _START_ до _END_ из _TOTAL_ элементов',
+            infoFiltered: '(отфильтровано из _MAX_ записей)',
+            paginate: {
+                previous: '<',
+                next: '>',
+            },
+        },
+        lengthMenu: [10, 50, 100, 300, 400, 500],
+        responsive: false,
+        processing: true,
+        deferRender: true,
+        scrollX: true,
+        fixedHeader: true,
+        fixedColumns: {
+            left: 1
+        },
+        buttons: [
+            { extend: 'copy', text: '{{ __('Копировать') }}', className: 'btn-default' },
+            { extend: 'csv', text: '{{ __('CSV') }}', className: 'btn-default' },
+            { extend: 'excel', text: '{{ __('EXCEL') }}', className: 'btn-default' },
+            { extend: 'print', text: '{{ __('Печать') }}', className: 'btn-default' },
+            {
+                extend: 'colvis',
+                columns: ':not(.noVis)',
+                popoverTitle: '{{ __('Видимость столбца') }}',
+                text: '{{ __('Столбцы') }}',
+                className: 'btn-default'
+            }
+        ],
+        stateSave: true,
+        ajax: {
+            url: '{{ route('products.json') }}',
+            type: 'GET',
+            data: function (data) {
+                data.fbo = $('.fbo-filter:checked').val();
+            }
+        },
+        order: [[0, 'asc']],
+        columns: [
+            {
+                data: 'name',
+                title: 'Наименование',
+                render: function(data, type, row) {
+                    return '<a href="/products/' + row.id + '" target="_blank" class="text-dark">' + data + '</a>';
+                }
+            },
+            { data: 'suppliers.name', title: 'Поставщик', orderable: false },
+            { data: 'owner', title: 'Сотрудник' },
+            { data: 'article', title: 'Артикул' },
+            {
+                title: 'Код',
+                data: 'code',
+                render: function (data, type, row) {
+                    return `
+                            <div class="text-center">${row.code}</div>
+                            <div class="btn-group">
+                                <a title="Раздел Товары" href="https://online.moysklad.ru/app/#good?global_productCodeFilter=${row.article}&global_codeFilter=${row.code}" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fas fa-warehouse"></i>
+                                </a>
+                                <a title="Раздел Остатки" href="https://online.moysklad.ru/app/#stockReport?reportType=GOODS&typeQuantity=ALL_STOCK&goodIdFilter=[null, null, ${row.name.replaceAll(',', ' ')}, null, null],equals" target="_blank" class="btn btn-light btn-sm">
+                                    <i class="fas fa-chart-pie"></i>
+                                </a>
+                            </div>
+                            `;
+                }
+            },
+            { data: 'externalCode', title: 'Внешний код' },
+            { title: 'Неснижаемый остаток', data: 'minimumBalance'},
+            { title: 'Неснижаемый остаток lager', data: 'minimumBalanceLager', className: 'align-middle'},
+            { title: 'Кратность товара', data: 'multiplicityProduct', className: 'align-middle'},
+            { data: 'stock', title: 'Остаток' },
+            { data: 'transit', title: 'Ожидание' },
+            { data: 'salePrices', title: 'Цена продажи' },
+            { data: 'minPrice', title: 'Минимальная цена' },
+            { data: 'buyPrice', title: 'Закупочная цена' },
+            { data: 'stockPercent', title: 'Процент остатка' },
+        ],
+        serverSide: true,
+        initComplete: function (settings, json) {
+            let api = new $.fn.dataTable.Api( settings );
+            api.buttons().container().appendTo('.btn-list-v2');
+
+            (function bindProductsV2RowHoverSync() {
+                let $wrap = $('#products-table-v2').closest('.dataTables_wrapper');
+                if ($wrap.data('productsV2RowSync')) {
+                    return;
+                }
+                $wrap.data('productsV2RowSync', true);
+                $wrap.on('mouseenter', 'tbody > tr', function () {
+                    let idx = $(this).index();
+                    $wrap.find('tbody > tr').removeClass('products-v2-row-hover');
+                    $wrap.find('tbody').each(function () {
+                        $(this).children('tr').eq(idx).addClass('products-v2-row-hover');
+                    });
+                });
+                $wrap.on('mouseleave', function (e) {
+                    let rel = e.relatedTarget;
+                    if (!rel || !$wrap[0].contains(rel)) {
+                        $wrap.find('tr.products-v2-row-hover').removeClass('products-v2-row-hover');
+                    }
+                });
+            })();
+
+            let sidebar = document.getElementById("control-sidebar-content");
+            if (!sidebar) {
+                return;
+            }
+            sidebar.innerHTML = '';
+
+            api.columns().every(function(){
+                let column = this;
+                let header = column.header();
+                let title = header.textContent;
+                let classList = header.classList;
+
+                if(classList.contains("unsearchable"))
+                    return;
+
+                let group = document.createElement('div');
+                group.className = "form-group";
+
+                let label = document.createElement('label');
+                label.textContent = title;
+
+                if(column.dataSrc() === 'owner')
+                {
+                    let select = document.createElement('select');
+                    select.className = "form-control";
+                    select.add(new Option('Найти', ''));
+
+                    group.append(label, select);
+
+                    __employeesForColumnFilter.forEach(function (el) {
+                        select.add(new Option(el.name, el.uuid));
+                    });
+
+                    select.addEventListener('change', function () {
+                        column.search(select.value, {exact: true}).draw();
+                    });
+                }
+                else{
+                    let input = document.createElement('input');
+                    input.value = column.search();
+                    input.placeholder = title;
+                    input.className = "form-control";
+
+                    group.append(label, input);
+
+                    input.addEventListener('keyup', () => {
+                        if (column.search() !== this.value) {
+                            column.search(input.value).draw();
+                        }
+                    });
+                }
+
+                sidebar.append(group);
+            });
+
+            let clear = document.createElement('button');
+            clear.className = "btn btn-block btn-outline-danger btn-xs";
+            clear.textContent = "Очистить";
+            sidebar.append(clear);
+
+            clear.addEventListener('click', () => {
+                tableV2.search('').columns().search('').draw();
+                for (const input of sidebar.querySelectorAll(".form-control")) {
+                    input.value = "";
+                }
+            });
+        }
+    });
+
+    (function () {
+        let observer = new MutationObserver(function (mutations) {
+            for (let mutation of mutations) {
+                for (let node of mutation.removedNodes) {
+                    if (node.nodeType === 1 && node.classList.contains('dtfh-floatingparenthead')) {
+                        requestAnimationFrame(function () {
+                            tableV2.columns.adjust();
+                        });
+                        return;
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.body, { childList: true });
+
+        tableV2.on('draw.dt', function () {
+            tableV2.columns.adjust();
+        });
+    })();
+
+    tableV2.on('draw', function () {
+        $('#products-table-v2').closest('.dataTables_wrapper').find('tr.products-v2-row-selected').removeClass('products-v2-row-selected');
+
+        let $wrap = $('#products-table-v2').closest('.dataTables_wrapper');
+        let $body = $(tableV2.table().body());
+        let $cells = $body.find('td');
+        let $fixedCells = $wrap.find('.DTFC_LeftBodyWrapper tbody td');
+        $cells.add($fixedCells).unhighlight();
+        let raw = (tableV2.search() || '').trim();
+        let terms = raw.length ? raw.split(/\s+/).filter(function (t) { return t.length > 0; }) : [];
+        if (terms.length) {
+            $cells.not(':has(input)').highlight(terms);
+            $fixedCells.not(':has(input)').highlight(terms);
+        }
+    });
+
+    $('#products-table-v2').closest('.dataTables_wrapper').on('click', 'tbody > tr', function (e) {
+        if ($(e.target).closest('a, button, input, .input-column').length) {
+            return;
+        }
+        let $wrap = $(this).closest('.dataTables_wrapper');
+        let idx = $(this).index();
+        $wrap.find('tbody > tr').removeClass('products-v2-row-selected');
+        $wrap.find('tbody').each(function () {
+            $(this).children('tr').eq(idx).addClass('products-v2-row-selected');
+        });
+    });
+
+    $("#products-table-v2").on("click", ".input-column", function () {
+        let $form = $(this).closest('.input-group');
+        let $input = $form.find('input');
+        let id = $form.data('id');
+        let action = $form.data('action');
+
+        if ($input.val().length > 0 && id) {
+            axios.post('{{ route('products.update-field') }}', {
+                id: id,
+                val: $input.val(),
+                field: action,
+            }).then(function (response) {
+                toastr.success('Успешно сохранено!');
+            });
+        }
+
+        return true;
+    });
+</script>

@@ -6,9 +6,7 @@
 
         <title>{{ config('app.name', 'LagerPlus') }} (Система оцифровки склада для роста продаж)</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/css/figtree-local.css">
 
         <!-- Styles -->
         <style>

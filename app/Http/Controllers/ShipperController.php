@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Actions\CalculateFieldsAction;
 use App\DTO\ShipperDataTableDTO;
 use App\DTO\ShipperRequestDTO;
-use App\Infrastructure\EloquentShipperRepository;
 use App\Models\Filter;
 use App\Models\Shipper;
 use App\Models\Store;
 use App\Models\User;
 use App\Presenters\ShipperDataTablePresenter;
+use App\Services\DataOutputCache;
 use App\Services\ShipperService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,16 +22,59 @@ class ShipperController extends Controller
     {
         $calculate = new CalculateFieldsAction();
 
-        return view('shippers.index', ['computedAt' =>  $calculate->computedAt()]);
+        return view('shippers.index', ['computedAt' => $calculate->computedAt()]);
     }
 
-    public function json(Request $request, ShipperService $service): string
+    public function json(Request $request, ShipperService $service): \Illuminate\Http\JsonResponse
     {
-        $sdt = ShipperDataTableDTO::fromRequest($request);
+        $draw = (int) $request->input('draw', 0);
 
-        $shippers = $service->getAvailableWithProducts($sdt);
+        if (! DataOutputCache::enabled()) {
+            $sdt = ShipperDataTableDTO::fromRequest($request);
+            $shippers = $service->getAvailableWithProducts($sdt);
+            $json = (new ShipperDataTablePresenter)->present($shippers);
 
-        return (new ShipperDataTablePresenter)->present($shippers);
+            return response()->json(DataOutputCache::withDraw(
+                json_decode($json, true) ?: [],
+                $draw
+            ));
+        }
+
+        $identity = DataOutputCache::identityFromDataTablesRequest($request->all());
+        $payload = DataOutputCache::remember(
+            DataOutputCache::REVISION_SHIPPERS,
+            DataOutputCache::SEGMENT_SHIPPERS_DATATABLE,
+            $identity,
+            null,
+            function () use ($request, $service) {
+                $sdt = ShipperDataTableDTO::fromRequest($request);
+                $shippers = $service->getAvailableWithProducts($sdt);
+                $json = (new ShipperDataTablePresenter)->present($shippers);
+                $decoded = json_decode($json, true);
+                if (! is_array($decoded)) {
+                    return [
+                        'recordsTotal' => 0,
+                        'recordsFiltered' => 0,
+                        'data' => [],
+                        'error' => __('Ошибка загрузки таблицы.'),
+                    ];
+                }
+                unset($decoded['draw']);
+
+                return $decoded;
+            }
+        );
+
+        if (! is_array($payload)) {
+            $payload = [
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => [],
+                'error' => __('Ошибка загрузки таблицы.'),
+            ];
+        }
+
+        return response()->json(DataOutputCache::withDraw($payload, $draw));
     }
 
     public function edit($id, ShipperService $service): View
@@ -60,6 +102,8 @@ class ShipperController extends Controller
     public function bulkUpdate(Request $request, string $field): RedirectResponse
     {
         Shipper::query()->update([$field => $request->input($field, 0)]);
+        DataOutputCache::bumpRevision(DataOutputCache::REVISION_SHIPPERS);
+        DataOutputCache::bumpRevision(DataOutputCache::REVISION_DASHBOARD_SUMMARY);
 
         return redirect()->route('shipper.index');
     }
@@ -71,8 +115,9 @@ class ShipperController extends Controller
         foreach (Shipper::all() as $shipper) {
             $shipper->stores()->sync($warehouses);
         }
+        DataOutputCache::bumpRevision(DataOutputCache::REVISION_SHIPPERS);
+        DataOutputCache::bumpRevision(DataOutputCache::REVISION_DASHBOARD_SUMMARY);
 
         return redirect()->route('shipper.index');
     }
-
 }
