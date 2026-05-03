@@ -31,7 +31,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($employee as $user)
+                        @foreach($employees as $user)
                             <tr>
                                 <td>{{ $user['externalCode'] }}</td>
                                 <td>{{ $user['name'] }}</td>
@@ -48,6 +48,9 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <div class="card-footer clearfix">
+                        {{ $employees->links() }}
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>

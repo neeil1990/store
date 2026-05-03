@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Models\Setting;
 use App\Services\DataOutputCache;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class CalculateFieldsAction
 {
@@ -39,6 +40,10 @@ class CalculateFieldsAction
         DataOutputCache::bumpRevision(DataOutputCache::REVISION_SHIPPERS);
         DataOutputCache::bumpRevision(DataOutputCache::REVISION_INVENTORY);
         DataOutputCache::bumpRevision(DataOutputCache::REVISION_DASHBOARD_SUMMARY);
+
+        if (config('lagerplus.out_of_stock_new_cache_warm.enabled', true) && DataOutputCache::enabled()) {
+            Artisan::call('lagerplus:warm-out-of-stock-new-datatable');
+        }
 
         $this->message = nl2br($message);
     }

@@ -2,10 +2,8 @@
 
 namespace App\Console;
 
-use Exception;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,6 +16,12 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('app:calculate-shipper-fields')->hourly();
         $schedule->command('record:product-count')->dailyAt('09:00');
+
+        if (config('lagerplus.out_of_stock_new_cache_warm.enabled', true)) {
+            $schedule->command('lagerplus:warm-out-of-stock-new-datatable')
+                ->hourly()
+                ->withoutOverlapping(55);
+        }
 
     }
 

@@ -13,9 +13,13 @@ use App\Services\DataOutputCache;
 use App\Services\PackingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class SupplierController extends Controller
 {
+    /** Кеш списка складов для сайдбара «К закупке» (uuid + name). */
+    public const STORES_FOR_SUPPLIER_FILTERS_CACHE_KEY = 'layout.stores_for_supplier_filters';
+
     const SUPPLIER_INDEX = 2;
 
     protected $excelFileName = null;
@@ -29,10 +33,20 @@ class SupplierController extends Controller
 
     public function index()
     {
-        $store = Store::all();
-        $filters = Auth::user()->filters;
+        $store = $this->storesForSupplierFilters();
+        $filters = Auth::user()->filters()
+            ->select(['id', 'name', 'active'])
+            ->orderBy('name')
+            ->get();
 
         return view('suppliers.index', compact('store', 'filters'));
+    }
+
+    private function storesForSupplierFilters()
+    {
+        return Cache::remember(self::STORES_FOR_SUPPLIER_FILTERS_CACHE_KEY, 600, function () {
+            return Store::query()->orderBy('name')->get(['uuid', 'name']);
+        });
     }
 
     public function json()

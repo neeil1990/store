@@ -7,7 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Price extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
-    use HasFactory;
+    protected $primaryKey = 'uuid';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 }

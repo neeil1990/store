@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Domain\Product\ProductRepository;
 use App\Domain\Shipper\ShipperRepository;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SupplierController;
 use App\Infrastructure\EloquentProductRepository;
 use App\Infrastructure\EloquentShipperRepository;
 use App\Models\Employee;
@@ -12,8 +13,11 @@ use App\Models\Price;
 use App\Models\ProductCountHistory;
 use App\Models\Products;
 use App\Models\Reserve;
+use App\Models\Sell;
 use App\Models\Shipper;
 use App\Models\Stock;
+use App\Models\StockTotal;
+use App\Models\Store;
 use App\Models\Transit;
 use App\Models\User;
 use App\Services\DataOutputCache;
@@ -66,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
             $bumpDashboardSummary();
         };
 
-        foreach ([Products::class, Stock::class, Reserve::class, Transit::class, Price::class] as $model) {
+        foreach ([Products::class, Stock::class, Reserve::class, Transit::class, Price::class, StockTotal::class, Sell::class] as $model) {
             $model::saved($bumpInventory);
             $model::deleted($bumpInventory);
         }
@@ -94,5 +98,11 @@ class AppServiceProvider extends ServiceProvider
             DataOutputCache::bumpRevision(DataOutputCache::REVISION_EMPLOYEES);
             Cache::forget(ProductsController::EMPLOYEES_FOR_PRODUCT_FILTERS_CACHE_KEY);
         });
+
+        $forgetSupplierStores = static function (): void {
+            Cache::forget(SupplierController::STORES_FOR_SUPPLIER_FILTERS_CACHE_KEY);
+        };
+        Store::saved($forgetSupplierStores);
+        Store::deleted($forgetSupplierStores);
     }
 }

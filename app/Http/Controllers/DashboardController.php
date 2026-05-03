@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Price;
-use App\Models\Products;
-use App\Models\Shipper;
-use App\Models\Supplier;
-use App\Models\User;
 use App\Services\DataOutputCache;
 use App\Services\ProductCountHistoryService;
 use App\Services\WarehouseProductsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -50,26 +47,18 @@ class DashboardController extends Controller
         WarehouseProductsService $warehouseProductsService,
         int $chartDays
     ): array {
-        $usersCount = User::where('is_archived', false)->count();
-        $productsCount = Products::count();
+        $counts = $this->dashboardSummaryCounts();
 
-        $availableShippersIds = Products::select('supplier')
-            ->whereNotNull('supplier')
-            ->where('is_warehouse_item', true)
-            ->groupBy('supplier')
-            ->pluck('supplier');
-
-        $suppliersCount = Supplier::whereIn('uuid', $availableShippersIds)->count();
-
-        $outOfStockCount = Products::doesntHave('stocks')->count();
-
-        $warehouseProductsCount = Products::where('is_warehouse_item', true)->has('stocks')->count();
+        $usersCount = $counts['usersCount'];
+        $productsCount = $counts['productsCount'];
+        $suppliersCount = $counts['suppliersCount'];
+        $outOfStockCount = $counts['outOfStockCount'];
+        $warehouseProductsCount = $counts['warehouseProductsCount'];
+        $totalPurchaseSum = $counts['totalPurchaseSum'];
 
         $purchasePriceSum = $warehouseProductsService->getTotalPurchasePrice();
         $salePriceSum = $warehouseProductsService->getTotalSalePrice();
         $minPriceSum = $warehouseProductsService->getTotalMinPrice();
-
-        $totalPurchaseSum = Shipper::sum('calc_purchase_total');
 
         $productDynamicsData = $productCountHistoryService->getChartData($chartDays);
 
@@ -88,6 +77,48 @@ class DashboardController extends Controller
             'productDynamicsData',
             'priceNames'
         );
+    }
+
+    /**
+     * Один round-trip к БД вместо отдельных COUNT/SUM по users, products, suppliers, stocks, shippers.
+     *
+     * @return array{
+     *     usersCount: int,
+     *     productsCount: int,
+     *     suppliersCount: int,
+     *     outOfStockCount: int,
+     *     warehouseProductsCount: int,
+     *     totalPurchaseSum: float|int
+     * }
+     */
+    private function dashboardSummaryCounts(): array
+    {
+        $row = DB::selectOne(
+            'SELECT
+                (SELECT COUNT(*) FROM users WHERE is_archived = 0) AS users_count,
+                (SELECT COUNT(*) FROM products) AS products_count,
+                (SELECT COUNT(*) FROM suppliers WHERE uuid IN (
+                    SELECT supplier FROM products
+                    WHERE supplier IS NOT NULL AND is_warehouse_item = 1
+                    GROUP BY supplier
+                )) AS suppliers_count,
+                (SELECT COUNT(*) FROM products p WHERE NOT EXISTS (
+                    SELECT 1 FROM stocks s WHERE s.assortmentId = p.uuid
+                )) AS out_of_stock_count,
+                (SELECT COUNT(*) FROM products p WHERE p.is_warehouse_item = 1 AND EXISTS (
+                    SELECT 1 FROM stocks s WHERE s.assortmentId = p.uuid
+                )) AS warehouse_products_count,
+                (SELECT COALESCE(SUM(calc_purchase_total), 0) FROM shippers) AS total_purchase_sum'
+        );
+
+        return [
+            'usersCount' => (int) ($row->users_count ?? 0),
+            'productsCount' => (int) ($row->products_count ?? 0),
+            'suppliersCount' => (int) ($row->suppliers_count ?? 0),
+            'outOfStockCount' => (int) ($row->out_of_stock_count ?? 0),
+            'warehouseProductsCount' => (int) ($row->warehouse_products_count ?? 0),
+            'totalPurchaseSum' => (float) ($row->total_purchase_sum ?? 0),
+        ];
     }
 
     /**

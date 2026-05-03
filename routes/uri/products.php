@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/products/out-of-stock/settings/{key}', [ProductsController::class, 'getOutOfStockSettings'])->name('products.getOutOfStockSettings');
 Route::get('/products/out-of-stock', [ProductsController::class, 'outOfStock'])->name('products.outOfStock');
+Route::get('/products/out-of-stock-new/json', [ProductsController::class, 'outOfStockNewJson'])->name('products.outOfStockNew.json');
+Route::get('/products/out-of-stock-new', [ProductsController::class, 'outOfStockNew'])->name('products.outOfStockNew');
 Route::post('/products/destroy-stock-totals', [ProductsController::class, 'destroyStockTotals'])->name('products.destroyStockTotals');
 Route::post('/products/out-of-stock', [ProductsController::class, 'storeOutOfStockSettings'])->name('products.storeOutOfStockSettings');
 

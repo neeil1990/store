@@ -14,6 +14,7 @@ use App\Services\DataOutputCache;
 use App\Services\ShipperService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ShipperController extends Controller
@@ -81,11 +82,20 @@ class ShipperController extends Controller
     {
         $shipper = $service->getShipperById($id);
 
-        $users = User::all();
+        $users = User::query()
+            ->where('is_archived', false)
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
-        $storages = Store::all();
+        $storages = Store::query()->orderBy('name')->get(['id', 'name']);
 
-        $filters = Filter::with('user')->get();
+        $filters = Filter::query()
+            ->select(['id', 'name', 'user_id'])
+            ->with(['user' => static function ($query) {
+                $query->select(['id', 'name']);
+            }])
+            ->orderBy('name')
+            ->get();
 
         return view('shippers.edit', compact('shipper', 'users', 'storages', 'id', 'filters'));
     }
@@ -112,9 +122,13 @@ class ShipperController extends Controller
     {
         $warehouses = $request->input('warehouses', []);
 
-        foreach (Shipper::all() as $shipper) {
-            $shipper->stores()->sync($warehouses);
-        }
+        DB::transaction(function () use ($warehouses): void {
+            Shipper::query()->chunkById(100, function ($shippers) use ($warehouses): void {
+                foreach ($shippers as $shipper) {
+                    $shipper->stores()->sync($warehouses);
+                }
+            });
+        });
         DataOutputCache::bumpRevision(DataOutputCache::REVISION_SHIPPERS);
         DataOutputCache::bumpRevision(DataOutputCache::REVISION_DASHBOARD_SUMMARY);
 

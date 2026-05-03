@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Services\BundleService;
+use App\Models\Setting;
 use Illuminate\Support\Arr;
 
 class ProductProfitService
@@ -22,8 +22,8 @@ class ProductProfitService
         }, $uuids);
 
         $api->send($endpoint, [
-            'filter' => implode(";", $filter),
-            'momentFrom' => $date
+            'filter' => implode(';', $filter),
+            'momentFrom' => $date,
         ]);
 
         return $api->getRows();
@@ -40,13 +40,15 @@ class ProductProfitService
 
         $bundles = (new BundleService())->getBundleByProduct($uuid);
 
+        $measureItemParam = Setting::query()->where('key', 'measure_item_param')->value('value');
+
         foreach ($bundles as $bundle) {
 
             $component = $this->findBundleComponent($uuid, $bundle);
 
             $quantity = 1;
 
-            if (checkMeasureAttr($component['assortment']['attributes'])) {
+            if (checkMeasureAttr($component['assortment']['attributes'], $measureItemParam)) {
                 $quantity = $component['quantity'];
             }
 

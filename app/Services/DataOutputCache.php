@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -15,6 +16,9 @@ final class DataOutputCache
     public const REVISION_INVENTORY = 'inventory';
 
     public const SEGMENT_PRODUCTS_DATATABLE = 'products.dt';
+
+    /** Server-side DataTables: «Товары по упущ.выгоде New». */
+    public const SEGMENT_OUT_OF_STOCK_NEW_DATATABLE = 'products.out_of_stock_new.dt';
 
     public const SEGMENT_SUPPLIERS_DATATABLE = 'suppliers.dt';
 
@@ -54,6 +58,21 @@ final class DataOutputCache
     public static function ttlSeconds(): int
     {
         return max(1, (int) config('lagerplus.data_output_cache.ttl_seconds', 60));
+    }
+
+    /**
+     * TTL записи кеша для сегмента: при настроенном override — он, иначе {@see ttlSeconds()}.
+     */
+    public static function ttlSecondsForSegment(string $cacheSegment): int
+    {
+        if ($cacheSegment === self::SEGMENT_OUT_OF_STOCK_NEW_DATATABLE) {
+            $custom = config('lagerplus.data_output_cache.ttl_out_of_stock_new_seconds');
+            if (is_int($custom) && $custom >= 1) {
+                return $custom;
+            }
+        }
+
+        return self::ttlSeconds();
     }
 
     public static function storeName(): string
@@ -106,19 +125,46 @@ final class DataOutputCache
     }
 
     /**
-     * Убрать из запроса поля, не влияющие на выборку, и добавить пользователя для разделения кеша.
+     * Убрать из запроса поля, не влияющие на выборку, и при необходимости добавить пользователя для разделения кеша.
      *
      * @param  array<string, mixed>  $request
+     * @param  bool  $withAuthenticatedUserPartition  для общих read-only выборок (например «упущ. выгода New») передайте false — один кеш на всех и возможность прогрева из консоли.
      * @return array<string, mixed>
      */
-    public static function identityFromDataTablesRequest(array $request): array
+    public static function identityFromDataTablesRequest(array $request, bool $withAuthenticatedUserPartition = true): array
     {
-        unset($request['draw'], $request['_token'], $request['_method']);
-        if (Auth::check()) {
+        unset($request['draw'], $request['_token'], $request['_method'], $request['_']);
+        if ($withAuthenticatedUserPartition && Auth::check()) {
             $request['_uid'] = Auth::id();
         }
 
         return self::normalizeForKey($request);
+    }
+
+    /**
+     * Ключ кеша для JSON «упущ. выгода New»: только параметры, влияющие на выборку (без columns/draw и без пользователя).
+     */
+    public static function identityFromOutOfStockNewDataTablesRequest(Request $request): array
+    {
+        $allowedFilters = ['zero', 'zero_no_transits', 'multiplicity', 'incomplete_pack'];
+        $rawFilter = $request->input('filter');
+        $filter = (is_string($rawFilter) && in_array($rawFilter, $allowedFilters, true)) ? $rawFilter : '';
+
+        $length = (int) $request->input('length', 50);
+        if ($length <= 0 || $length > 500) {
+            $length = 50;
+        }
+
+        $payload = [
+            'filter' => $filter,
+            'start' => max(0, (int) $request->input('start', 0)),
+            'length' => $length,
+            'order_col' => (int) data_get($request->all(), 'order.0.column', 1),
+            'order_dir' => strtolower((string) data_get($request->all(), 'order.0.dir', 'asc')) === 'desc' ? 'desc' : 'asc',
+            'search' => trim((string) data_get($request->all(), 'search.value', '')),
+        ];
+
+        return self::normalizeForKey($payload);
     }
 
     /**

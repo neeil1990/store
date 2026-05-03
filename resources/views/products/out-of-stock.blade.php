@@ -4,8 +4,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">{{ $pageTitle }} {{ $title }}</h3>
+                <div class="card-header d-flex align-items-center flex-wrap">
+                    <h3 class="card-title mb-0">{{ $pageTitle }} {{ $title }}</h3>
+                    <span class="ml-auto small">
+                        <a href="{{ route('products.outOfStockNew', request()->only('filter')) }}" class="text-muted">{{ __('Версия New (пагинация)') }}</a>
+                    </span>
                 </div>
                 <!-- /.card-header -->
 
