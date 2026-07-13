@@ -1,66 +1,122 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 Система управления закупками и складскими остатками
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Веб-приложение для автоматизации закупок и контроля складских остатков торговой компании с полной интеграцией с **[МойСклад](https://www.moysklad.ru/)** (JSON API 1.2).
 
-## About Laravel
+Система решает ключевую задачу закупщика: **что, у кого и в каком количестве нужно закупить**, — на основе истории продаж, текущих остатков, резервов и товаров в пути.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> 🧑‍💻 Проект спроектирован и разработан **одним разработчиком** — от архитектуры и схемы БД до интерфейса и планировщика фоновых задач. Более **300 коммитов** за 2 года активной разработки: [история коммитов](../../commits).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Возможности
 
-## Learning Laravel
+### 🔄 Интеграция с МойСклад
+- Синхронизация 15+ сущностей: товары, комплекты, остатки, резервы, товары в пути (транзиты), поставщики, сотрудники, склады, группы, страны, единицы измерения, дополнительные атрибуты.
+- Собственный клиент для JSON API МойСклад с авторизацией по токену и постраничной выгрузкой больших объёмов данных.
+- Единый интерфейс приёма данных (`MyStoreReceiveInterface`) — добавление новой сущности сводится к созданию одного класса.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🛒 Модуль «Дефицит» (out-of-stock) — ядро системы
+- Расчёт потребности в закупке по настраиваемой формуле продаж (периоды 30/90/365 дней).
+- Учёт **кратности упаковки** и процента неполной упаковки при расчёте количества к закупке.
+- **Минимальный остаток** и «режим экономии» с настраиваемым множителем дней.
+- Учёт резервов и товаров в пути, фильтр нулевых остатков без транзитов.
+- Гибкие пользовательские фильтры с сохранением, прогрессивный поиск с подсветкой совпадений.
+- Таблицы с фиксированными заголовками, интерактивными подсказками и inline-редактированием полей.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 📊 Дашборд и аналитика
+- Виджеты: количество товаров в наличии и в дефиците, поставщики, пользователи, суммарная стоимость закупки.
+- График динамики количества товаров (ежедневный автоматический срез в 09:00).
+- Сводки по стоимости товаров в разрезе складов с выбором типа цены.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 👥 Поставщики, отгрузки и персонал
+- Реестр поставщиков: фильтрация, поиск, итоговые суммы, экспорт в Excel.
+- Автоматический ежечасный пересчёт полей отгрузок (заполненность, суммы закупки, количество к закупке).
+- Учёт сотрудников с архивированием.
 
-## Laravel Sponsors
+### ⚙️ Администрирование
+- Роли и права доступа (spatie/laravel-permission), элементы управления доступны только администраторам.
+- Централизованные настройки бизнес-логики через интерфейс (формулы, периоды, множители).
+- WYSIWYG-редактор (Summernote) для описаний.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠 Технологический стек
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Слой | Технологии |
+|---|---|
+| Backend | PHP 8.1+, Laravel 10, MySQL |
+| Интеграции | МойСклад JSON API 1.2 (Guzzle / Curl) |
+| Таблицы и экспорт | Yajra DataTables (server-side), Maatwebsite Excel |
+| Доступы | Laravel Breeze, Sanctum, Spatie Permission |
+| Frontend | Vite, Tailwind CSS, Alpine.js, AdminLTE 3, Chart-виджеты |
+| Фоновые задачи | Laravel Scheduler (ежечасные и ежедневные задания) |
+| Качество | PHPUnit, Laravel Pint |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🏗 Архитектура
 
-## Code of Conduct
+Проект построен на многослойной архитектуре с элементами DDD — бизнес-логика отделена от фреймворка:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```text
+app/
+├── Domain/          # Доменные модели и интерфейсы репозиториев (Product, Shipper)
+├── Infrastructure/  # Реализации репозиториев на Eloquent
+├── Actions/         # Атомарные бизнес-операции (расчёт полей отгрузок и т.д.)
+├── Services/        # Сервисный слой (прибыльность, упаковка, история остатков)
+├── Presenters/      # Подготовка данных для отображения
+├── DTO/             # Объекты передачи данных
+├── Lib/Moysklad/    # Клиент API МойСклад + приёмники сущностей (паттерн «Адаптер»)
+├── DataTables/      # Server-side таблицы
+├── Jobs/            # Очереди (сохранение продаж)
+└── Console/         # Консольные команды и расписание
+```
 
-## Security Vulnerabilities
+Применённые подходы и паттерны:
+- **Repository + Interface** — доменный слой не зависит от Eloquent;
+- **Adapter / Factory / Facade / Presenter** — для интеграции и слоя представления;
+- **Тонкие контроллеры** — логика вынесена в Actions и Services;
+- Оптимизация БД: составные индексы, замена фильтрации по JSON-атрибутам на boolean-колонки (ускорение выборок), 55+ миграций.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🚀 Установка
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git clone <repository-url>
+cd <project-dir>
+
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
+
+# укажите доступы к MySQL в .env
+php artisan migrate
+
+npm run build
+php artisan serve
+```
+
+Токен доступа к API МойСклад задаётся в интерфейсе приложения (раздел «Токен»).
+
+### Фоновые задачи
+
+Для работы планировщика добавьте в cron:
+
+```bash
+* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+| Команда | Расписание | Назначение |
+|---|---|---|
+| `app:calculate-shipper-fields` | ежечасно | Пересчёт расчётных полей отгрузок |
+| `record:product-count` | ежедневно в 09:00 | Срез количества товаров для графика динамики |
+| `app:sync-products` | вручную / по требованию | Полная синхронизация с МойСклад |
+
+---
+
+## 👤 Автор
+
+Весь проект — архитектура, база данных, backend, frontend, интеграция с МойСклад, планировщик и UI — разработан единолично.
